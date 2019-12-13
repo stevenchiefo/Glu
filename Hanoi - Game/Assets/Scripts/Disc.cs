@@ -4,21 +4,24 @@ using UnityEngine;
 
 public class Disc : MonoBehaviour
 {
-    private enum Status
+    public enum Status
     {
         Waiting_For_First_Click = 0,
         Waiting_For_Second_Click,
         Move_To_Middle_Point,
         Move_To_End_Position,
+        Falling
     }
 
-    [SerializeField] private Status m_Status;
+    [SerializeField] public Status m_Status;
     private Vector3 m_StartLocation;
     private Vector3 m_EndLocation;
-    private Vector3 m_Position;
+
+    public int Num = 0;
     private float m_TurnTimer;
     [SerializeField, Range(0.1f, 10f)] private float m_Speed;
     [SerializeField] public Rigidbody m_Body;
+    private GameManager m_GameManager;
 
     public Disc()
     {
@@ -27,6 +30,7 @@ public class Disc : MonoBehaviour
 
     private void Start()
     {
+        m_GameManager = FindObjectOfType<GameManager>();
         m_Body.useGravity = false;
     }
 
@@ -36,42 +40,48 @@ public class Disc : MonoBehaviour
         MoveToLocation();
     }
 
-    public void SetPosition(Vector3 endPos)
+    public void EndPositionSetter(Vector3 pos)
     {
-        m_EndLocation = endPos;
-        m_Status = Status.Move_To_Middle_Point;
+        m_EndLocation = new Vector3(m_GameManager.m_Middle.transform.position.x, m_GameManager.m_Middle.transform.position.y, pos.z);
+        m_Status = Status.Move_To_End_Position;
     }
 
     public void MoveToLocation()
     {
         if (m_Status == Status.Move_To_Middle_Point)
         {
+            m_Body.useGravity = false;
             m_TurnTimer += Time.deltaTime;
-            GameObject middle = GameObject.Find("MidLocation");
+
             m_StartLocation = gameObject.transform.position;
             float t = 0;
             t += m_TurnTimer * m_Speed;
-            transform.position = Vector3.Lerp(m_StartLocation, middle.transform.position, t);
-            print(t.ToString());
-            if (t >= 1)
+            Vector3 pos = new Vector3(m_StartLocation.x, m_GameManager.m_Middle.transform.position.y, m_StartLocation.z);
+            transform.position = Vector3.Lerp(m_StartLocation, pos, t);
+            if (m_StartLocation == pos)
             {
                 ResetTimers();
-                m_Status = Status.Waiting_For_First_Click;
+                m_Status = Status.Waiting_For_Second_Click;
                 SetCurrentLocation();
-                m_Body.useGravity = true;
             }
         }
         if (m_Status == Status.Move_To_End_Position)
         {
+            m_Body.useGravity = false;
             m_TurnTimer += Time.deltaTime;
             m_StartLocation = gameObject.transform.position;
             float t = 0;
+            if (m_StartLocation == m_EndLocation)
+            {
+                t = 1;
+            }
             t += m_TurnTimer * m_Speed;
             transform.position = Vector3.Lerp(m_StartLocation, m_EndLocation, t);
-            if (t >= 1)
+            if (m_StartLocation == m_EndLocation)
             {
                 ResetTimers();
-                m_Status = Status.Waiting_For_First_Click;
+                m_Status = Status.Falling;
+                m_Body.useGravity = true;
             }
         }
     }
@@ -84,5 +94,21 @@ public class Disc : MonoBehaviour
     private void SetCurrentLocation()
     {
         gameObject.transform.position = transform.position;
+    }
+
+    private void OnMouseDown()
+    {
+        Pole pole0 = m_GameManager.m_Pole0.GetComponent<Pole>();
+        Pole pole1 = m_GameManager.m_Pole1.GetComponent<Pole>();
+        Pole pole2 = m_GameManager.m_Pole2.GetComponent<Pole>();
+        if (gameObject.name == pole0.TopDisc || gameObject.name == pole1.TopDisc || gameObject.name == pole2.TopDisc)
+        {
+            switch (m_Status)
+            {
+                case Status.Waiting_For_First_Click:
+                    m_Status = Status.Move_To_Middle_Point;
+                    break;
+            }
+        }
     }
 }

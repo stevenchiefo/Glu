@@ -4,25 +4,24 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Disc[] m_Dics = new Disc[5];
-    [SerializeField] private GameObject m_Middle;
+    [SerializeField] public Disc[] m_Dics = new Disc[5];
+    [SerializeField] public GameObject m_Middle;
+    public Spot spot;
 
-    [SerializeField] private Stack<GameObject> m_Pole1 = new Stack<GameObject>();
-    [SerializeField] private Stack<GameObject> m_Pole2 = new Stack<GameObject>();
-    [SerializeField] private Stack<GameObject> m_Pole3 = new Stack<GameObject>();
-
-    private Vector3 m_Pole1X;
-    private float m_Pole2X;
-    private float m_Pole3X;
+    public GameObject m_Pole0;
+    public GameObject m_Pole1;
+    public GameObject m_Pole2;
 
     private void Awake()
     {
+        PoleLoader();
+        ValueGiver();
         Pole1Load();
     }
 
     private void Start()
     {
-        m_Dics[0].SetPosition(m_Middle.transform.position);
+        spot = FindObjectOfType<Spot>();
     }
 
     // Update is called once per frame
@@ -32,17 +31,29 @@ public class GameManager : MonoBehaviour
 
     private void Pole1Load()
     {
-        GameObject pole1 = GameObject.Find("Pole0");
-        GameObject pole2 = GameObject.Find("Pole1");
-        GameObject pole3 = GameObject.Find("Pole2");
-        m_Pole1X = pole1.transform.position;
-        m_Pole2X = pole2.transform.position.x;
-        m_Pole3X = pole3.transform.position.x;
+        Pole pole0 = m_Pole0.GetComponent<Pole>();
         for (int i = m_Dics.Length - 1; i > -1; i--)
         {
+            pole0.m_Dics.Push(m_Dics[i].gameObject);
             Vector3 pos = m_Dics[i].gameObject.transform.position;
-            m_Dics[i].gameObject.transform.position = new Vector3(m_Pole1X.x, pos.y, pos.z);
-            m_Pole1.Push(m_Dics[i].gameObject);
+            m_Dics[i].gameObject.transform.position = new Vector3(m_Pole0.gameObject.transform.position.x, pos.y, pos.z);
+        }
+        print(pole0.m_Dics.Count);
+    }
+
+    private void PoleLoader()
+    {
+        m_Pole0 = GameObject.Find("Pole0");
+        m_Pole1 = GameObject.Find("Pole1");
+        m_Pole2 = GameObject.Find("Pole2");
+    }
+
+    private void ValueGiver()
+    {
+        for (int i = 0; i < m_Dics.Length; i++)
+        {
+            Disc disc = m_Dics[i].GetComponent<Disc>();
+            disc.Num = i;
         }
     }
 }
