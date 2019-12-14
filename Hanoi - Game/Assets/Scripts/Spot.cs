@@ -10,4 +10,9 @@ public class Spot : MonoBehaviour
     {
         m_Selected = info.gameObject;
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        m_Selected = null;
+    }
 }

@@ -30,6 +30,7 @@ public class Pole : MonoBehaviour
             {
                 m_Dics.Push(info.gameObject);
                 Debug.Log(info.gameObject.name + " Has been added to " + gameObject.name);
+                print(gameObject.name + " does have " + m_Dics.Count + " discs");
             }
         }
     }
@@ -46,6 +47,7 @@ public class Pole : MonoBehaviour
             {
                 print(m_Dics.Peek().name + " I have been removed from " + gameObject.name);
                 m_Dics.Pop();
+                print(gameObject.name + " does have " + m_Dics.Count + " discs");
             }
         }
     }

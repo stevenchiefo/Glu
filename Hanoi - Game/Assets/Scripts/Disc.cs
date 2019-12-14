@@ -31,7 +31,6 @@ public class Disc : MonoBehaviour
     private void Start()
     {
         m_GameManager = FindObjectOfType<GameManager>();
-        m_Body.useGravity = false;
     }
 
     // Update is called once per frame
@@ -101,14 +100,33 @@ public class Disc : MonoBehaviour
         Pole pole0 = m_GameManager.m_Pole0.GetComponent<Pole>();
         Pole pole1 = m_GameManager.m_Pole1.GetComponent<Pole>();
         Pole pole2 = m_GameManager.m_Pole2.GetComponent<Pole>();
-        if (gameObject.name == pole0.TopDisc || gameObject.name == pole1.TopDisc || gameObject.name == pole2.TopDisc)
+        if (AllowdTeBeSelected() == true)
         {
-            switch (m_Status)
+            if (gameObject.name == pole0.TopDisc || gameObject.name == pole1.TopDisc || gameObject.name == pole2.TopDisc)
             {
-                case Status.Waiting_For_First_Click:
-                    m_Status = Status.Move_To_Middle_Point;
-                    break;
+                switch (m_Status)
+                {
+                    case Status.Waiting_For_First_Click:
+                        m_Status = Status.Move_To_Middle_Point;
+                        break;
+                }
             }
         }
+    }
+
+    private bool AllowdTeBeSelected()
+    {
+        for (int i = 0; i < m_GameManager.m_Dics.Length; i++)
+        {
+            if (m_GameManager.m_Dics[i].m_Status == Status.Waiting_For_First_Click)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
     }
 }

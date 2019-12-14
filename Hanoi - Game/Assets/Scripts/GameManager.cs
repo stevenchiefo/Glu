@@ -7,10 +7,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] public Disc[] m_Dics = new Disc[5];
     [SerializeField] public GameObject m_Middle;
     public Spot spot;
+    [SerializeField] private ParticleSystem m_ParticleSystem;
 
     public GameObject m_Pole0;
     public GameObject m_Pole1;
     public GameObject m_Pole2;
+    private bool m_Won = false;
 
     private void Awake()
     {
@@ -21,12 +23,30 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        m_ParticleSystem.Stop();
         spot = FindObjectOfType<Spot>();
     }
 
     // Update is called once per frame
+
     private void Update()
     {
+        if (IfWon() == true)
+        {
+            m_Won = true;
+        }
+        if (m_Won == true)
+        {
+            if (m_ParticleSystem.isPlaying == false)
+            {
+                m_ParticleSystem.Play();
+            }
+
+            for (int i = 0; i < m_Dics.Length; i++)
+            {
+                m_Dics[i].GetComponent<Disc>().enabled = false;
+            }
+        }
     }
 
     private void Pole1Load()
@@ -54,6 +74,19 @@ public class GameManager : MonoBehaviour
         {
             Disc disc = m_Dics[i].GetComponent<Disc>();
             disc.Num = i;
+        }
+    }
+
+    private bool IfWon()
+    {
+        Pole p = m_Pole2.GetComponent<Pole>();
+        if (p.m_Dics.Count >= 5)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
