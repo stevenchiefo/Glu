@@ -4,7 +4,14 @@ public class bullittravel : MonoBehaviour
 {
     private int m_BullitDistance = 0;
     [SerializeField, Range(0, 200)] public float FlySpeed;
+    private ParticleSystem m_Explosion;
     public float m_Damage = 20;
+    private bool m_Death = false;
+
+    private void Awake()
+    {
+        m_Explosion = gameObject.GetComponent<ParticleSystem>();
+    }
 
     private void Update()
     {
@@ -18,7 +25,10 @@ public class bullittravel : MonoBehaviour
             DestroyBullit();
         }
 
-        transform.Translate(Vector3.forward * FlySpeed * Time.deltaTime);
+        if (m_Death == false)
+        {
+            transform.Translate(Vector3.forward * FlySpeed * Time.deltaTime);
+        }
         m_BullitDistance++;
     }
 
@@ -42,8 +52,12 @@ public class bullittravel : MonoBehaviour
 
     private void DestroyBullit()
     {
+        m_Death = true;
+        ExplodeAnimation();
         Explode();
-        Destroy(gameObject);
+        MeshRenderer mesh = gameObject.GetComponent<MeshRenderer>();
+        mesh.enabled = false;
+        Invoke("DestoryObject", 0.5f);
     }
 
     private void Explode()
@@ -57,8 +71,10 @@ public class bullittravel : MonoBehaviour
                 e.GotHit(ExplosionGen() / 3);
             }
             Rigidbody rb = hit.GetComponent<Rigidbody>();
-            if (rb != null)
+            if (rb != null && rb.gameObject.tag != "bullit")
+            {
                 rb.AddExplosionForce(ExplosionGen(), gameObject.transform.position, 5, 0.5f, ForceMode.Impulse);
+            }
         }
     }
 
@@ -66,5 +82,15 @@ public class bullittravel : MonoBehaviour
     {
         float ExplosionForce = 20 * (m_Damage / 10);
         return ExplosionForce;
+    }
+
+    private void ExplodeAnimation()
+    {
+        m_Explosion.Play();
+    }
+
+    private void DestoryObject()
+    {
+        Destroy(gameObject);
     }
 }

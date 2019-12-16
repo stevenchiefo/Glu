@@ -30,9 +30,9 @@ public class playershooting : MonoBehaviour
         if (Input.GetMouseButton(0) && m_Timer >= 1 / 120)
         {
             m_Timer = 0;
-            if (m_Powerd <= 3)
+            if (m_Powerd <= 5)
             {
-                m_Powerd += 0.1f;
+                m_Powerd += 0.01f;
             }
         }
         if (Input.GetMouseButtonUp(0))

@@ -17,11 +17,8 @@ public class playermovement : MonoBehaviour
 
     private void Start()
     {
-        //Debug.Log(Vector2.one.normalized);
-        Debug.Log(Vector2.up.normalized.magnitude);
-        Debug.Log(Vector2.one.normalized.magnitude);
         Cursor.visible = false;
-        Cursor.lockState = Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
         m_ScreenCenter = new Vector2(Screen.width, Screen.height);
         m_Camera = FindObjectOfType<Camera>();
         m_Camera.transform.rotation = transform.rotation;
@@ -31,13 +28,8 @@ public class playermovement : MonoBehaviour
     private void FixedUpdate()
     {
         GetMousePosition();
-
-        Movement();
-    }
-
-    private void Update()
-    {
         LookMovement();
+        Movement();
     }
 
     private void Movement()
@@ -72,8 +64,7 @@ public class playermovement : MonoBehaviour
         float magnitude = mouseMovement.magnitude;
 
         mouseMovement = mouseMovement.normalized * magnitude;
-        Vector3 eulerAngles = new Vector3(
-        m_Camera.transform.localEulerAngles.x + -mouseMovement.y * Time.deltaTime * 150, mouseMovement.x, 0f);
+        Vector3 eulerAngles = new Vector3(m_Camera.transform.localEulerAngles.x + -mouseMovement.y * Time.deltaTime * 150, mouseMovement.x, 0f);
         transform.eulerAngles = transform.eulerAngles + Vector3.up * mouseMovement.x * Time.deltaTime * 150f;
         if (eulerAngles.x < 270f && eulerAngles.x > 200f)
         {
