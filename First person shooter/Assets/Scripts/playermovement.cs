@@ -17,7 +17,11 @@ public class playermovement : MonoBehaviour
 
     private void Start()
     {
+        //Debug.Log(Vector2.one.normalized);
+        Debug.Log(Vector2.up.normalized.magnitude);
+        Debug.Log(Vector2.one.normalized.magnitude);
         Cursor.visible = false;
+        Cursor.lockState = Cursor.lockState = CursorLockMode.Locked;
         m_ScreenCenter = new Vector2(Screen.width, Screen.height);
         m_Camera = FindObjectOfType<Camera>();
         m_Camera.transform.rotation = transform.rotation;
@@ -27,8 +31,13 @@ public class playermovement : MonoBehaviour
     private void FixedUpdate()
     {
         GetMousePosition();
-        LookMovement();
+
         Movement();
+    }
+
+    private void Update()
+    {
+        LookMovement();
     }
 
     private void Movement()
@@ -59,13 +68,22 @@ public class playermovement : MonoBehaviour
 
     private void LookMovement()
     {
-        if (Input.GetAxis("Mouse X") < 90)
-            m_LookX += speedH * Input.GetAxis("Mouse X");
+        Vector2 mouseMovement = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        float magnitude = mouseMovement.magnitude;
 
-        m_LookY -= speedV * Input.GetAxis("Mouse Y");
-
-        m_Camera.transform.eulerAngles = new Vector3(m_LookY, m_LookX, 0.0f);
-        transform.transform.eulerAngles = new Vector3(0, m_LookX, 0.0f);
+        mouseMovement = mouseMovement.normalized * magnitude;
+        Vector3 eulerAngles = new Vector3(
+        m_Camera.transform.localEulerAngles.x + -mouseMovement.y * Time.deltaTime * 150, mouseMovement.x, 0f);
+        transform.eulerAngles = transform.eulerAngles + Vector3.up * mouseMovement.x * Time.deltaTime * 150f;
+        if (eulerAngles.x < 270f && eulerAngles.x > 200f)
+        {
+            eulerAngles.x = 270.01f;
+        }
+        else if (eulerAngles.x > 90f && eulerAngles.x < 160f)
+        {
+            eulerAngles.x = 89.99f;
+        }
+        m_Camera.transform.localEulerAngles = Vector3.right * eulerAngles.x;
     }
 
     private void GetMousePosition()
