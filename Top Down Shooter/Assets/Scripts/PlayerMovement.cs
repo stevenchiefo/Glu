@@ -141,8 +141,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void MouseFollower()
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        Debug.Log(mousePos.x + " = Mousepos " + transform.position.x);
+        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
         if (mousePos.x <= transform.position.x)
         {
             m_SpriteRenderer.flipX = true;
