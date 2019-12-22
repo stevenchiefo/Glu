@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float m_Health = 100;
     [SerializeField] private Inventory[] m_Inventory = new Inventory[16];
     private PlayerMovement m_PlayerMovement;
+    [SerializeField] public int Coins = 0;
 
     private void Start()
     {
