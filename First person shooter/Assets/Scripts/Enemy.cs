@@ -5,14 +5,17 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] private float m_Health = 100;
+    private GameObject m_Player;
 
     private void Start()
     {
+        m_Player = FindObjectOfType<PlayerMovement>().gameObject;
     }
 
     // Update is called once per frame
     private void Update()
     {
+        LookAtPlayer();
         Death();
     }
 
@@ -34,5 +37,10 @@ public class Enemy : MonoBehaviour
     public bool IsDeath()
     {
         return m_Health <= 0;
+    }
+
+    private void LookAtPlayer()
+    {
+        transform.LookAt(m_Player.transform);
     }
 }

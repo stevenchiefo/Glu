@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class playermovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody m_Player;
     public float m_speed;
@@ -20,7 +22,7 @@ public class playermovement : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         m_ScreenCenter = new Vector2(Screen.width, Screen.height);
-        m_Camera = FindObjectOfType<Camera>();
+        m_Camera = Camera.main;
         m_Camera.transform.rotation = transform.rotation;
     }
 
