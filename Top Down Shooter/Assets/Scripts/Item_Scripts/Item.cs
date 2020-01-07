@@ -9,24 +9,22 @@ public class Item
 {
     public enum KindItem
     {
-        Gold = 0,
-        Potion,
+        Potion = 0,
         Loot,
         Weapon
     };
 
+    public Sprite Sprite { get; protected set; }
     public string Naam { get; protected set; }
 
     public KindItem Kind { get; protected set; }
+
+    public float Value { get; protected set; }
 
     public float UseItem()
     {
         switch (Kind)
         {
-            case KindItem.Gold:
-
-                break;
-
             case KindItem.Potion:
                 return UsePotion();
 
@@ -36,6 +34,7 @@ public class Item
             case KindItem.Weapon:
                 return UseWeapon();
         }
+
         return 0;
     }
 
