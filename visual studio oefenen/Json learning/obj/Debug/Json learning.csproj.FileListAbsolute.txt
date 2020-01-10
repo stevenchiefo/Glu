@@ -1,0 +1,9 @@
+D:\visual studio oefenen\Json learning\bin\Debug\Json learning.exe.config
+D:\visual studio oefenen\Json learning\bin\Debug\Json learning.exe
+D:\visual studio oefenen\Json learning\bin\Debug\Json learning.pdb
+D:\visual studio oefenen\Json learning\bin\Debug\Newtonsoft.Json.dll
+D:\visual studio oefenen\Json learning\bin\Debug\Newtonsoft.Json.xml
+D:\visual studio oefenen\Json learning\obj\Debug\Json learning.csprojAssemblyReference.cache
+D:\visual studio oefenen\Json learning\obj\Debug\Json learning.csproj.CopyComplete
+D:\visual studio oefenen\Json learning\obj\Debug\Json learning.exe
+D:\visual studio oefenen\Json learning\obj\Debug\Json learning.pdb

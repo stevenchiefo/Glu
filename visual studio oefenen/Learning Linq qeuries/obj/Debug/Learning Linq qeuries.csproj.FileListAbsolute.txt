@@ -1,0 +1,6 @@
+D:\visual studio oefenen\Learning Linq qeuries\bin\Debug\Learning Linq qeuries.exe.config
+D:\visual studio oefenen\Learning Linq qeuries\bin\Debug\Learning Linq qeuries.exe
+D:\visual studio oefenen\Learning Linq qeuries\bin\Debug\Learning Linq qeuries.pdb
+D:\visual studio oefenen\Learning Linq qeuries\obj\Debug\Learning Linq qeuries.csprojAssemblyReference.cache
+D:\visual studio oefenen\Learning Linq qeuries\obj\Debug\Learning Linq qeuries.exe
+D:\visual studio oefenen\Learning Linq qeuries\obj\Debug\Learning Linq qeuries.pdb

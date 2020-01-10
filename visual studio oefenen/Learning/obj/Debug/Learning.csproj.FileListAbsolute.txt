@@ -1,0 +1,6 @@
+D:\visual studio oefenen\Learning\bin\Debug\Learning.exe.config
+D:\visual studio oefenen\Learning\bin\Debug\Learning.exe
+D:\visual studio oefenen\Learning\bin\Debug\Learning.pdb
+D:\visual studio oefenen\Learning\obj\Debug\Learning.csprojAssemblyReference.cache
+D:\visual studio oefenen\Learning\obj\Debug\Learning.exe
+D:\visual studio oefenen\Learning\obj\Debug\Learning.pdb
