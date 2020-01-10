@@ -46,9 +46,12 @@ public class Coin : MonoBehaviour
         }
     }
 
-    public void OnMouseDown()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        m_Player.Coins += 1;
-        Destroy(gameObject);
+        if (collision.gameObject.tag == "Player")
+        {
+            m_Player.Coins += 1;
+            Destroy(gameObject);
+        }
     }
 }

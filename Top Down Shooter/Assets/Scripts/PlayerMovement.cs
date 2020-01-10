@@ -141,7 +141,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void MouseFollower()
     {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
         if (mousePos.x <= transform.position.x)
         {
