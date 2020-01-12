@@ -9,8 +9,8 @@ namespace GameEngine
     public class Point : GameObject
     {
         private int m_Scale = 10;
-        private Random m_Random = new Random();
         public Vector2 Position;
+        public float Bias = 1;
         public int Label;
         public bool Correct = false;
 

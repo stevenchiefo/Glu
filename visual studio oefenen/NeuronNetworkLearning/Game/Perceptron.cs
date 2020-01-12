@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Unity;
 
 namespace GameEngine
 {
-    internal class Perceptron : GameObject
+    public class Perceptron : GameObject
     {
         private Random m_Random = new Random();
-        public float[] Weights = new float[2];
+        public float[] Weights;
         private float m_LearningRate = 0.1f;
 
-        public Perceptron()
+        public Perceptron(int n)
         {
+            Weights = new float[n];
             for (int i = 0; i < Weights.Length; i++)
             {
                 int weight = m_Random.Next(0, 101);

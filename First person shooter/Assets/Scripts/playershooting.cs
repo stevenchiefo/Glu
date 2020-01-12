@@ -39,6 +39,7 @@ public class playershooting : MonoBehaviour
         {
             Shooting();
         }
+        
     }
 
     private void FixedUpdate()
