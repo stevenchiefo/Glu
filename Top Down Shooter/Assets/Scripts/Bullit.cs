@@ -44,6 +44,13 @@ public class Bullit : MonoBehaviour
                 return;
             }
         }
+
+        if (collision.gameObject.tag == "Enemys")
+        {
+            Enemy e = collision.gameObject.GetComponent<Enemy>();
+            e.TakeDamage(m_Damage);
+        }
+
         Destroy(gameObject);
     }
 }
