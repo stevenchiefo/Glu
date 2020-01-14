@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 1473166272024179493}
   - component: {fileID: 6705916226357240688}
   - component: {fileID: 7684408537200102040}
-  - component: {fileID: 4878883445085005178}
   m_Layer: 0
   m_Name: Bullit
   m_TagString: Untagged
@@ -161,18 +160,3 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!111 &4878883445085005178
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2471870747827045753}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: 583247c19213e8c4d814caf6bfb19373, type: 2}
-  m_Animations: []
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0

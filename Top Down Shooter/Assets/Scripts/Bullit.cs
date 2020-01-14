@@ -17,8 +17,8 @@ public class Bullit : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        m_Animation = GetComponent<Animation>();
-        m_Animation.Play();
+        //m_Animation = GetComponent<Animation>();
+        //m_Animation.Play();
         m_Rb = GetComponent<Rigidbody2D>();
         m_Heading = transform.position - FindObjectOfType<GameManager>().ClickedPosition;
         m_Heading = m_Heading.normalized;
