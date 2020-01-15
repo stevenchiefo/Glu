@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float m_Health = 100;
+    [SerializeField] private UIPlayerHealth m_UIPlayerHealth;
+    [SerializeField] private float m_Health = 6;
     [SerializeField] private Inventory[] m_Inventory = new Inventory[16];
     private PlayerMovement m_PlayerMovement;
     [SerializeField] public int Coins = 0;
 
     private void Start()
     {
+        if (m_UIPlayerHealth == null)
+        {
+            Debug.LogError("there is no UiPlayerSelected");
+        }
         m_Inventory[0] = new Inventory(new Potion("HealthPotion", Item.KindItem.Potion, 20));
     }
 
@@ -18,6 +23,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         Mechanics();
+        Death();
     }
 
     private void Mechanics()
@@ -33,9 +39,18 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void GotHit(float Damage)
+    private void Death()
     {
-        m_Health -= Damage;
+        if (m_Health <= 0)
+        {
+            Debug.Log("Player Died");
+        }
+    }
+
+    public void GotHit()
+    {
+        m_Health -= 1;
+        m_UIPlayerHealth.TookDamage();
     }
 
     private void LoadPlayer()

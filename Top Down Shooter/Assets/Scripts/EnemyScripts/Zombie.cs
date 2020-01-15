@@ -97,6 +97,15 @@ public class Zombie : Enemy
         m_IdleAnimation = Resources.LoadAll<Sprite>(m_FilePathIdle);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            Player p = collision.gameObject.GetComponent<Player>();
+            p.GotHit();
+        }
+    }
+
     private void AnimationPlayer()
     {
         m_AnimationTimer += Time.deltaTime;
@@ -107,7 +116,7 @@ public class Zombie : Enemy
             switch (m_AnimationStatus)
             {
                 case Animation.idle:
-                    if (m_AnimationCounter >= m_IdleAnimation.Length)
+                    if (m_AnimationCounter >= m_IdleAnimation.Length - 1)
                     {
                         m_AnimationCounter = 0;
                     }
@@ -119,7 +128,7 @@ public class Zombie : Enemy
                     break;
 
                 case Animation.run:
-                    if (m_AnimationCounter >= m_RunAnimation.Length)
+                    if (m_AnimationCounter >= m_RunAnimation.Length - 1)
                     {
                         m_AnimationCounter = 0;
                     }
