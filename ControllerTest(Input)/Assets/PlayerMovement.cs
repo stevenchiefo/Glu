@@ -32,8 +32,10 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 direction = m_Direction;
 
-        transform.Translate(direction * m_Speed * Time.deltaTime, Space.World);
-        Debug.Log(direction);
+        transform.Translate(Vector3.right * direction.x * m_Speed * Time.deltaTime, Space.World);
+        transform.Translate(Vector3.forward * direction.y * m_Speed * Time.deltaTime, Space.World);
+
+        //Debug.Log(direction);
     }
 
     private void OnEnable()

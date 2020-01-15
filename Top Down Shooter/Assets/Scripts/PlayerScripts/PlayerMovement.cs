@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
         Running
     };
 
+    private Controls m_InputActions;
     private SpriteRenderer m_SpriteRenderer;
     private Animation m_AnimationStatus = Animation.idle;
     private Sprite[] m_Running;
@@ -25,6 +26,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float m_Walkspeed = 0.1f;
 
     // Start is called before the first frame update
+    private void Awake()
+    {
+    }
+
     private void Start()
     {
         m_SpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
