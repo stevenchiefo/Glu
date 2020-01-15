@@ -7,7 +7,7 @@ public class Bullit : MonoBehaviour
     [SerializeField] private List<GameObject> m_OnHit = new List<GameObject>();
     [SerializeField] private float m_Lifetime = 10f;
     private float m_LifTimeCounter = 0;
-    [SerializeField] private float m_Damage = 25f;
+    public float m_Damage = 25f;
     [SerializeField] private GameManager m_GameManager;
     [SerializeField] private float m_ForcePower = 10f;
     private Animation m_Animation;

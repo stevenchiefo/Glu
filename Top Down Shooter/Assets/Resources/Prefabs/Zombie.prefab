@@ -142,12 +142,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6ea151e8f31a174b836468e7331ebc0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Health: 10
-  Name: zombie
+  m_FilePathIdle: Zombie/Idle
+  m_FilePathRun: Zombie/Run
   m_Distance: 15
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 2560
-  m_DidHit: 0
-  m_Speed: 1
+  m_Speed: 0.8
+  Health: 2
+  Name: zombie
+  Level: 0
+  Death: 0
+  m_RunAnimation: []
+  m_IdleAnimation: []
+  m_AnimationTimer: 0
+  m_AnimationCounter: 0
   m_FramesPerSec: 10
+  m_DidHit: 0
