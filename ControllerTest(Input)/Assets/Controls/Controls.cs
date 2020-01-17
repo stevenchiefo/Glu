@@ -79,7 +79,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""2D Vector"",
-                    ""id"": ""2293f1e7-b5a0-4614-8eec-0473d3b5ab36"",
+                    ""id"": ""4673f663-99d6-423b-895a-322cc3f47512"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -90,7 +90,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""up"",
-                    ""id"": ""632b3e54-1dcf-424c-84a6-8e1a048d5b95"",
+                    ""id"": ""3c119567-5e14-4d42-85b3-4606f5a53f07"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -101,7 +101,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""down"",
-                    ""id"": ""731f865b-110b-45ae-b5d0-cae64ba282cd"",
+                    ""id"": ""0e7ab78c-0bf5-4ba9-a86b-7abd4bcda4d0"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -112,7 +112,7 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""left"",
-                    ""id"": ""3f2a72f9-0e72-4b4b-9c32-61eebe78e880"",
+                    ""id"": ""17ea73b0-ed1c-47b0-8497-15595a4eeea9"",
                     ""path"": ""<Keyboard>/a"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -123,106 +123,8 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": ""right"",
-                    ""id"": ""93af2ee4-87f3-41bf-8898-a45e7b9ac81b"",
+                    ""id"": ""7e801b2a-35de-4c5f-b186-771f8ba52196"",
                     ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KebyBoard and Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""83c1f232-b52b-42e5-b0dc-4a7ede50e366"",
-                    ""path"": ""<Gamepad>/start"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Controller"",
-                    ""action"": ""Start"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""ecbd889e-8155-4b78-b151-3db92713d9ff"",
-                    ""path"": ""<Keyboard>/anyKey"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KebyBoard and Mouse"",
-                    ""action"": ""Start"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
-        },
-        {
-            ""name"": ""Player2"",
-            ""id"": ""a5bbfd58-8f5c-414e-bf6d-49b9ed6f7eba"",
-            ""actions"": [
-                {
-                    ""name"": ""Shoot"",
-                    ""type"": ""Value"",
-                    ""id"": ""64224134-322f-4862-8f9c-7622ced8e66d"",
-                    ""expectedControlType"": ""Analog"",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Move"",
-                    ""type"": ""Button"",
-                    ""id"": ""11d3784f-9388-4c59-8c9b-f367ac9f5f8b"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                },
-                {
-                    ""name"": ""Start"",
-                    ""type"": ""Button"",
-                    ""id"": ""5f0ff38c-3e36-4f8d-bc59-370f6b3bb171"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """"
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""ce80e010-83c3-4a4e-aa34-0dbe81c91d42"",
-                    ""path"": ""<XInputController>/rightTrigger"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": ""Controller"",
-                    ""action"": ""Shoot"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""2c8680a3-3a33-47c7-b4d8-41a1e4b8ff59"",
-                    ""path"": ""<XInputController>/leftStick"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Controller"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""87c026ea-4b46-4e68-82fc-df84757f841d"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Move"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""f4eacd8a-507a-4e4f-971d-96937dc8eb8b"",
-                    ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KebyBoard and Mouse"",
