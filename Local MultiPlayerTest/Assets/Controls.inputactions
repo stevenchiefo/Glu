@@ -1,0 +1,102 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "a01f0caa-e586-4daa-9100-8f7535939f98",
+            "actions": [
+                {
+                    "name": "Shoot",
+                    "type": "Button",
+                    "id": "29c164cc-4a21-470e-8231-28261e9706d2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "Move",
+                    "type": "Button",
+                    "id": "ec65b333-9012-4e1b-a90e-0a0f045a0c3a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "ResetMove",
+                    "type": "Button",
+                    "id": "42a303f7-25c6-4ccf-ad34-73d45a165976",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "40a545e3-3f0c-4244-89e3-d153f21a0c3e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press"
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e0513418-fa05-4861-88d1-14160f06b837",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "Controler",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "002de388-ac2b-43c5-9c92-a9b773ecdf0b",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controler",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "069a1533-e3f1-4cfb-aad8-ff69a2e52a89",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ResetMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2949a2f2-8caa-419a-925f-5304afb68954",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controler",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Controler",
+            "bindingGroup": "Controler",
+            "devices": [
+                {
+                    "devicePath": "<Gamepad>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}

@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Controls.cs" />
+    <Compile Include="Assets\InputManager.cs" />
     <Compile Include="Assets\PlayerMovement.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/Glu/ControllerTest(Input)/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
