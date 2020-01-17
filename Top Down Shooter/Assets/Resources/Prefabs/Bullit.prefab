@@ -97,9 +97,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_OnHit:
-  - {fileID: 4632072260169486629, guid: 78d5c19c7a89ff748b2b40af01db0635, type: 3}
-  - {fileID: 2471870747827045753}
   - {fileID: 1509416158955413721, guid: 9eca1c57adf7a1f4dbaa9239e86692b7, type: 3}
+  - {fileID: 2471870747827045753}
   m_Lifetime: 2
   m_Damage: 1
   m_GameManager: {fileID: 0}

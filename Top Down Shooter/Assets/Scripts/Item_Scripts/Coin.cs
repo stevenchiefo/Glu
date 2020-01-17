@@ -23,7 +23,13 @@ public class Coin : MonoBehaviour
     private void Load()
     {
         GameObject p = GameObject.FindGameObjectWithTag("Player");
-        m_Player = p.GetComponent<Player>();
+        try
+        {
+            m_Player = p.GetComponent<Player>();
+        }
+        catch
+        {
+        }
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
         m_Sprites = Resources.LoadAll<Sprite>("Coin");
     }

@@ -16,8 +16,14 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (m_Player == null)
+        {
+            m_Player = GameObject.FindGameObjectWithTag("Player");
+        }
+
         MousePositionSetter();
-        Debug.DrawLine(m_Player.transform.position, MousePostion);
+        if (m_Player != null)
+            Debug.DrawLine(m_Player.transform.position, MousePostion);
     }
 
     private void MousePositionSetter()

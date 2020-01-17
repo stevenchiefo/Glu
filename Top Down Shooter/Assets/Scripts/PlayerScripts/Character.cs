@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] protected int Health = 0;
+    public string Name;
+    protected Vector2 m_DirectionOfWalk;
+
+    [SerializeField] private float m_Speed = 0f;
+
+    private void Update()
     {
-        
+        Move();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Move()
     {
-        
+        transform.Translate(Vector2.up * m_DirectionOfWalk.y * m_Speed * Time.deltaTime, Space.World);
+        transform.Translate(Vector2.right * m_DirectionOfWalk.x * m_Speed * Time.deltaTime, Space.World);
     }
 }

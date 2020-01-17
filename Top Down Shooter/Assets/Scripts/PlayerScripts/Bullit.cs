@@ -12,7 +12,7 @@ public class Bullit : MonoBehaviour
     [SerializeField] private float m_ForcePower = 10f;
     private Animation m_Animation;
     private Rigidbody2D m_Rb;
-    private Vector2 m_Heading;
+    public Vector2 m_Heading;
 
     // Start is called before the first frame update
     private void Start()
@@ -43,6 +43,10 @@ public class Bullit : MonoBehaviour
             {
                 return;
             }
+        }
+        if (collision.gameObject.tag == "Player")
+        {
+            return;
         }
 
         if (collision.gameObject.tag == "Enemys")

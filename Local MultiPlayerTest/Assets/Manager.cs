@@ -11,6 +11,7 @@ public class Manager : MonoBehaviour
     {
         m_PlayerInputManager = GetComponent<PlayerInputManager>();
     }
+    
 
     // Update is called once per frame
     private void Update()

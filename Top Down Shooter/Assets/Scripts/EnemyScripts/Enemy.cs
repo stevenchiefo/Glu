@@ -55,7 +55,13 @@ public class Enemy : MonoBehaviour
 
     protected void Updater()
     {
-        m_PlayerPos = FindObjectOfType<PlayerMovement>().gameObject.transform.localPosition;
+        try
+        {
+            m_PlayerPos = FindObjectOfType<Monster>().gameObject.transform.localPosition;
+        }
+        catch
+        {
+        }
         m_SpriteRenderer.flipX = isFlipped();
         AnimationPlayer();
         IsDeath();
