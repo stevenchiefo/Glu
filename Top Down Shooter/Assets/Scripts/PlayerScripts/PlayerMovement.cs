@@ -10,7 +10,6 @@ public class PlayerMovement : MonoBehaviour
         Running
     };
 
-    private Controls m_InputActions;
     private SpriteRenderer m_SpriteRenderer;
     private Animation m_AnimationStatus = Animation.idle;
     private Sprite[] m_Running;
@@ -90,6 +89,11 @@ public class PlayerMovement : MonoBehaviour
                 m_AnimationStatus = Animation.idle;
             }
         }
+    }
+
+    private void OnShoot()
+    {
+        Debug.Log("Shoot");
     }
 
     private void CameraFollow()
