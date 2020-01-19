@@ -9,6 +9,7 @@ public class UIPlayerHealth : MonoBehaviour
     [SerializeField] private Health[] m_Healths = new Health[3];
     private string m_FilePathSprites = "HealthSprites";
     [SerializeField] private Sprite[] m_HealthSprites;
+    [SerializeField] private Text m_ScoreText;
 
     private void Awake()
     {
@@ -36,6 +37,11 @@ public class UIPlayerHealth : MonoBehaviour
         {
             m_Hearts[i].sprite = m_Healths[i].HPIcon;
         }
+    }
+
+    public void SetScore(int score)
+    {
+        m_ScoreText.text = score.ToString();
     }
 
     public void TookDamage()

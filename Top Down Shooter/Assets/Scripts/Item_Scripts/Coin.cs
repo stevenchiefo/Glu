@@ -56,7 +56,8 @@ public class Coin : MonoBehaviour
     {
         if (collision.gameObject.tag == "Player")
         {
-            m_Player.Coins += 1;
+            Player p = collision.gameObject.GetComponent<Player>();
+            p.Coins += 1;
             Destroy(gameObject);
         }
     }

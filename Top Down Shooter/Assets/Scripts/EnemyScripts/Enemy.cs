@@ -11,26 +11,39 @@ public class Enemy : MonoBehaviour
         Explode,
     }
 
+    public bool Death = false;
+
+    [SerializeField] protected bool m_DidHit = false;
+
     [SerializeField] protected string m_FilePathIdle;
     [SerializeField] protected string m_FilePathRun;
-    protected Vector2 DirectionToPlayer;
-    protected Rigidbody2D m_Body;
-    [SerializeField] protected float m_Distance = 5f;
-    [SerializeField] protected LayerMask m_LayerMask;
-    [SerializeField] protected float m_Speed = 10f;
-    public float Health;
+
     public string Name;
+
+    [SerializeField] protected float m_Distance = 5f;
+    [SerializeField] protected float m_Speed = 10f;
+
+    public float m_FramesPerSec = 10f;
+    public float Health;
+    public float m_AnimationTimer = 0;
     public float Level;
-    public bool Death = false;
+
+    public int m_AnimationCounter = 0;
+
+    protected Animation m_AnimationStatus;
+
+    protected RaycastHit2D m_Raycast;
+
+    protected Vector2 m_PlayerPos;
+    protected Vector2 DirectionToPlayer;
+
+    protected Rigidbody2D m_Body;
+
     public Sprite[] m_RunAnimation;
     public Sprite[] m_IdleAnimation;
-    public float m_AnimationTimer = 0;
-    public int m_AnimationCounter = 0;
-    public float m_FramesPerSec = 10f;
-    [SerializeField] protected bool m_DidHit = false;
-    protected Animation m_AnimationStatus;
-    protected RaycastHit2D m_Raycast;
-    protected Vector2 m_PlayerPos;
+
+    [SerializeField] protected LayerMask m_LayerMask;
+
     protected SpriteRenderer m_SpriteRenderer = null;
 
     private void Start()

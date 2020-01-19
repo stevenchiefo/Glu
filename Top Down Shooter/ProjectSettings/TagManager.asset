@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemys
   - Health
+  - Camera1
   layers:
   - Default
   - TransparentFX

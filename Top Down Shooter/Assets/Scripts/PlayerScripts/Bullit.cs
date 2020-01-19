@@ -31,7 +31,7 @@ public class Bullit : MonoBehaviour
         if (m_LifTimeCounter >= m_Lifetime)
         {
             m_LifTimeCounter = 0;
-            Destroy(gameObject);
+            Explode();
         }
     }
 
@@ -54,7 +54,23 @@ public class Bullit : MonoBehaviour
             Enemy e = collision.gameObject.GetComponent<Enemy>();
             e.TakeDamage(m_Damage);
         }
+        Explode();
+    }
 
+    private void Explode()
+    {
+        ParticleSystem p = GetComponent<ParticleSystem>();
+        p.Play();
+        m_Rb.velocity = Vector2.zero;
+        SpriteRenderer sp = GetComponent<SpriteRenderer>();
+        sp.enabled = false;
+        Invoke("DestroyGameObject", 1f);
+    }
+
+    private void DestroyGameObject()
+    {
+        ParticleSystem p = GetComponent<ParticleSystem>();
+        p.Stop();
         Destroy(gameObject);
     }
 }
