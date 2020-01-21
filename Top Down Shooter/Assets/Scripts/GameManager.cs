@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Camera m_Camera2;
     [SerializeField] private Camera m_Camera3;
     [SerializeField] private Camera m_Camera4;
+    [SerializeField] private GameObject m_Player1Selection;
+    [SerializeField] private GameObject m_Player2Selection;
 
     public GameObject UiPlayer1;
     public GameObject UiPlayer2;
@@ -27,6 +29,7 @@ public class GameManager : MonoBehaviour
         m_Camera3.enabled = false;
         m_Camera4.enabled = false;
         UiPlayer2.SetActive(false);
+        m_PlayerInputManager.playerPrefab = m_Player1Selection;
     }
 
     // Update is called once per frame
@@ -41,6 +44,10 @@ public class GameManager : MonoBehaviour
                 m_Camera2.enabled = true;
                 m_PlayerInputManager.splitScreen = true;
             }
+        }
+        if (m_PlayerInputManager.playerCount == 1)
+        {
+            m_PlayerInputManager.playerPrefab = m_Player2Selection;
         }
         PlayerChecker();
     }

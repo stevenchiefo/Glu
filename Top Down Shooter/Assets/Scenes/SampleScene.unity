@@ -6510,6 +6510,10 @@ MonoBehaviour:
   m_Camera2: {fileID: 572794595}
   m_Camera3: {fileID: 354208819}
   m_Camera4: {fileID: 1486024018}
+  m_Player1Selection: {fileID: 6711430766673680398, guid: 3c095cf3b55e9e246989137f6c364241,
+    type: 3}
+  m_Player2Selection: {fileID: 4915009570317480071, guid: d76e8b330b6602a4c890b8e4feac2631,
+    type: 3}
   UiPlayer1: {fileID: 95774555}
   UiPlayer2: {fileID: 153155028}
   ClickedPosition: {x: 0, y: 0, z: 0}

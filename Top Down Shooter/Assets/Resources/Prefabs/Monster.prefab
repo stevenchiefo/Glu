@@ -255,7 +255,8 @@ MonoBehaviour:
   m_Crossair: {fileID: 406881958698257927}
   m_Offset: {x: 0, y: 1, z: 0}
   Name: Monster
-  m_FramesPerSecond: 10
+  m_MousePostion: {x: 0, y: 0, z: 0}
+  m_FramesPerSecond: 5
   m_Bullit: {fileID: 2471870747827045753, guid: 570d4a92d9af41346a3578267e9ea854,
     type: 3}
   spriteRenderer: {fileID: 0}

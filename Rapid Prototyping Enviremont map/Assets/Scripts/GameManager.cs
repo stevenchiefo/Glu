@@ -31,6 +31,11 @@ public class GameManager : MonoBehaviour
         //Invoke("TurnOnFirstPersonController", 0.1f);
     }
 
+    public GameObject GetPlayerObject()
+    {
+        return m_Player;
+    }
+
     private void TurnOnFirstPersonController()
     {
         m_Player.GetComponent<FirstPersonController>().enabled = true;
