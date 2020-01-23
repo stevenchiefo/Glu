@@ -59,7 +59,7 @@
                     "id": "2abcada5-1b98-46df-8bfc-78eb8b7f7b6c",
                     "expectedControlType": "",
                     "processors": "",
-                    "interactions": "Press(pressPoint=0.1,behavior=1)"
+                    "interactions": ""
                 },
                 {
                     "name": "Ability2",
@@ -292,7 +292,7 @@
                     "name": "",
                     "id": "dd3c4ae9-392f-4bf4-a600-761d16362d8f",
                     "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "Controler",
                     "action": "Ability1",

@@ -1775,7 +1775,7 @@ GameObject:
   - component: {fileID: 95774556}
   - component: {fileID: 95774557}
   m_Layer: 5
-  m_Name: PlayerUi
+  m_Name: PlayerUi1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1823,6 +1823,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_HealthSprites: []
   m_ScoreText: {fileID: 1943842853}
+  m_SearchTag: Health
 --- !u!1 &142439493
 GameObject:
   m_ObjectHideFlags: 0
@@ -2697,7 +2698,7 @@ GameObject:
   - component: {fileID: 153155029}
   - component: {fileID: 153155030}
   m_Layer: 5
-  m_Name: PlayerUi (1)
+  m_Name: PlayerUi2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2745,6 +2746,7 @@ MonoBehaviour:
   - {fileID: 0}
   m_HealthSprites: []
   m_ScoreText: {fileID: 1476211147}
+  m_SearchTag: Health2
 --- !u!1 &193438924
 GameObject:
   m_ObjectHideFlags: 0
@@ -3135,7 +3137,7 @@ GameObject:
   - component: {fileID: 614520115}
   m_Layer: 5
   m_Name: Heart1
-  m_TagString: Health
+  m_TagString: Health2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6510,7 +6512,7 @@ MonoBehaviour:
   m_Camera2: {fileID: 572794595}
   m_Camera3: {fileID: 354208819}
   m_Camera4: {fileID: 1486024018}
-  m_Player1Selection: {fileID: 6711430766673680398, guid: 3c095cf3b55e9e246989137f6c364241,
+  m_Player1Selection: {fileID: 4915009570317480071, guid: d76e8b330b6602a4c890b8e4feac2631,
     type: 3}
   m_Player2Selection: {fileID: 4915009570317480071, guid: d76e8b330b6602a4c890b8e4feac2631,
     type: 3}
@@ -6544,7 +6546,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_NotificationBehavior: 0
-  m_MaxPlayerCount: 2
+  m_MaxPlayerCount: -1
   m_AllowJoining: 1
   m_JoinBehavior: 0
   m_PlayerJoinedEvent:
@@ -6863,7 +6865,7 @@ GameObject:
   - component: {fileID: 1254113757}
   m_Layer: 5
   m_Name: Heart2
-  m_TagString: Health
+  m_TagString: Health2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7369,7 +7371,7 @@ GameObject:
   - component: {fileID: 1914320477}
   m_Layer: 5
   m_Name: Heart0
-  m_TagString: Health
+  m_TagString: Health2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

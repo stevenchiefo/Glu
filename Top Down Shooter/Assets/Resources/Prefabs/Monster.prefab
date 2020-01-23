@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 406881958698257927}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.87, z: 1}
-  m_LocalScale: {x: 4.6, y: 4.6, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6711430766673680629}
   m_RootOrder: 0
@@ -263,6 +263,9 @@ MonoBehaviour:
   m_Speed: 5
   m_UIPlayerHealth: {fileID: 0}
   m_Health: 6
+  m_Ability1: 0
+  m_Ability2: 0
+  m_Ability3: 0
   Coins: 0
   m_RunFilePath: PlayerRun
   m_IdleFilePath: PlayerIdle

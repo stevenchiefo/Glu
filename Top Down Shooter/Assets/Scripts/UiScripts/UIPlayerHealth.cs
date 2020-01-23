@@ -10,11 +10,12 @@ public class UIPlayerHealth : MonoBehaviour
     private string m_FilePathSprites = "HealthSprites";
     [SerializeField] private Sprite[] m_HealthSprites;
     [SerializeField] private Text m_ScoreText;
+    [SerializeField] private string m_SearchTag = "Health";
 
     private void Awake()
     {
         m_HealthSprites = Resources.LoadAll<Sprite>(m_FilePathSprites);
-        GameObject[] o = GameObject.FindGameObjectsWithTag("Health");
+        GameObject[] o = GameObject.FindGameObjectsWithTag(m_SearchTag);
         for (int i = 0; i < m_Hearts.Length; i++)
         {
             m_Hearts[i] = o[i].GetComponent<Image>();

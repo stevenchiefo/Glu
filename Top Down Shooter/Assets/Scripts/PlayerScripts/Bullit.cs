@@ -43,7 +43,7 @@ public class Bullit : MonoBehaviour
         if (m_ExplosionActive == true)
         {
             m_AnimationCounter += Time.deltaTime;
-            float endtime = 1f / 10f;
+            float endtime = 1f / 50f;
             if (m_AnimationCounter >= endtime)
             {
                 m_AnimationCount++;

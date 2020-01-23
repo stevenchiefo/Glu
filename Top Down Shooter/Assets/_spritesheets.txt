@@ -1,2 +1,3 @@
 Zombie_Explosion_Animatie.png,16,16,4
 BulletExplosion.png,200,200,19
+PowerBoost.png,200,200,9

@@ -36,9 +36,12 @@ public class Player : MonoBehaviour
     [SerializeField] protected float m_Health = 6;
     [SerializeField] private Inventory[] m_Inventory = new Inventory[16];
 
+    public bool m_Ability1 = false;
+    public bool m_Ability2 = false;
+    public bool m_Ability3 = false;
     protected Rigidbody2D m_rigidbody2D;
     [SerializeField] public int Coins = 0;
-    private SpriteRenderer m_SpriteRenderer;
+    protected SpriteRenderer m_SpriteRenderer;
     private Animation m_AnimationStatus = Animation.idle;
     private Sprite[] m_Running;
     private Sprite[] m_Idle;
@@ -143,7 +146,7 @@ public class Player : MonoBehaviour
         if (m_DirectionOfWalk != Vector2.zero)
         {
             m_AnimationStatus = Animation.Running;
-            m_FramesPerSecond *= 1.25f;
+            m_FramesPerSecond = m_FramesPerSecondSave * 1.25f;
         }
         else if (m_AnimationStatus == Animation.Running)
         {
@@ -228,7 +231,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    protected void Move()
+    protected virtual void Move()
     {
         m_rigidbody2D.MovePosition(m_rigidbody2D.position + m_DirectionOfWalk * m_Speed * Time.deltaTime);
     }
@@ -309,7 +312,7 @@ public class Player : MonoBehaviour
 
     #region Input
 
-    private void OnReset()
+    public virtual void OnReset()
     {
         m_DirectionOfWalk = Vector2.zero;
     }
@@ -324,14 +327,19 @@ public class Player : MonoBehaviour
         RighStick = Vector3.zero;
     }
 
-    private void OnMove(InputValue value)
+    public virtual void OnMove(InputValue value)
     {
         m_DirectionOfWalk = value.Get<Vector2>();
     }
 
-    private void OnAim(InputValue value)
+    public virtual void OnAim(InputValue value)
     {
         RighStick = value.Get<Vector2>();
+    }
+
+    private void OnAbility1()
+    {
+        Ability1();
     }
 
     #endregion Input
