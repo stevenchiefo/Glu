@@ -73,6 +73,7 @@
     <Compile Include="Assets\SampleScenes\Scripts\SlowMoButton.cs" />
     <Compile Include="Assets\Scripts\AnimationTrigger.cs" />
     <Compile Include="Assets\Scripts\CheckpointSetter.cs" />
+    <Compile Include="Assets\Scripts\EndTrigger.cs" />
     <Compile Include="Assets\Scripts\Enemyscripts.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\KillTrigger.cs" />

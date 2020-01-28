@@ -301,6 +301,17 @@
                 },
                 {
                     "name": "",
+                    "id": "e6f51826-22ac-484d-b9ab-64cd8127afea",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Key board and mouse",
+                    "action": "Ability1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "12994c9b-08ad-4e49-a64f-b3ac6ce50acc",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",

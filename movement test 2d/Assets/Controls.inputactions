@@ -1,0 +1,315 @@
+{
+    "name": "Controls",
+    "maps": [
+        {
+            "name": "Movement",
+            "id": "803c57e5-0c0a-4075-8a99-96a36e1f8551",
+            "actions": [
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "0e3bd61e-4920-4e92-84f9-fb4b9c5f3e03",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Tap"
+                },
+                {
+                    "name": "Switch",
+                    "type": "Button",
+                    "id": "9273b054-9aea-4d7e-b2a5-d7cf14351bbd",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Move",
+                    "type": "Button",
+                    "id": "ac025279-1dc4-452f-9486-6228b9d249ec",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Look",
+                    "type": "Button",
+                    "id": "7050bf06-7ea6-49f2-b7a2-3fc35ff63784",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MoveReset",
+                    "type": "Button",
+                    "id": "a3e5a420-19ab-4d46-a2a0-668580944fcc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(pressPoint=0.1,behavior=1)"
+                },
+                {
+                    "name": "LookReset",
+                    "type": "Button",
+                    "id": "35f4a73f-c24c-4e99-9a1c-a1c842b4a9d5",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press(pressPoint=0.1,behavior=1)"
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "e90f359b-1933-4b3f-b593-37018a9708a4",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "33eee7f4-80a5-4e20-9c5c-493cb7458fe5",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "MultiTap,Press,Press",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a8df25c1-6ca6-40e3-ac9e-246467c6b41c",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Switch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "24728302-39fa-4b13-ba22-06992398f3d0",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "Switch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "289efffd-8dc3-4557-b636-b4a055878b81",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "8ba8f622-e58d-4fd5-aa50-54008e187d2d",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "05f49f33-fab1-4cd9-a5bb-9035b161fa59",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "6a6c562d-00ea-4f38-b335-846358207a3d",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "2f65886c-2638-461e-b501-07a4816aeb37",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "32cc626e-c4e7-4467-9168-f03883a48441",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "b6bf8df9-320f-4490-88a2-a38e5e7275f2",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "16763620-9816-40fc-9d0e-15b99070c51b",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "MoveReset",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "e7e9ef13-a085-4897-9ea2-9c9599594e59",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "MoveReset",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "e07389e1-1063-4098-9526-98e927150808",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "MoveReset",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "3a362c52-007f-4b1f-bf1b-120c7ff75893",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "MoveReset",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "8fdfda51-0b72-4b1f-9a88-53c6b278d5c8",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "KeyBoard and mouse",
+                    "action": "MoveReset",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "d75f5d89-2b25-4a85-a6ac-97d6ef953de1",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "Press(pressPoint=0.01,behavior=1)",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "MoveReset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "06106d30-3d51-40db-917c-154b301f3311",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "Press(pressPoint=0.01,behavior=1)",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "LookReset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Menu",
+            "id": "6d649833-7988-46a3-9aac-9e5f827f6b53",
+            "actions": [
+                {
+                    "name": "New action",
+                    "type": "Button",
+                    "id": "4947814d-ba55-4b07-80d2-d52358ce142c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7b94d272-28c7-4464-9d05-18e35b37f6df",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Controller",
+            "bindingGroup": "Controller",
+            "devices": [
+                {
+                    "devicePath": "<Gamepad>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        },
+        {
+            "name": "KeyBoard and mouse",
+            "bindingGroup": "KeyBoard and mouse",
+            "devices": [
+                {
+                    "devicePath": "<Keyboard>",
+                    "isOptional": false,
+                    "isOR": false
+                },
+                {
+                    "devicePath": "<Mouse>",
+                    "isOptional": false,
+                    "isOR": false
+                }
+            ]
+        }
+    ]
+}
