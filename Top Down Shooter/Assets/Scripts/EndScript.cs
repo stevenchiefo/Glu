@@ -8,7 +8,7 @@ public class EndScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            FindObjectOfType<GameManager>().
+            FindObjectOfType<GameManager>().GoToMenu();
         }
     }
 }

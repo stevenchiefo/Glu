@@ -23,7 +23,7 @@ public class Knight : Player
     {
         if (m_Ability1 == false)
         {
-            m_DirectionOfWalk = m_DirectionOfWalk.normalized * m_DashSpeed * Time.deltaTime;
+            m_DirectionOfWalk = m_DirectionOfWalk.normalized * m_DashSpeed * 2f * Time.deltaTime;
             m_Ability1 = true;
         }
     }

@@ -68,9 +68,9 @@ public class Enemy : MonoBehaviour
 
     protected void Updater()
     {
-        if (FindObjectOfType<GameManager>().m_Player1 != null)
+        if (FindObjectOfType<GameManager>().Players[0] != null)
         {
-            m_PlayerPos = FindObjectOfType<GameManager>().m_Player1.transform.localPosition;
+            m_PlayerPos = FindObjectOfType<GameManager>().Players[0].transform.localPosition;
         }
 
         m_SpriteRenderer.flipX = isFlipped();

@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 2471870747827045758}
   - component: {fileID: 1473166272024179493}
   - component: {fileID: 6705916226357240688}
-  - component: {fileID: 7684408537200102040}
   m_Layer: 0
   m_Name: Bullit
   m_TagString: Untagged
@@ -96,6 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e598e06a74a5bd241b17cb5dc9c1f6b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Explosion: []
   m_OnHit:
   - {fileID: 1509416158955413721, guid: 9eca1c57adf7a1f4dbaa9239e86692b7, type: 3}
   - {fileID: 2471870747827045753}
@@ -142,22 +142,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!95 &7684408537200102040
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2471870747827045753}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8c4940941e0e8284096f7373098a9966, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0

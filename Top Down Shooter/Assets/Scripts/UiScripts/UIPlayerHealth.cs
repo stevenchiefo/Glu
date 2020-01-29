@@ -26,10 +26,6 @@ public class UIPlayerHealth : MonoBehaviour
     private void Update()
     {
         SetImage();
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            TookDamage();
-        }
     }
 
     private void SetImage()

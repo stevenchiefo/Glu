@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Bullit: {fileID: 2471870747827045753, guid: 570d4a92d9af41346a3578267e9ea854,
     type: 3}
   spriteRenderer: {fileID: 0}
-  m_Speed: 5
+  m_Speed: 10
   m_UIPlayerHealth: {fileID: 0}
   m_Health: 6
   m_Ability1: 0
@@ -196,7 +196,7 @@ MonoBehaviour:
   Coins: 0
   m_RunFilePath: Knight/Run
   m_IdleFilePath: Knight/Idle
-  m_DashSpeed: 150
+  m_DashSpeed: 50
   m_CoolDownTime:
   - 4
   - 10

@@ -33,7 +33,7 @@ public class Player : MonoBehaviour
     [SerializeField] protected SpriteRenderer spriteRenderer;
     [SerializeField] private float m_Speed = 0f;
     [SerializeField] private UIPlayerHealth m_UIPlayerHealth;
-    [SerializeField] protected float m_Health = 6;
+    public float m_Health = 6;
     [SerializeField] private Inventory[] m_Inventory = new Inventory[16];
 
     public bool m_Ability1 = false;
@@ -74,7 +74,6 @@ public class Player : MonoBehaviour
         {
             Debug.LogError("there is no UiPlayerSelected");
         }
-        m_Inventory[0] = new Inventory(new Potion("HealthPotion", Item.KindItem.Potion, 20));
     }
 
     // Update is called once per frame
@@ -97,10 +96,6 @@ public class Player : MonoBehaviour
 
     private void UseItem()
     {
-        //if (Input.GetKeyDown(KeyCode.E))
-        //{
-        //    m_Health += m_Inventory[0].Item.UseItem();
-        //}
     }
 
     private void Death()
@@ -108,6 +103,9 @@ public class Player : MonoBehaviour
         if (m_Health <= 0)
         {
             Debug.Log("Player Died");
+            m_Crossair.SetActive(false);
+            spriteRenderer.enabled = false;
+            enabled = false;
         }
     }
 
@@ -121,23 +119,13 @@ public class Player : MonoBehaviour
     {
         if (m_GameManager.GetPlayerCount() == 1)
         {
-            m_GameManager.m_Player1 = gameObject;
+            m_GameManager.Players[0] = gameObject;
 
             return;
         }
         if (m_GameManager.GetPlayerCount() == 2)
         {
-            m_GameManager.m_Player2 = gameObject;
-        }
-        if (m_GameManager.GetPlayerCount() == 3)
-        {
-            m_GameManager.m_Player3 = gameObject;
-
-            return;
-        }
-        if (m_GameManager.GetPlayerCount() == 4)
-        {
-            m_GameManager.m_Player4 = gameObject;
+            m_GameManager.Players[1] = gameObject;
         }
     }
 
