@@ -49,13 +49,9 @@ public class EnemyBullitScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.name == "Enemy")
-        {
-            return;
-        }
         foreach (GameObject i in m_GameObjectLayerMask)
         {
-            if (collision.gameObject.name == i.name)
+            if (collision.gameObject.tag == i.tag)
             {
                 return;
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Camera m_Camera4;
     [SerializeField] private GameObject m_Player1Selection;
     [SerializeField] private GameObject m_Player2Selection;
+    [SerializeField] private GameObject m_Door;
+    [SerializeField] private Sprite m_OpenDoorSprite;
 
     public GameObject UiPlayer1;
     public GameObject UiPlayer2;
@@ -50,6 +53,13 @@ public class GameManager : MonoBehaviour
             m_PlayerInputManager.playerPrefab = m_Player2Selection;
         }
         PlayerChecker();
+    }
+
+    public void OpenDoor()
+    {
+        SpriteRenderer spriteRenderer = m_Door.GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = m_OpenDoorSprite;
+        m_Door.GetComponent<Collider2D>().enabled = false;
     }
 
     private void PlayerChecker()
@@ -96,5 +106,10 @@ public class GameManager : MonoBehaviour
     public int GetPlayerCount()
     {
         return m_PlayerInputManager.playerCount;
+    }
+
+    public void GoToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 }

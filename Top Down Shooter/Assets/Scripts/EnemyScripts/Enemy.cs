@@ -58,7 +58,7 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Move()
     {
-        m_Body.MovePosition(Vector3.Lerp(transform.position, m_PlayerPos, m_Speed * Time.deltaTime));
+        m_Body.MovePosition(new Vector2(transform.position.x, transform.position.y) + DirectionToPlayer * m_Speed * Time.deltaTime);
     }
 
     protected virtual void Attack()
@@ -68,13 +68,11 @@ public class Enemy : MonoBehaviour
 
     protected void Updater()
     {
-        try
+        if (FindObjectOfType<GameManager>().m_Player1 != null)
         {
-            m_PlayerPos = FindObjectOfType<Monster>().gameObject.transform.localPosition;
+            m_PlayerPos = FindObjectOfType<GameManager>().m_Player1.transform.localPosition;
         }
-        catch
-        {
-        }
+
         m_SpriteRenderer.flipX = isFlipped();
         AnimationPlayer();
         IsDeath();
@@ -98,33 +96,36 @@ public class Enemy : MonoBehaviour
     protected void ShootRayCast()
     {
         Vector2 playposv2 = m_PlayerPos;
-        Vector2 tranfompostion = transform.position;
-        Vector2 direction = tranfompostion - playposv2;
-        direction = direction.normalized;
-        DirectionToPlayer = -direction;
-        Color Linecolor = Color.green;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, -direction, m_Distance, m_LayerMask);
-        m_Raycast = hit;
-        if (m_Raycast.collider != null)
+        if (playposv2 != Vector2.zero)
         {
-            if (m_Raycast.collider.gameObject.tag == "Player")
+            Vector2 tranfompostion = transform.position;
+            Vector2 direction = tranfompostion - playposv2;
+            direction = direction.normalized;
+            DirectionToPlayer = -direction;
+            Color Linecolor = Color.green;
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, -direction, m_Distance, m_LayerMask);
+            m_Raycast = hit;
+            if (m_Raycast.collider != null)
             {
-                Linecolor = Color.red;
-                m_DidHit = true;
-                Move();
+                if (m_Raycast.collider.gameObject.tag == "Player")
+                {
+                    Linecolor = Color.red;
+                    m_DidHit = true;
+                    Move();
+                }
+                else
+                {
+                    Linecolor = Color.green;
+                    m_DidHit = false;
+                }
             }
             else
             {
                 Linecolor = Color.green;
                 m_DidHit = false;
             }
+            Debug.DrawRay(tranfompostion, -direction, Linecolor);
         }
-        else
-        {
-            Linecolor = Color.green;
-            m_DidHit = false;
-        }
-        Debug.DrawRay(tranfompostion, -direction, Linecolor);
     }
 
     protected virtual void Load()
