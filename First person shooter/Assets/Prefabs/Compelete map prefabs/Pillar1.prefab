@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 4857574489431854676}
   - component: {fileID: 5271835862576994951}
   - component: {fileID: 3462124622685435511}
-  - component: {fileID: 7371523192318969101}
+  - component: {fileID: 6376243865459090936}
   m_Layer: 0
   m_Name: default
   m_TagString: Untagged
@@ -86,6 +86,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -110,8 +111,8 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &7371523192318969101
-BoxCollider:
+--- !u!64 &6376243865459090936
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -120,6 +121,7 @@ BoxCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 3.1, z: 1}
-  m_Center: {x: -2, y: 3.55, z: -2}
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -2432090755550338912, guid: 5874c892b71d4114187321863b226981, type: 3}
