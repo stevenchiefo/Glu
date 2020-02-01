@@ -8,6 +8,7 @@ TagManager:
   - bullit
   - Enemy
   - Wall
+  - Target
   layers:
   - Default
   - TransparentFX
