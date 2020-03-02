@@ -65,7 +65,7 @@ Material:
     - Vector1_39E01D69: 1
     - Vector1_447FEF42: 5
     - Vector1_537B97D8: 0.9
-    - Vector1_5ECB8E6B: 3
+    - Vector1_5ECB8E6B: 0.1
     - Vector1_6AE1E8E0: 100
     - Vector1_6C29D23C: 1
     - Vector1_7364A132: 0
@@ -85,6 +85,7 @@ Material:
     - _OcclusionStrength: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _Size: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
