@@ -5,19 +5,31 @@ using UnityEngine;
 public class ShaderActive : MonoBehaviour
 {
     public Material m_Mat;
+    public float Size;
+    private float m_Timer = 0f;
 
     private void Start()
     {
-        m_Mat = gameObject.GetComponent<Renderer>().material;
+        m_Mat = GetComponent<MeshRenderer>().material;
     }
 
     // Update is called once per frame
     private void Update()
     {
+        m_Timer += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.E))
         {
-            m_Mat.SetFloat("Seeable", 1f);
+            Size = 2f;
         }
+        if (m_Timer >= 1f / 10f)
+        {
+            m_Timer = 0f;
+            if (Size >= 1f)
+            {
+                Size = Size - 1f * Time.deltaTime;
+            }
+        }
+        m_Mat.SetFloat("_Size", Size);
     }
 
     private void OnMouseOver()

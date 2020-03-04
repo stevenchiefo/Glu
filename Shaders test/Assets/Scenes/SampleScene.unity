@@ -371,12 +371,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1316284199}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b1f63633a425d04da7390871a1e2619, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Mat: {fileID: 2100000, guid: 966617bf0ed16b54db6e4af0eae08280, type: 2}
+  m_Mat: {fileID: 2100000, guid: b27d7fd6de3e3df4487d3c82bec21449, type: 2}
+  Size: 1
 --- !u!65 &1316284201
 BoxCollider:
   m_ObjectHideFlags: 0
