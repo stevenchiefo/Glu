@@ -15,6 +15,10 @@ namespace Multiplayer_Server
 
         public static Dictionary<int, Client> m_Clients = new Dictionary<int, Client>();
 
+        public delegate void PacketHandler(int fromclient, Packet packet);
+
+        public static Dictionary<int, PacketHandler> packetHandler;
+
         private static TcpListener m_TcpListener;
 
         internal static void Start(int _maxPlayers, int _port)
@@ -56,6 +60,13 @@ namespace Multiplayer_Server
             {
                 m_Clients.Add(i, new Client(i));
             }
+
+            packetHandler = new Dictionary<int, PacketHandler>()
+            {
+                {(int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived }
+            };
+
+            Console.WriteLine("Initizalize Packets");
         }
     }
 }
