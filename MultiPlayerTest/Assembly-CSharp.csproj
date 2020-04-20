@@ -63,10 +63,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\NetworkConfig.cs" />
-    <Compile Include="Assets\NetworkManager.cs" />
-    <Compile Include="Assets\NetworkReceive.cs" />
-    <Compile Include="Assets\NetworkSend.cs" />
+    <Compile Include="Assets\Client.cs" />
+    <Compile Include="Assets\UIManager.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/GLU/Glu/MultiPlayerTest/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
