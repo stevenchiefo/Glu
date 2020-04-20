@@ -1,0 +1,8 @@
+D:\Glu\visual studio oefenen\Multiplayer Server\obj\Debug\Multiplayer Server.csprojAssemblyReference.cache
+D:\Glu\visual studio oefenen\Multiplayer Server\bin\Debug\Multiplayer Server.exe.config
+D:\Glu\visual studio oefenen\Multiplayer Server\bin\Debug\Multiplayer Server.exe
+D:\Glu\visual studio oefenen\Multiplayer Server\bin\Debug\Multiplayer Server.pdb
+D:\Glu\visual studio oefenen\Multiplayer Server\bin\Debug\KaymakNetwork.dll
+D:\Glu\visual studio oefenen\Multiplayer Server\obj\Debug\Multiplayer Server.csproj.CopyComplete
+D:\Glu\visual studio oefenen\Multiplayer Server\obj\Debug\Multiplayer Server.exe
+D:\Glu\visual studio oefenen\Multiplayer Server\obj\Debug\Multiplayer Server.pdb
