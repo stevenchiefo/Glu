@@ -28,6 +28,7 @@ public class ObjectPool : MonoBehaviour
             {
                 _poolableObject = Instantiate(m_Prefab,parent).GetComponent<PoolableObject>();
             }
+            _poolableObject.Load();
             _poolableObject.PoolObject();                                                             //Pool the object;
             m_Pool.Add(_poolableObject);                                                              //Add to the list;
         }
@@ -43,6 +44,7 @@ public class ObjectPool : MonoBehaviour
             }
         }
         PoolableObject _poolableObject = Instantiate(m_Prefab).GetComponent<PoolableObject>();    //Getcompent poolableobject;
+        _poolableObject.Load();
         _poolableObject.PoolObject();                                                             //Pool the object;
         m_Pool.Add(_poolableObject);
         return _poolableObject;
