@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class UIManager : MonoBehaviour
     //Texts && Images
 
     [SerializeField] private Text m_WavesRemaingText;
+    [SerializeField] private Text m_EnemiesRemainingText;
     [SerializeField] private Image m_HealthBar;
     [SerializeField] private Text m_HealthText;
 
@@ -31,6 +33,12 @@ public class UIManager : MonoBehaviour
             Destroy(this);
         }
     }
+    private void Start()
+    {
+        UpdateUI();
+        ShowOrHideLevelComplete(false);
+        ShowOrHideLevelFailed(false);
+    }
 
     public void ShowOrHideLevelComplete(bool boolean)
     {
@@ -49,11 +57,27 @@ public class UIManager : MonoBehaviour
 
     public void UpdateUI()
     {
-        float _Precentage = Finish.Instance.GetInfo().currentHealth / Finish.Instance.GetInfo().MaxHealth;
-        string _HealthContext = $" {Finish.Instance.GetInfo().currentHealth}/{Finish.Instance.GetInfo().MaxHealth}";
+        float _Precentage = (float)Finish.Instance.GetInfo().currentHealth / (float)Finish.Instance.GetInfo().MaxHealth;
+        string _HealthContext = $"HP: {Finish.Instance.GetInfo().currentHealth}/{Finish.Instance.GetInfo().MaxHealth}";
         m_HealthText.text = _HealthContext;
         m_HealthBar.fillAmount = _Precentage;
 
-        string _WaveContext = EnityManager;
+        string _EnemysRemaining = $"Enemies Remaining: {EnityManager.Instance.HowManyEnemiesAlive()}";
+        string _WaveContext = $"Wave: {EnityManager.Instance.GetWaveInfo().currentWave} / {EnityManager.Instance.GetWaveInfo().TotalWaves}";
+        m_WavesRemaingText.text = _WaveContext;
+        m_EnemiesRemainingText.text = _EnemysRemaining;
+    }
+    public void OnRetryLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void OnBackToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void OnNextLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

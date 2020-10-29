@@ -1,32 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 public class Runner : PoolableObject, IEnemy
 {
     public int CurrentHealth { get; set; }
     public bool IsAlive { get; set; }
+    public EnemyType EnemyType { get; set; }
+
+    private AiWalk m_Aiwalk;
 
     public override void Load()
     {
+        EnemyType = EnemyType.Runner;
+        m_Aiwalk = GetComponent<AiWalk>();
         CurrentHealth = GetHealth();
         OnPool.AddListener(ResetHealth);
     }
 
     public int GetDamage()
     {
-        return DataBase.Instance.GetEnemyData(EnemyType.Runner).Damage;
+        return DataBase.Instance.GetEnemyData(EnemyType).Damage;
     }
 
     public int GetHealth()
     {
-        return DataBase.Instance.GetEnemyData(EnemyType.Runner).Health;
+        return DataBase.Instance.GetEnemyData(EnemyType).Health;
     }
 
     public float GetSpeed()
     {
-        return DataBase.Instance.GetEnemyData(EnemyType.Runner).Speed;
+        return DataBase.Instance.GetEnemyData(EnemyType).Speed;
     }
 
     public Transform GetTarget()
@@ -42,7 +48,9 @@ public class Runner : PoolableObject, IEnemy
         {
             IsAlive = false;
             PoolObject();
+            UIManager.Instance.UpdateUI();
         }
+        
     }
 
     protected override void ResetObject()
@@ -56,4 +64,11 @@ public class Runner : PoolableObject, IEnemy
     {
         CurrentHealth = DataBase.Instance.GetEnemyData(EnemyType.Runner).Health;
     }
+
+    public void Walking(bool boolean)
+    {
+        m_Aiwalk.SetWalk(boolean);
+    }
+
+    
 }

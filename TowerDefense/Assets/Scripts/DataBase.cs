@@ -7,6 +7,7 @@ public class DataBase : MonoBehaviour
     public static DataBase Instance;
 
     [SerializeField] private EnemyData m_RunnerData;
+    [SerializeField] private EnemyData m_FlyerData;
     [SerializeField] private TowerData m_ArcherTower;
     [SerializeField] private ShootAbleData m_ArcherArrow;
     
@@ -29,6 +30,8 @@ public class DataBase : MonoBehaviour
         {
             case EnemyType.Runner:
                 return m_RunnerData;
+            case EnemyType.Flyer:
+                return m_FlyerData;
         }
         return null;
     }

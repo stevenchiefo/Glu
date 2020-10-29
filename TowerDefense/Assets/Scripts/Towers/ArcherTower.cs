@@ -19,6 +19,11 @@ public class ArcherTower : Tower, ITower
         return DataBase.Instance.GetTowerData(TowerType.Archer).ShootCD;
     }
 
+    public TowerData GetData()
+    {
+        return DataBase.Instance.GetTowerData(TowerType.Archer);
+    }
+
     public void Shoot(Transform _Target)
     {
         PoolableObject poolableObject = m_ProjectilePool.GetObject();

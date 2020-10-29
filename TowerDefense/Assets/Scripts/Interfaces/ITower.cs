@@ -14,4 +14,6 @@ public interface ITower
     int Upgrade(int currentLevel);
 
     float GetShootCD();
+
+    TowerData GetData();
 }

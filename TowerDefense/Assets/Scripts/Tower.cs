@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 
@@ -41,7 +43,7 @@ public class Tower : PoolableObject
     public override void SpawnObject(Vector3 position)
     {
         base.SpawnObject(position);
-        if(m_Tower == null)
+        if (m_Tower == null)
         {
             LoadCom();
         }
@@ -60,19 +62,25 @@ public class Tower : PoolableObject
     {
         while (true)
         {
-            
+
 
             yield return new WaitForSeconds(m_Tower.GetShootCD());
             yield return new WaitUntil(() => DoShoot == true);
             if (m_Enemys.Count > 0)
             {
-
                 if (m_Enemys[0].IsAlive)
                 {
                     if (Vector3.Distance(m_Enemys[0].GetTarget().position, m_FirePoint.position) <= m_Collider.bounds.size.x)
                     {
 
-                        m_Tower.Shoot(m_Enemys[0].GetTarget());
+
+
+                        if (CanShootEnemy(m_Enemys[0]))
+                        {
+                            m_Tower.Shoot(m_Enemys[0].GetTarget());
+
+                        }
+
                     }
                     else
                     {
@@ -85,6 +93,16 @@ public class Tower : PoolableObject
                 }
             }
         }
+    }
+
+    private bool CanShootEnemy(IEnemy enemy)
+    {
+        if (m_Tower.GetData().CantShoot.Length > 0)
+        {
+            return m_Tower.GetData().CantShoot.Contains(enemy.EnemyType);
+
+        }
+        return true;
     }
 
     private void OnTriggerEnter(Collider other)

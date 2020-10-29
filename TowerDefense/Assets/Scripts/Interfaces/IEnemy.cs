@@ -5,12 +5,15 @@ using UnityEngine;
 public enum EnemyType
 {
     Runner,
+    Flyer
 }
 
 public interface IEnemy
 {
     bool IsAlive { get; set; }
     int CurrentHealth { get; set; }
+
+    EnemyType EnemyType { get; set; }
 
     float GetSpeed();
 
@@ -21,5 +24,8 @@ public interface IEnemy
     void TakeDamage(int _Damage);
 
     Transform GetTarget();
+
+    void Walking(bool boolean);
+
 
 }

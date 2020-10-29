@@ -41,13 +41,14 @@ public class Finish : MonoBehaviour
         if (enemy != null)
         {
             m_Health -= enemy.GetDamage();
+            if (m_Health <= 0)
+            {
+                GameManager.Instance.SetGameOver();
+            }
             enemy.IsAlive = false;
             collider.GetComponentInParent<PoolableObject>().PoolObject();
         }
 
-        if (m_Health <= 0)
-        {
-            GameManager.Instance.SetGameOver();
-        }
+        UIManager.Instance.UpdateUI();
     }
 }

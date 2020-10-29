@@ -8,4 +8,5 @@ public class TowerData : ScriptableObject
     public float ShootCD;
     public int MaxLevel;
     public GameObject Projectile;
+    public EnemyType[] CantShoot;
 }
