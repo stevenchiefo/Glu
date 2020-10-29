@@ -10,11 +10,11 @@ public class Finish : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
-        else if(Instance != this)
+        else if (Instance != this)
         {
             Destroy(this);
         }
@@ -30,17 +30,22 @@ public class Finish : MonoBehaviour
         CheckForEnemy(other);
     }
 
+    public (int currentHealth, int MaxHealth) GetInfo()
+    {
+        return (m_Health, m_MaxHealth);
+    }
+
     private void CheckForEnemy(Collider collider)
     {
         IEnemy enemy = collider.GetComponentInParent<IEnemy>();
-        if(enemy != null)
+        if (enemy != null)
         {
             m_Health -= enemy.GetDamage();
             enemy.IsAlive = false;
             collider.GetComponentInParent<PoolableObject>().PoolObject();
         }
 
-        if(m_Health <= 0)
+        if (m_Health <= 0)
         {
             GameManager.Instance.SetGameOver();
         }

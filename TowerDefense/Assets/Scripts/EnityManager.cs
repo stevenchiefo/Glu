@@ -14,7 +14,6 @@ public class EnityManager : MonoBehaviour
     private Dictionary<EnemyType, ObjectPool> m_Pools;
     private List<IEnemy> CurrentAliveEnemys;
 
-
     private void Awake()
     {
         if (Instance == null)
@@ -50,8 +49,6 @@ public class EnityManager : MonoBehaviour
     {
         if (CurrentAliveEnemys != null)
         {
-
-
             int ammount = 0;
             for (int i = 0; i < CurrentAliveEnemys.Count; i++)
             {
@@ -72,7 +69,6 @@ public class EnityManager : MonoBehaviour
             yield return new WaitUntil(() => m_CanSpawn);
             if (m_CurrentWave < m_WaveData.Waves)
             {
-
                 StartCoroutine(SpawnEnemys());
             }
             else
@@ -85,7 +81,6 @@ public class EnityManager : MonoBehaviour
 
     private IEnumerator SpawnEnemys()
     {
-
         CurrentAliveEnemys.Clear();
         for (int i = 0; i < m_WaveData.m_RunnerAmmount[m_CurrentWave]; i++)
         {
@@ -98,5 +93,8 @@ public class EnityManager : MonoBehaviour
         m_CurrentWave++;
     }
 
-
+    public (int currentWave, int TotalWaves) GetWaveInfo()
+    {
+        return (m_CurrentWave, m_WaveData.Waves);
+    }
 }
