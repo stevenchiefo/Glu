@@ -30,15 +30,14 @@ public class BuildManager : MonoBehaviour
 
     private void Start()
     {
+        LoadTowers();
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-    }
+    
 
     private void LoadTowers()
     {
+        m_Towers = new Dictionary<TowerType, ObjectPool>();
         ObjectPool _acherTowerPool = gameObject.AddComponent<ObjectPool>();
         _acherTowerPool.BeginPool(m_ArcherTowerPrefab, 5, transform);
         m_Towers.Add(TowerType.Archer, _acherTowerPool);

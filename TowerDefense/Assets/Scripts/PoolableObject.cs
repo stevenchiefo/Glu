@@ -9,6 +9,12 @@ public class PoolableObject : MonoBehaviour
     private bool m_CanUse;
 
     protected UnityEvent OnPool = new UnityEvent();
+    
+
+    public virtual void Load()
+    {
+
+    }
 
     public void PoolObject()
     {
@@ -16,7 +22,7 @@ public class PoolableObject : MonoBehaviour
         m_CanUse = true;
     }
 
-    public virtual void SpawnObject(Vector2 position)
+    public virtual void SpawnObject(Vector3 position)
     {
         ResetObject();
         transform.position = position;
@@ -24,7 +30,7 @@ public class PoolableObject : MonoBehaviour
         m_CanUse = false;
     }
 
-    public virtual void SpawnObject(Vector2 position, Quaternion rotation)
+    public virtual void SpawnObject(Vector3 position, Quaternion rotation)
     {
         ResetObject();
         transform.position = position;
@@ -41,6 +47,11 @@ public class PoolableObject : MonoBehaviour
             StopCoroutine(LifeTimeTimer(lifetime));
             PoolObject();
         }
+    }
+
+    public void LookAtTraget(Transform target)
+    {
+        transform.LookAt(target);
     }
 
     public bool CanUse() => m_CanUse;
