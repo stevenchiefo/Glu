@@ -1,0 +1,134 @@
+{
+    "name": "PlayerActions",
+    "maps": [
+        {
+            "name": "Player",
+            "id": "cc2b80f9-3857-4e06-bd12-b9ea8565fb8c",
+            "actions": [
+                {
+                    "name": "Move",
+                    "type": "Value",
+                    "id": "ff38e61d-0f57-4198-a35e-8899e9089da0",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MouseMovement",
+                    "type": "Value",
+                    "id": "89fe2de3-6f23-491d-9b60-9c7cfa0a3895",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "CameraScroll",
+                    "type": "PassThrough",
+                    "id": "d7b24fc9-bc68-43c2-bc4b-2c5a0b275332",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Shoot",
+                    "type": "Button",
+                    "id": "e613f281-4b21-42ce-9d2f-9190000cf479",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "2D Vector",
+                    "id": "4d138d89-cf87-4e6a-b837-05ab12c80802",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "227d5ad2-bae1-4f9a-ab7e-803a93fcebfb",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "7aeff0f5-c769-4255-a4dd-063937c104d6",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "ae127825-cba1-47f4-a199-66bab5574233",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "4d37d161-e385-4a65-bebf-149e04b155b7",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "af32b99f-2950-41ad-80e4-735b8f001ec5",
+                    "path": "<Mouse>/delta/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3bf36c35-c86b-432a-acd9-bde87c6a7243",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CameraScroll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "48cf99c0-f57f-401c-9862-e48a211cd2b8",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
