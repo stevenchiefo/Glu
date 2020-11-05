@@ -7,6 +7,7 @@ public class DockingManager : MonoBehaviour
     public static DockingManager Instance;
 
     private Dock[] m_Docks;
+    private int m_LastID;
 
     private void Awake()
     {
@@ -25,6 +26,11 @@ public class DockingManager : MonoBehaviour
         LoadDocks();
     }
 
+    public void SetID(int ID)
+    {
+        m_LastID = ID;
+    }
+
     public void DockOnClosestDock(PlayerShip ship, Player player)
     {
         int _index = 0;
@@ -40,8 +46,17 @@ public class DockingManager : MonoBehaviour
         m_Docks[_index].DockShip(ship, player);
     }
 
+    public void RespawnBoat(PlayerShip ship, Player player)
+    {
+        m_Docks[m_LastID].RespawnShip(ship, player);
+    }
+
     private void LoadDocks()
     {
         m_Docks = FindObjectsOfType<Dock>();
+        for (int i = 0; i < m_Docks.Length; i++)
+        {
+            m_Docks[i].ID = i;
+        }
     }
 }

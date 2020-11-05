@@ -41,6 +41,8 @@ public class TreasureChest : PoolableObject
             Player player = playerShip.GetPlayer();
             player.GiveGold(m_TreasueChestData.Gold);
             player.GiveCannonBalls(m_TreasueChestData.CannonBalls);
+
+            PlayerInterfaceUI.Instance.UpdateUI();
             PoolObject();
         }
     }

@@ -578,6 +578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RotationSpeed: 10
+  m_MaxHealth: 100
   m_Ship: {fileID: 0}
   m_PlayerStand: {fileID: 0}
   m_CameraTransform: {fileID: 0}

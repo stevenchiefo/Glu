@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerShip : MonoBehaviour, IShip
@@ -15,6 +16,11 @@ public class PlayerShip : MonoBehaviour, IShip
     [SerializeField] private Transform m_LeftCannonTrans;
     [SerializeField] private Transform m_RightCannonTrans;
     [SerializeField] private Transform m_MiddleFirePoint;
+
+    [SerializeField] private LineRenderer m_FrontLineRendener;
+    [SerializeField] private LineRenderer m_LeftLineRendener;
+    [SerializeField] private LineRenderer m_RightLineRendener;
+
     private bool m_MayFire;
 
     //Ship other var's
@@ -29,6 +35,10 @@ public class PlayerShip : MonoBehaviour, IShip
 
     //For ai Info
     [SerializeField] private List<Transform> m_AttackPoints;
+
+    //Animation
+    private Animator m_Animator;
+
 
     private void Awake()
     {
@@ -45,7 +55,14 @@ public class PlayerShip : MonoBehaviour, IShip
     private void Start()
     {
         m_RigidBody = GetComponentInChildren<Rigidbody>();
+        m_Animator = GetComponentInChildren<Animator>();
+
         Durrability = DataBase.Instance.GetData().ShipData.MaxDurrabilty;
+
+        m_FrontLineRendener.enabled = false;
+        m_LeftLineRendener.enabled = false;
+        m_RightLineRendener.enabled = false;
+
         StartCoroutine(CheckFire());
     }
 
@@ -58,6 +75,37 @@ public class PlayerShip : MonoBehaviour, IShip
     {
         MoveShip();
         Rotate();
+        CheckCannonLine();
+    }
+
+    private void CheckCannonLine()
+    {
+        if (m_ShipCanMove)
+        {
+
+
+            switch (m_AssignedPlayer.GetAttackType())
+            {
+                case AttackType.Forward:
+                    m_FrontLineRendener.enabled = true;
+                    m_LeftLineRendener.enabled = false;
+                    m_RightLineRendener.enabled = false;
+                    break;
+                case AttackType.LeftSide:
+                    m_FrontLineRendener.enabled = false;
+                    m_LeftLineRendener.enabled = true;
+                    m_RightLineRendener.enabled = false;
+
+                    break;
+                case AttackType.RightSide:
+                    m_FrontLineRendener.enabled = false;
+                    m_LeftLineRendener.enabled = false;
+                    m_RightLineRendener.enabled = true;
+                    break;
+
+            }
+        }
+        
     }
 
     private void Rotate()
@@ -92,7 +140,7 @@ public class PlayerShip : MonoBehaviour, IShip
 
     public void Shoot(AttackType attackType)
     {
-        if (m_MayFire)
+        if (m_MayFire && m_AssignedPlayer.GetPlayerStats().CannonBalls > 0)
         {
             PoolableObject poolableObject = DataBase.Instance.GetCannonBall();
             CannonBall cannonBall = poolableObject.GetComponent<CannonBall>();
@@ -118,7 +166,9 @@ public class PlayerShip : MonoBehaviour, IShip
                     break;
             }
             cannonBall.Launch(_Dir, GetShipData().FirePower, GetTargetType());
+            m_AssignedPlayer.RemoveCannonBalls(1);
             m_MayFire = false;
+            PlayerInterfaceUI.Instance.UpdateUI();
         }
     }
 
@@ -146,6 +196,7 @@ public class PlayerShip : MonoBehaviour, IShip
         Durrability -= _Damage;
         if (Durrability <= 0)
         {
+            Durrability = 0;
             m_AssignedPlayer.LeaveShip();
             SinkShip();
         }
@@ -154,6 +205,23 @@ public class PlayerShip : MonoBehaviour, IShip
 
     private void SinkShip()
     {
+        m_FrontLineRendener.enabled = false;
+        m_LeftLineRendener.enabled = false;
+        m_RightLineRendener.enabled = false;
+
+        
+    }
+
+    public void DestroyShip()
+    {
+
+    }
+
+    public void DockShip()
+    {
+        m_FrontLineRendener.enabled = false;
+        m_LeftLineRendener.enabled = false;
+        m_RightLineRendener.enabled = false;
     }
 
     public void Rotate(Vector2 vector2)

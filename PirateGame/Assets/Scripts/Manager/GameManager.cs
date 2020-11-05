@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
-        
+        StartCoroutine(DockShipTimer());
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
     }
+
+    private IEnumerator DockShipTimer()
+    {
+        yield return new WaitForSeconds(1);
+        DockingManager.Instance.RespawnBoat(PlayerShip.Instance,Player.Instance);
+    }
+    
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
@@ -18,8 +19,9 @@ public class Player : MonoBehaviour
 
     //player
 
-    private PlayerStats m_PlayerStats;
     [SerializeField] private float m_RotationSpeed;
+    [SerializeField] private int m_MaxHealth;
+    private PlayerStats m_PlayerStats;
     private Rigidbody m_Rigidbody;
     private Collider m_Collider;
     private Vector3 m_Direction;
@@ -59,11 +61,20 @@ public class Player : MonoBehaviour
     private void Start()
     {
         m_PlayerMode = PlayerMode.OutShip;
-        Cursor.visible = false;
+
         m_Camera = m_CameraTransform.GetComponentInChildren<Camera>();
         m_Collider = GetComponent<Collider>();
         m_Rigidbody = GetComponent<Rigidbody>();
+
+        m_PlayerStats = new PlayerStats()
+        {
+            Health = m_MaxHealth,
+            Gold = 100,
+            CannonBalls = 50,
+        };
         m_Ship.AssignPlayer(this);
+
+        PlayerInterfaceUI.Instance.UpdateUI();
     }
 
     private void Update()
@@ -98,7 +109,7 @@ public class Player : MonoBehaviour
         transform.Translate(m_Direction * m_Speed * Time.deltaTime);
     }
 
-    private AttackType GetAttackType()
+    public AttackType GetAttackType()
     {
         float ForwardDistance = Vector3.Distance(m_Camera.transform.position, m_Ship.GetShootingPoint().ForwardShoot);
         float LeftDistance = Vector3.Distance(m_Camera.transform.position, m_Ship.GetShootingPoint().SideLeftWaysShoot);
@@ -204,11 +215,21 @@ public class Player : MonoBehaviour
         }
     }
 
+    public bool IsOnShip()
+    {
+        return m_PlayerMode == PlayerMode.InShip;
+    }
+
     private void SetDead()
     {
     }
 
     #region PlayerStats;
+
+    public int GetMaxHealth()
+    {
+        return m_MaxHealth;
+    }
 
     public PlayerStats GetPlayerStats()
     {
@@ -297,6 +318,7 @@ public class Player : MonoBehaviour
             if (m_PlayerMode == PlayerMode.InShip)
             {
                 DockingManager.Instance.DockOnClosestDock(m_Ship, this);
+                m_Ship.DockShip();
             }
         }
     }

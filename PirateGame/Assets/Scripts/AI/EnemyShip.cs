@@ -8,10 +8,9 @@ using UnityEngine.VFX;
 public class EnemyShip : PoolableObject, IShip
 {
     [Header("ShootPoints")]
+
     [SerializeField] private List<Transform> m_ShootPoints;
-
     [SerializeField] private Transform m_MiddlePoint;
-
     private Vector3 m_Destenation;
 
     public int Durrability { get; set; }
@@ -21,21 +20,26 @@ public class EnemyShip : PoolableObject, IShip
     private NavMeshAgent m_NavMeshAgent;
     private Rigidbody m_Rigidbody;
 
+
     //Combat
     private bool m_Combat;
-
     private bool m_MayFire;
-
     [SerializeField] private float m_AttackRange;
+
+    //UI
+    private EnemShipUI m_EnemyShipUI;
 
     public override void Load()
     {
         m_Rigidbody = GetComponentInChildren<Rigidbody>();
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
+        m_EnemyShipUI = GetComponent<EnemShipUI>();
+
         m_NavMeshAgent.speed = DataBase.Instance.GetData().EnemyShipData.Speed;
         m_NavMeshAgent.angularSpeed = DataBase.Instance.GetData().EnemyShipData.RotationSpeed;
         Durrability = DataBase.Instance.GetData().EnemyShipData.MaxDurrabilty;
 
+        m_EnemyShipUI.Load();
         OnPool.AddListener(OnObjectPooled);
     }
 
@@ -46,8 +50,15 @@ public class EnemyShip : PoolableObject, IShip
 
     private void CheckForCombat()
     {
-        float _Distance = Vector3.Distance(PlayerShip.Instance.transform.position, transform.position);
-        m_Combat = _Distance <= m_AttackRange;
+        if (Player.Instance.IsOnShip())
+        {
+            float _Distance = Vector3.Distance(PlayerShip.Instance.transform.position, transform.position);
+            m_Combat = _Distance <= m_AttackRange;
+        }
+        else
+        {
+            m_Combat = false;
+        }
     }
 
     private IEnumerator CheckFire()
@@ -112,6 +123,7 @@ public class EnemyShip : PoolableObject, IShip
 
             CannonBall cannonBall = poolableObject.GetComponent<CannonBall>();
             cannonBall.Launch(_Dir, DataBase.Instance.GetData().EnemyShipData.FirePower, CannonBall.TargetType.Player);
+            m_MayFire = false;
         }
     }
 
@@ -128,6 +140,7 @@ public class EnemyShip : PoolableObject, IShip
             LootManager.Instance.SpawnTreasueChest(transform.position, transform.rotation, treasueChestData);
             PoolObject();
         }
+        m_EnemyShipUI.UpdateUI();
     }
 
     private int GetIndexOfClosestShot()
@@ -155,11 +168,16 @@ public class EnemyShip : PoolableObject, IShip
     public override void SpawnObject(Vector3 position, Quaternion rotation)
     {
         base.SpawnObject(position, rotation);
+
         m_NavMeshAgent.speed = DataBase.Instance.GetData().EnemyShipData.Speed;
         m_NavMeshAgent.angularSpeed = DataBase.Instance.GetData().EnemyShipData.RotationSpeed;
         Durrability = DataBase.Instance.GetData().EnemyShipData.MaxDurrabilty;
+
         StartCoroutine(CheckMove());
         StartCoroutine(CheckFire());
+
+
+        m_EnemyShipUI.UpdateUI();
     }
 
     public Rigidbody GetRB()
