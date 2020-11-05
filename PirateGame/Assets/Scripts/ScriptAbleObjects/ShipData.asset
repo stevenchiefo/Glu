@@ -16,4 +16,5 @@ MonoBehaviour:
   Speed: 15
   RotationSpeed: 30
   FirePower: 500
+  FireCooldown: 2
   TargetType: 1

@@ -2,30 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerShip : MonoBehaviour,  IShip
+public class PlayerShip : MonoBehaviour, IShip
 {
     public static PlayerShip Instance;
 
     //ShipStats
     public int Durrability { get; set; }
-    
-
 
     [Header("ShootingPoints")]
     [SerializeField] private Transform m_FrontCannonTrans;
+
     [SerializeField] private Transform m_LeftCannonTrans;
     [SerializeField] private Transform m_RightCannonTrans;
     [SerializeField] private Transform m_MiddleFirePoint;
+    private bool m_MayFire;
 
     //Ship other var's
     private Rigidbody m_RigidBody;
+
     private Player m_AssignedPlayer;
     private bool m_ShipCanMove;
-    
+
     //Rotation
 
     private float m_RotationValue;
 
+    //For ai Info
+    [SerializeField] private List<Transform> m_AttackPoints;
 
     private void Awake()
     {
@@ -33,20 +36,18 @@ public class PlayerShip : MonoBehaviour,  IShip
         {
             Instance = this;
         }
-        else if(Instance != this)
+        else if (Instance != this)
         {
             Destroy(this);
         }
     }
 
-
     private void Start()
     {
         m_RigidBody = GetComponentInChildren<Rigidbody>();
         Durrability = DataBase.Instance.GetData().ShipData.MaxDurrabilty;
+        StartCoroutine(CheckFire());
     }
-
-
 
     public void SetCanMove(bool boolean)
     {
@@ -74,47 +75,51 @@ public class PlayerShip : MonoBehaviour,  IShip
         }
     }
 
-    
-
     public (Vector3 ForwardShoot, Vector3 SideRightWaysShoot, Vector3 SideLeftWaysShoot) GetShootingPoint()
     {
         return (m_FrontCannonTrans.position, m_RightCannonTrans.position, m_LeftCannonTrans.position);
     }
 
-    public void Shoot(AttackType attackType)
+    private IEnumerator CheckFire()
     {
-        PoolableObject poolableObject = DataBase.Instance.GetCannonBall();
-        CannonBall cannonBall = poolableObject.GetComponent<CannonBall>();
-        Vector3 _Dir = Vector3.zero;
-        switch (attackType)
+        while (true)
         {
-            case AttackType.Forward:
-                poolableObject.SpawnObject(m_FrontCannonTrans.position, m_FrontCannonTrans.rotation);
-                _Dir = m_FrontCannonTrans.position - m_MiddleFirePoint.position;
-
-                break;
-            case AttackType.RightSide:
-                poolableObject.SpawnObject(m_RightCannonTrans.position, m_RightCannonTrans.rotation);
-                _Dir = m_RightCannonTrans.position - m_MiddleFirePoint.position;
-
-                break;
-            case AttackType.LeftSide:
-                poolableObject.SpawnObject(m_LeftCannonTrans.position, m_LeftCannonTrans.rotation);
-                _Dir = m_LeftCannonTrans.position - m_MiddleFirePoint.position;
-
-                break;
-
+            yield return new WaitUntil(() => m_MayFire == false);
+            yield return new WaitForSeconds(GetShipData().FireCooldown);
+            m_MayFire = true;
         }
-        cannonBall.Launch(_Dir, GetShipData().FirePower, GetTargetType());
     }
 
-    private CannonBall.TargetType GetTargetType()
+    public void Shoot(AttackType attackType)
     {
-        if (m_AssignedPlayer == null)
+        if (m_MayFire)
         {
-            return CannonBall.TargetType.Player;
+            PoolableObject poolableObject = DataBase.Instance.GetCannonBall();
+            CannonBall cannonBall = poolableObject.GetComponent<CannonBall>();
+            Vector3 _Dir = Vector3.zero;
+            switch (attackType)
+            {
+                case AttackType.Forward:
+                    poolableObject.SpawnObject(m_FrontCannonTrans.position, m_FrontCannonTrans.rotation);
+                    _Dir = m_FrontCannonTrans.position - m_MiddleFirePoint.position;
+
+                    break;
+
+                case AttackType.RightSide:
+                    poolableObject.SpawnObject(m_RightCannonTrans.position, m_RightCannonTrans.rotation);
+                    _Dir = m_RightCannonTrans.position - m_MiddleFirePoint.position;
+
+                    break;
+
+                case AttackType.LeftSide:
+                    poolableObject.SpawnObject(m_LeftCannonTrans.position, m_LeftCannonTrans.rotation);
+                    _Dir = m_LeftCannonTrans.position - m_MiddleFirePoint.position;
+
+                    break;
+            }
+            cannonBall.Launch(_Dir, GetShipData().FirePower, GetTargetType());
+            m_MayFire = false;
         }
-        return CannonBall.TargetType.Enemy;
     }
 
     private ShipData GetShipData()
@@ -126,7 +131,6 @@ public class PlayerShip : MonoBehaviour,  IShip
         return DataBase.Instance.GetData().ShipData;
     }
 
-
     public void AssignPlayer(Player player)
     {
         m_AssignedPlayer = player;
@@ -136,6 +140,7 @@ public class PlayerShip : MonoBehaviour,  IShip
     {
         return m_RigidBody;
     }
+
     public void TakeDamage(int _Damage)
     {
         Durrability -= _Damage;
@@ -144,11 +149,11 @@ public class PlayerShip : MonoBehaviour,  IShip
             m_AssignedPlayer.LeaveShip();
             SinkShip();
         }
+        PlayerShipUI.Instance.UpdateUI();
     }
 
     private void SinkShip()
     {
-
     }
 
     public void Rotate(Vector2 vector2)
@@ -159,11 +164,35 @@ public class PlayerShip : MonoBehaviour,  IShip
 
     public void Move(Vector3 vector3)
     {
-        
     }
 
-    CannonBall.TargetType IShip.GetTargetType()
+    public CannonBall.TargetType GetTargetType()
     {
         return CannonBall.TargetType.Enemy;
+    }
+
+    public Rigidbody GetRB()
+    {
+        return m_RigidBody;
+    }
+
+    public Vector3 GetClosestAttackPoint(Vector3 vector3)
+    {
+        int _index = 0;
+        for (int i = 1; i < m_AttackPoints.Count; i++)
+        {
+            float _Distance = Vector3.Distance(m_AttackPoints[i].position, vector3);
+            float _ClosestDistance = Vector3.Distance(m_AttackPoints[_index].position, vector3);
+            if (_Distance < _ClosestDistance)
+            {
+                _index = i;
+            }
+        }
+        return m_AttackPoints[_index].position;
+    }
+
+    public Player GetPlayer()
+    {
+        return m_AssignedPlayer;
     }
 }

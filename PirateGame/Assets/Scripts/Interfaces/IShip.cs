@@ -25,5 +25,5 @@ public interface IShip
 
     (Vector3 ForwardShoot, Vector3 SideRightWaysShoot, Vector3 SideLeftWaysShoot) GetShootingPoint();
 
-
+    Rigidbody GetRB();
 }

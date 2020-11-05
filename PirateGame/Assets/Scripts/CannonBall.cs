@@ -14,7 +14,6 @@ public class CannonBall : PoolableObject
 
     private Rigidbody m_RigidBody;
     private TargetType m_Target;
-    
 
     private void OnTriggerEnter(Collider other)
     {
@@ -34,15 +33,13 @@ public class CannonBall : PoolableObject
         IShip ship = collider.GetComponentInParent<IShip>();
         if (ship != null)
         {
-            if (ship.GetTargetType() == m_Target)
+            if (ship.GetTargetType() != m_Target)
             {
                 ship.TakeDamage(DataBase.Instance.GetData().CannonBallData.Damage);
+                PoolObject();
             }
-            
         }
     }
-
-
 
     public void Launch(Vector3 _dir, float Power, TargetType targetType)
     {
