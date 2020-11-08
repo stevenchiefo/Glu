@@ -107,7 +107,7 @@ public class EnitiyManager : MonoBehaviour
     public Vector3 GetNewPoint(Vector3 AlreadyPoint)
     {
         Vector3 Newpos = m_DestanationPoints[Random.Range(0, m_DestanationPoints.Count)].position;
-        while (AlreadyPoint != Newpos)
+        while (AlreadyPoint == Newpos)
         {
             Newpos = m_DestanationPoints[Random.Range(0, m_DestanationPoints.Count)].position;
         }

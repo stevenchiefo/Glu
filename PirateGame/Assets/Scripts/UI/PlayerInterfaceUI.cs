@@ -14,11 +14,11 @@ public class PlayerInterfaceUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI m_GoldText;
     [SerializeField] private TextMeshProUGUI m_CannonBallText;
 
+    [SerializeField] private GameObject m_CanDockOBJ;
+
     private delegate void PlayerShipTask();
 
     private event PlayerShipTask OnUpdate;
-
-    
 
     private void Awake()
     {
@@ -37,10 +37,7 @@ public class PlayerInterfaceUI : MonoBehaviour
         OnUpdate += UpdateHealth;
         OnUpdate += UpdateGold;
         OnUpdate += UpdateCannonBall;
-        
     }
-
-    
 
     public void UpdateUI()
     {
@@ -65,5 +62,10 @@ public class PlayerInterfaceUI : MonoBehaviour
     {
         string _CannonBallText = $"{Player.Instance.GetPlayerStats().CannonBalls}";
         m_CannonBallText.text = _CannonBallText;
+    }
+
+    public void SetCanDock(bool _boolean)
+    {
+        m_CanDockOBJ.SetActive(_boolean);
     }
 }

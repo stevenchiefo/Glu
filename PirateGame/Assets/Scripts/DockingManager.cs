@@ -26,6 +26,24 @@ public class DockingManager : MonoBehaviour
         LoadDocks();
     }
 
+    private void Update()
+    {
+        CheckIfCanDock();
+    }
+
+    private void CheckIfCanDock()
+    {
+        for (int i = 0; i < m_Docks.Length; i++)
+        {
+            if (m_Docks[i].CanDock)
+            {
+                PlayerInterfaceUI.Instance.SetCanDock(true);
+                return;
+            }
+        }
+        PlayerInterfaceUI.Instance.SetCanDock(false);
+    }
+
     public void SetID(int ID)
     {
         m_LastID = ID;
@@ -46,9 +64,14 @@ public class DockingManager : MonoBehaviour
         m_Docks[_index].DockShip(ship, player);
     }
 
-    public void RespawnBoat(PlayerShip ship, Player player)
+    public void RespawnBoat(PlayerShip ship)
     {
-        m_Docks[m_LastID].RespawnShip(ship, player);
+        m_Docks[m_LastID].RespawnShip(ship);
+    }
+
+    public void RespawnPlayer(Player player)
+    {
+        m_Docks[m_LastID].RespawnPlayer(player);
     }
 
     private void LoadDocks()

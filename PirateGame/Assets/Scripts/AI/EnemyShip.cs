@@ -8,8 +8,8 @@ using UnityEngine.VFX;
 public class EnemyShip : PoolableObject, IShip
 {
     [Header("ShootPoints")]
-
     [SerializeField] private List<Transform> m_ShootPoints;
+
     [SerializeField] private Transform m_MiddlePoint;
     private Vector3 m_Destenation;
 
@@ -20,9 +20,9 @@ public class EnemyShip : PoolableObject, IShip
     private NavMeshAgent m_NavMeshAgent;
     private Rigidbody m_Rigidbody;
 
-
     //Combat
     private bool m_Combat;
+
     private bool m_MayFire;
     [SerializeField] private float m_AttackRange;
 
@@ -58,6 +58,15 @@ public class EnemyShip : PoolableObject, IShip
         else
         {
             m_Combat = false;
+        }
+
+        if (m_Combat)
+        {
+            m_NavMeshAgent.radius = 40;
+        }
+        else
+        {
+            m_NavMeshAgent.radius = 80;
         }
     }
 
@@ -100,7 +109,7 @@ public class EnemyShip : PoolableObject, IShip
 
     public void Move(Vector3 vector3)
     {
-        if (m_NavMeshAgent.isStopped)
+        if (m_NavMeshAgent.remainingDistance < 20f)
         {
             m_Destenation = EnitiyManager.Instance.GetNewPoint(vector3);
         }
@@ -176,7 +185,7 @@ public class EnemyShip : PoolableObject, IShip
         StartCoroutine(CheckMove());
         StartCoroutine(CheckFire());
 
-
+        m_Destenation = EnitiyManager.Instance.GetNewPoint(Vector3.zero);
         m_EnemyShipUI.UpdateUI();
     }
 

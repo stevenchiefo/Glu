@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Water : MonoBehaviour
@@ -7,6 +6,7 @@ public class Water : MonoBehaviour
     [SerializeField] private float m_MaxFloatPower;
     private float m_FloatPower;
     private bool m_Addup;
+    private bool m_AlreadyHittingPlayer;
 
     private void Start()
     {
@@ -42,6 +42,22 @@ public class Water : MonoBehaviour
     {
         CheckForBoat(other);
         CheckForTreasueChest(other);
+        if (!m_AlreadyHittingPlayer)
+        {
+            StartCoroutine(CheckForPlayerHit(other));
+        }
+    }
+
+    private IEnumerator CheckForPlayerHit(Collider collider)
+    {
+        Player player = collider.GetComponentInParent<Player>();
+        if (player != null)
+        {
+            m_AlreadyHittingPlayer = true;
+            player.TakeDamage(10);
+            yield return new WaitForSeconds(1);
+            m_AlreadyHittingPlayer = false;
+        }
     }
 
     private void CheckForBoat(Collider collider)

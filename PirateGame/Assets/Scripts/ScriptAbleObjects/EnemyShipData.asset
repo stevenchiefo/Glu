@@ -15,6 +15,6 @@ MonoBehaviour:
   MaxDurrabilty: 200
   Speed: 10
   RotationSpeed: 30
-  FirePower: 500
+  FirePower: 600
   FireCooldown: 2
   TargetType: 0

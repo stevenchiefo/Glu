@@ -26,6 +26,7 @@ public class PlayerShip : MonoBehaviour, IShip
     //Ship other var's
     private Rigidbody m_RigidBody;
 
+    private MeshCollider m_MeshCollider;
     private Player m_AssignedPlayer;
     private bool m_ShipCanMove;
 
@@ -38,7 +39,6 @@ public class PlayerShip : MonoBehaviour, IShip
 
     //Animation
     private Animator m_Animator;
-
 
     private void Awake()
     {
@@ -54,7 +54,8 @@ public class PlayerShip : MonoBehaviour, IShip
 
     private void Start()
     {
-        m_RigidBody = GetComponentInChildren<Rigidbody>();
+        m_RigidBody = GetComponent<Rigidbody>();
+        m_MeshCollider = GetComponent<MeshCollider>();
         m_Animator = GetComponentInChildren<Animator>();
 
         Durrability = DataBase.Instance.GetData().ShipData.MaxDurrabilty;
@@ -82,8 +83,6 @@ public class PlayerShip : MonoBehaviour, IShip
     {
         if (m_ShipCanMove)
         {
-
-
             switch (m_AssignedPlayer.GetAttackType())
             {
                 case AttackType.Forward:
@@ -91,21 +90,21 @@ public class PlayerShip : MonoBehaviour, IShip
                     m_LeftLineRendener.enabled = false;
                     m_RightLineRendener.enabled = false;
                     break;
+
                 case AttackType.LeftSide:
                     m_FrontLineRendener.enabled = false;
                     m_LeftLineRendener.enabled = true;
                     m_RightLineRendener.enabled = false;
 
                     break;
+
                 case AttackType.RightSide:
                     m_FrontLineRendener.enabled = false;
                     m_LeftLineRendener.enabled = false;
                     m_RightLineRendener.enabled = true;
                     break;
-
             }
         }
-        
     }
 
     private void Rotate()
@@ -119,7 +118,7 @@ public class PlayerShip : MonoBehaviour, IShip
     {
         if (m_ShipCanMove)
         {
-            transform.Translate(Vector3.forward * GetShipData().Speed * Time.deltaTime);
+            transform.Translate(Vector3.back * GetShipData().Speed * Time.deltaTime);
         }
     }
 
@@ -208,13 +207,26 @@ public class PlayerShip : MonoBehaviour, IShip
         m_FrontLineRendener.enabled = false;
         m_LeftLineRendener.enabled = false;
         m_RightLineRendener.enabled = false;
+        m_RigidBody.useGravity = false;
+        m_MeshCollider.enabled = false;
 
-        
+        string SinkShipBooleanName = "BoatSink";
+        m_Animator.SetBool(SinkShipBooleanName, true);
     }
 
     public void DestroyShip()
     {
+        string SinkShipBooleanName = "BoatSink";
+        m_Animator.SetBool(SinkShipBooleanName, false);
 
+        DockingManager.Instance.RespawnBoat(this);
+
+        Durrability = DataBase.Instance.GetData().ShipData.MaxDurrabilty;
+        m_RotationValue = 0;
+        m_RigidBody.useGravity = true;
+        m_MeshCollider.enabled = true;
+
+        PlayerShipUI.Instance.UpdateUI();
     }
 
     public void DockShip()

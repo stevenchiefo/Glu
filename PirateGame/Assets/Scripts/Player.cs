@@ -72,9 +72,8 @@ public class Player : MonoBehaviour
             Gold = 100,
             CannonBalls = 50,
         };
-        m_Ship.AssignPlayer(this);
 
-        PlayerInterfaceUI.Instance.UpdateUI();
+        m_Ship.AssignPlayer(this);
     }
 
     private void Update()
@@ -167,7 +166,10 @@ public class Player : MonoBehaviour
             PlayerShip ship = collision.gameObject.GetComponentInParent<PlayerShip>();
             if (ship != null)
             {
-                BoardShip();
+                if (ship.Durrability > 0)
+                {
+                    BoardShip();
+                }
             }
         }
     }
@@ -213,6 +215,7 @@ public class Player : MonoBehaviour
         {
             SetDead();
         }
+        PlayerInterfaceUI.Instance.UpdateUI();
     }
 
     public bool IsOnShip()
@@ -222,6 +225,8 @@ public class Player : MonoBehaviour
 
     private void SetDead()
     {
+        DockingManager.Instance.RespawnPlayer(this);
+        m_PlayerStats.Health = m_MaxHealth;
     }
 
     #region PlayerStats;
