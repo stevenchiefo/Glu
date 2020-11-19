@@ -1685,7 +1685,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RunnerData: {fileID: 11400000, guid: 6cad14682d92ed94a93cb1f7f10e174d, type: 2}
-  m_FlyerData: {fileID: 0}
+  m_FlyerData: {fileID: 11400000, guid: 36eeda5f2296985419468364d7213e19, type: 2}
   m_ArcherTower: {fileID: 11400000, guid: 0f67bac172cb9e74ea0c29b72e79fd84, type: 2}
   m_ArcherArrow: {fileID: 11400000, guid: cc72d857ac1355a4abf8f98dce4f5f1d, type: 2}
 --- !u!114 &346363988
@@ -8335,7 +8335,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Level 3
+  m_Text: 'Level 2
 
 '
 --- !u!222 &1432272450

@@ -1,12 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Net;
-using System.Security;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
-using UnityEngine.UIElements;
-using UnityEditor;
 
 public class WaveManager : MonoBehaviour
 {
@@ -142,21 +135,21 @@ public class WaveManager : MonoBehaviour
         MeshCollider.sharedMesh = MeshFilter.mesh;
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        for (int i = 0; i < Vertics.Length; i++)
-        {
-            if (Vertics[i].y > 0.5f * m_HeightMultiplyer)
-            {
-                Gizmos.color = Color.red;
-            }
-            else
-            {
-                Gizmos.color = Color.blue;
-            }
-            Gizmos.DrawSphere(Vertics[i] + transform.position, 10f);
-        }
-    }
+    //private void OnDrawGizmosSelected()
+    //{
+    //    for (int i = 0; i < Vertics.Length; i++)
+    //    {
+    //        if (Vertics[i].y > 0.5f * m_HeightMultiplyer)
+    //        {
+    //            Gizmos.color = Color.red;
+    //        }
+    //        else
+    //        {
+    //            Gizmos.color = Color.blue;
+    //        }
+    //        Gizmos.DrawSphere(Vertics[i] + transform.position, 10f);
+    //    }
+    //}
 
     public float GetFloatPower()
     {
@@ -165,7 +158,7 @@ public class WaveManager : MonoBehaviour
 
     public float WaveHeight(Vector3 _pos)
     {
-        float _Multiply = 0.3f;
+        
         return (Mathf.PerlinNoise(_pos.x + m_WaterX, _pos.y + m_WaterX) * m_HeightMultiplyer) + transform.position.y;
     }
 }

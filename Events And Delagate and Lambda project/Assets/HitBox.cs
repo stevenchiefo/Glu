@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class HitBox : MonoBehaviour
 {
-    
-
     public delegate void HitboxDelegate(HitBox hitBox);
 
     public event HitboxDelegate OnPressed;
