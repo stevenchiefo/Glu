@@ -27,4 +27,10 @@ public class Support
         Gizmos.color = color;
         Gizmos.DrawLine(pos1, pos2);
     }
+
+    public static void DrawWiredSphere(Vector3 pos,float radius, Color color)
+    {
+        Gizmos.color = color;
+        Gizmos.DrawWireSphere(pos, radius);
+    }
 }

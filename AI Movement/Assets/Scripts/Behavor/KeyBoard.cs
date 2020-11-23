@@ -13,6 +13,10 @@ public class KeyBoard : Behavor
         {
             m_PositionTarget = behavorContext.Position + input.normalized * behavorContext.Settings.m_MaxVelocityDesired;
         }
+        else
+        {
+            m_PositionTarget = behavorContext.Position;
+        }
 
         m_VelocityDesired = (m_PositionTarget - behavorContext.Position) * behavorContext.Settings.m_MaxVelocityDesired;
         return m_VelocityDesired - behavorContext.Velocity;
@@ -21,7 +25,8 @@ public class KeyBoard : Behavor
     public override void OnDrawGizmos(BehavorContext behavorContext)
     {
         base.OnDrawGizmos(behavorContext);
-        Support.DrawRay(behavorContext.Position, behavorContext.Velocity, Color.red);
-        Support.Point(behavorContext.Velocity, 0.5f, Color.red);
+        Vector3 posvelocity = behavorContext.Position + behavorContext.Velocity;
+        Support.DrawLine(behavorContext.Position, posvelocity, Color.red);
+        Support.Point(posvelocity, 0.5f, Color.red);
     }
 }

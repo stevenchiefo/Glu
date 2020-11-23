@@ -6,6 +6,9 @@ namespace Steering
 {
     public interface IBehavor
     {
+        float Priorty { get; set; }
+        string Label { get; set; }
+        
         /// <summary>
         /// 
         /// </summary>
@@ -19,6 +22,8 @@ namespace Steering
         /// <param name="behavorContext"></param>
         /// <returns></returns>
         Vector3 CaculateSteeringForce(float dt, BehavorContext behavorContext);
+
+        void SetPriorty(float Priorty);
 
         /// <summary>
         /// 

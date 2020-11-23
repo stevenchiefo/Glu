@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Steering Settings
   m_EditorClassIdentifier: 
   m_Mass: 70
-  m_MaxSteeringForce: 10
+  m_MaxSteeringForce: 20
   m_MaxVelocityDesired: 3
   m_MaxSpeed: 3
+  m_StopDistance: 0.2
+  m_FleeDistance: 4
+  m_PathDistance: 0.1
+  m_PointArriveDistance: 0.5

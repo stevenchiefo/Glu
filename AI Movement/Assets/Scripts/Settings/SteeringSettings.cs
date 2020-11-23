@@ -12,5 +12,15 @@ namespace Steering
         public float m_MaxSteeringForce;
         public float m_MaxVelocityDesired;
         public float m_MaxSpeed;
+
+        [Header("Braking")]
+        public float m_StopDistance;
+
+        [Header("Flee Setting")]
+        public float m_FleeDistance;
+
+        [Header("Pathing")]
+        public float m_PathDistance;
+        public float m_PointArriveDistance;
     }
 }
