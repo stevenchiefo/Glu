@@ -7,6 +7,7 @@ public class ObjectAvoidance : Behavor
 {
     public float Radius;
     private LayerMask LayerMask;
+
     public ObjectAvoidance(float radius, LayerMask layerMask)
     {
         Radius = radius;
@@ -15,7 +16,6 @@ public class ObjectAvoidance : Behavor
 
     public override Vector3 CaculateSteeringForce(float dt, BehavorContext behavorContext)
     {
-        Debug.Log(Priorty);
         if (Priorty == 0)
         {
             return Vector3.zero;
@@ -23,6 +23,11 @@ public class ObjectAvoidance : Behavor
         m_PositionTarget = GetAllDir(behavorContext);
         Vector3 dir = m_PositionTarget - behavorContext.Position;
 
+        float angle = Vector3.Angle(m_VelocityDesired, behavorContext.Velocity);
+        if (angle > 179)
+        {
+            m_VelocityDesired = Vector3.Cross(Vector3.up, behavorContext.Velocity);
+        }
 
         m_VelocityDesired = dir * behavorContext.Settings.m_MaxVelocityDesired;
         return m_VelocityDesired - behavorContext.Velocity;
@@ -34,22 +39,16 @@ public class ObjectAvoidance : Behavor
         Collider[] Colliders = Physics.OverlapSphere(context.Position, Radius, LayerMask);
         if (Colliders.Length > 0)
         {
-            Debug.Log("hit");
             foreach (Collider col in Colliders)
             {
-
                 Vector3 dir = col.transform.position - context.Position;
                 if (Physics.Raycast(context.Position, dir, out RaycastHit hit))
                 {
-
                     priorty = GetPriorty(Vector3.Distance(context.Position, hit.point));
                     Priorty = priorty;
                     return priorty;
                 }
-
-
             }
-
         }
         Priorty = priorty;
         return priorty;
@@ -63,18 +62,19 @@ public class ObjectAvoidance : Behavor
         {
             if (collider.tag.ToLower() != "ground")
             {
-
                 Vector3 directiontoCol = collider.transform.position - context.Position;
                 if (Physics.Raycast(context.Position, directiontoCol, out RaycastHit hit))
                 {
                     Debug.DrawLine(context.Position, hit.point, Color.cyan);
-                    Dir += ((context.Position - collider.transform.position + hit.point) * Priorty ) * GetMultiPlyer(Vector3.Distance(context.Position, hit.collider.ClosestPoint(hit.point)));
+                    Debug.DrawLine(hit.point, hit.point + ((hit.point - collider.transform.position) / 2f), Color.green);
+                    Dir += (((hit.point - collider.transform.position)).normalized * GetMultiPlyer(Vector3.Distance(context.Position, hit.collider.ClosestPoint(hit.point)))) * Radius;
                 }
             }
         }
-        Debug.DrawLine(context.Position, context.Position + Dir);
+        Debug.DrawLine(context.Position, context.Position + Dir, Color.red);
         return Dir;
     }
+
     private float GetMultiPlyer(float distance)
     {
         float ammount = 0;
@@ -83,23 +83,21 @@ public class ObjectAvoidance : Behavor
             ammount = 1 - distance * 1.5f;
             return 2f + ammount;
         }
-        ammount = 1 - (distance * 1.5f / 10f);
+        ammount = 1 - ((distance * 1.5f) / 10f);
         return 2f + ammount;
     }
 
     private float GetPriorty(float distance)
     {
-        
         float ammount = 0;
-        if (distance < Radius * 0.95f)
+        if (distance <= Radius)
         {
             ammount = 0.9f;
             return ammount;
         }
-        ammount = 0.6f;
+        ammount = 0.5f;
         return ammount;
     }
-
 
     public override void OnDrawGizmos(BehavorContext behavorContext)
     {
@@ -108,7 +106,6 @@ public class ObjectAvoidance : Behavor
         color.a = 50f;
         Support.DrawLine(behavorContext.Position, behavorContext.Position + behavorContext.Velocity, Color.white);
         Support.DrawWiredSphere(behavorContext.Position, Radius, color);
+        Support.DrawWiredSphere(m_PositionTarget, 1f, Color.red);
     }
-
-
 }

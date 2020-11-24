@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Steering
 {
-
     using BehavorList = List<IBehavor>;
+
     [RequireComponent(typeof(Rigidbody))]
     public class Steering : MonoBehaviour
     {
@@ -20,14 +20,13 @@ namespace Steering
         private BehavorList m_BehavorList = new BehavorList();
         private ObjectAvoidance m_ObjectAvoidance;
 
-
-
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             m_Position = transform.position;
             m_Rb = GetComponent<Rigidbody>();
         }
+
         private void FixedUpdate()
         {
             m_Steering = Vector3.zero;
@@ -35,7 +34,7 @@ namespace Steering
             foreach (Behavor behavor in m_BehavorList)
             {
                 m_Steering += behavor.CaculateSteeringForce(Time.deltaTime, new BehavorContext(m_Position, m_Velocity, m_Settings)) * behavor.Priorty;
-                Debug.DrawLine(m_Position, m_Position + m_Steering);
+                Debug.DrawLine(m_Position, m_Position + m_Steering, Color.red);
             }
 
             m_Steering.y = 0f;
@@ -49,8 +48,8 @@ namespace Steering
             m_Rb.MovePosition(transform.position + m_Velocity * Time.fixedDeltaTime);
             m_Position = m_Rb.position;
             transform.LookAt(m_Position + Time.fixedDeltaTime * m_Velocity);
-
         }
+
         private void OnDrawGizmos()
         {
             foreach (IBehavor behavor in m_BehavorList)
@@ -75,7 +74,6 @@ namespace Steering
 
         public void SetBehaviors(ObjectAvoidance objectAvoidance, BehavorList behavorList, string label = "")
         {
-
             m_Label = label;
             m_BehavorList = behavorList;
             m_ObjectAvoidance = objectAvoidance;
@@ -85,9 +83,5 @@ namespace Steering
                 behavor.Start(new BehavorContext(m_Position, m_Velocity, m_Settings));
             }
         }
-
-
-
-
     }
 }

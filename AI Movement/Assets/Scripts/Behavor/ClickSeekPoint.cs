@@ -16,15 +16,13 @@ public class ClickSeekPoint : Behavor
         }
         Vector3 dir = m_PositionTarget - behavorContext.Position;
         float _Dis = Vector3.Distance(behavorContext.Position, m_PositionTarget);
-        if(_Dis < behavorContext.Settings.m_StopDistance)
+        if (_Dis < behavorContext.Settings.m_StopDistance)
         {
-            dir = Vector3.zero;
+            dir = behavorContext.Velocity / 2f;
         }
 
         m_VelocityDesired = dir * behavorContext.Settings.m_MaxVelocityDesired;
         return m_VelocityDesired - behavorContext.Velocity;
-
-
     }
 
     public override void OnDrawGizmos(BehavorContext behavorContext)
