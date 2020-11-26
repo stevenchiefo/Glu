@@ -24,6 +24,7 @@ namespace Steering
 
         [Header("Manual")]
         public BehaviorEnum m_Behavior;
+
         public GameObject m_Target;
 
         [Header("Private")]
@@ -34,9 +35,9 @@ namespace Steering
 
         [Header("Object Avoidance")]
         public LayerMask LayerMask;
+
         public bool m_Active;
         public float m_Radius;
-
 
         public SimpleBrain()
         {
@@ -69,21 +70,26 @@ namespace Steering
                 case BehaviorEnum.SeekClickPoint:
                     behavors.Add(new ClickSeekPoint());
                     break;
+
                 case BehaviorEnum.Seek:
                     behavors.Add(new Seek(m_Target.transform));
                     break;
+
                 case BehaviorEnum.Flee:
                     behavors.Add(new Flee(m_Target.transform));
                     break;
+
                 case BehaviorEnum.FollowPath:
                     behavors.Add(new FollowPath(m_WaitPoints));
+                    break;
+
+                case BehaviorEnum.Pursue:
+                    behavors.Add(new Persue(m_Target.transform));
                     break;
 
                 default:
                     Debug.LogError($"Behavior of Type{m_Behavior} not implemented yet!");
                     break;
-
-
             }
             ObjectAvoidance objectAvoidance = null;
             if (m_Active)

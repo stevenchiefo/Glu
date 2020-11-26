@@ -67,7 +67,7 @@ public class ObjectAvoidance : Behavor
                 {
                     Debug.DrawLine(context.Position, hit.point, Color.cyan);
                     Debug.DrawLine(hit.point, hit.point + ((hit.point - collider.transform.position) / 2f), Color.green);
-                    Dir += (((hit.point - collider.transform.position)).normalized * GetMultiPlyer(Vector3.Distance(context.Position, hit.collider.ClosestPoint(hit.point)))) * Radius;
+                    Dir += (((hit.point - collider.transform.position)).normalized * GetMultiPlyer(Vector3.Distance(context.Position, hit.collider.ClosestPoint(hit.point)))) * Radius - context.Velocity;
                 }
             }
         }
@@ -90,12 +90,12 @@ public class ObjectAvoidance : Behavor
     private float GetPriorty(float distance)
     {
         float ammount = 0;
-        if (distance <= Radius)
+        if (distance <= Radius * 0.7f)
         {
-            ammount = 0.9f;
+            ammount = 0.6f;
             return ammount;
         }
-        ammount = 0.5f;
+        ammount = 0.2f;
         return ammount;
     }
 

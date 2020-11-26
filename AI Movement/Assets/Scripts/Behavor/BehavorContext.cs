@@ -10,7 +10,7 @@ namespace Steering
         public Vector3 Velocity;
         public SteeringSettings Settings;
 
-        public BehavorContext(Vector3 position,Vector3 velocity,SteeringSettings settings)
+        public BehavorContext(Vector3 position, Vector3 velocity, SteeringSettings settings)
         {
             Position = position;
             Velocity = velocity;
