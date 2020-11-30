@@ -123,6 +123,7 @@ namespace Steering
                         behavor.SetPriorty(OtherPriortys);
                 }
             }
+
         }
 
         public void SetSteeringSettings(SteeringSettings steeringSettings)
@@ -152,6 +153,7 @@ namespace Steering
                     behavor.SetPriorty(1);
                 }
             }
+
         }
     }
 }

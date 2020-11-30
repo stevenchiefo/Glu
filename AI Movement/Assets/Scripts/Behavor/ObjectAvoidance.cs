@@ -98,6 +98,7 @@ public class ObjectAvoidance : Behavor
 
     public override void OnDrawGizmos(BehavorContext behavorContext)
     {
+
         base.OnDrawGizmos(behavorContext);
         Color color = Color.blue;
         Support.DrawWiredSphere(behavorContext.Position, Radius, color);
