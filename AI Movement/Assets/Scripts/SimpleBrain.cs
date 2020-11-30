@@ -36,8 +36,11 @@ namespace Steering
         [Header("Object Avoidance")]
         public LayerMask LayerMask;
 
-        public bool m_Active;
+        public bool m_ObjectAvoidanceActive;
         public float m_Radius;
+
+        [Header("Arrive")]
+        public bool m_ArriveActive;
 
         public SimpleBrain()
         {
@@ -86,20 +89,35 @@ namespace Steering
                 case BehaviorEnum.Pursue:
                     behavors.Add(new Persue(m_Target.transform));
                     break;
+                case BehaviorEnum.Evade:
+                    behavors.Add(new Evade(m_Target.transform));
+                    break;
+
+                case BehaviorEnum.Wander:
+                    behavors.Add(new Wander());
+                    break;
 
                 default:
                     Debug.LogError($"Behavior of Type{m_Behavior} not implemented yet!");
                     break;
             }
             ObjectAvoidance objectAvoidance = null;
-            if (m_Active)
+            Arrive arrive = null;
+            if (m_ObjectAvoidanceActive)
             {
                 objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
                 objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
                 behavors.Add(objectAvoidance);
+
+            }
+            if (m_ArriveActive)
+            {
+                arrive = new Arrive(m_Target.transform);
+                arrive.Label = "Arrive";
+                behavors.Add(arrive);
             }
             behavors[0].Label = label;
-            m_Steering.SetBehaviors(objectAvoidance, behavors, label);
+            m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, label);
         }
     }
 }

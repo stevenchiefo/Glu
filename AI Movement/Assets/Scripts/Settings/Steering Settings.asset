@@ -16,7 +16,12 @@ MonoBehaviour:
   m_MaxSteeringForce: 20
   m_MaxVelocityDesired: 3
   m_MaxSpeed: 3
-  m_StopDistance: 0.2
+  m_StopDistance: 1
   m_FleeDistance: 4
   m_PathDistance: 0.1
-  m_PointArriveDistance: 0.5
+  m_PointArriveDistance: 1
+  m_ArriveDistance: 2
+  m_SlowingDistance: 3.5
+  m_WanderCircleDistance: 4
+  m_WanderCircleRadius: 2
+  m_WanderNoiseAngle: 5

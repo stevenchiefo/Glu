@@ -20,15 +20,18 @@ public class ObjectAvoidance : Behavor
         {
             return Vector3.zero;
         }
-        m_PositionTarget = GetAllDir(behavorContext);
-        Vector3 dir = m_PositionTarget - behavorContext.Position;
+
+        Vector3 dir = GetAllDir(behavorContext) - behavorContext.Position;
+        Debug.DrawLine(behavorContext.Position, behavorContext.Position + dir);
 
         float angle = Vector3.Angle(m_VelocityDesired, behavorContext.Velocity);
-        if (angle > 179)
+        if (angle == 0 && m_PositionTarget != Vector3.zero)
         {
-            m_VelocityDesired = Vector3.Cross(Vector3.up, behavorContext.Velocity);
+            dir += Vector3.Cross(Vector3.up, behavorContext.Velocity) * behavorContext.Settings.m_MaxVelocityDesired;
         }
 
+        m_PositionTarget = dir;
+        m_PositionTarget.y = 0;
         m_VelocityDesired = dir * behavorContext.Settings.m_MaxVelocityDesired;
         return m_VelocityDesired - behavorContext.Velocity;
     }
@@ -44,7 +47,7 @@ public class ObjectAvoidance : Behavor
                 Vector3 dir = col.transform.position - context.Position;
                 if (Physics.Raycast(context.Position, dir, out RaycastHit hit))
                 {
-                    priorty = GetPriorty(Vector3.Distance(context.Position, hit.point));
+                    priorty = GetPriorty(Vector3.Distance(context.Position, hit.point), context);
                     Priorty = priorty;
                     return priorty;
                 }
@@ -60,18 +63,12 @@ public class ObjectAvoidance : Behavor
         Vector3 Dir = Vector3.zero;
         foreach (Collider collider in Colliders)
         {
-            if (collider.tag.ToLower() != "ground")
+            Vector3 directiontoCol = collider.transform.position - context.Position;
+            if (Physics.Raycast(context.Position, directiontoCol, out RaycastHit hit))
             {
-                Vector3 directiontoCol = collider.transform.position - context.Position;
-                if (Physics.Raycast(context.Position, directiontoCol, out RaycastHit hit))
-                {
-                    Debug.DrawLine(context.Position, hit.point, Color.cyan);
-                    Debug.DrawLine(hit.point, hit.point + ((hit.point - collider.transform.position) / 2f), Color.green);
-                    Dir += (((hit.point - collider.transform.position)).normalized * GetMultiPlyer(Vector3.Distance(context.Position, hit.collider.ClosestPoint(hit.point)))) * Radius - context.Velocity;
-                }
+                Dir += (((context.Position - collider.ClosestPoint(hit.point))) * GetMultiPlyer(Vector3.Distance(context.Position, collider.ClosestPoint(hit.point)))) * Radius;
             }
         }
-        Debug.DrawLine(context.Position, context.Position + Dir, Color.red);
         return Dir;
     }
 
@@ -87,15 +84,15 @@ public class ObjectAvoidance : Behavor
         return 2f + ammount;
     }
 
-    private float GetPriorty(float distance)
+    private float GetPriorty(float distance, BehavorContext context)
     {
         float ammount = 0;
-        if (distance <= Radius * 0.7f)
+        if (distance <= Radius * 0.95f)
         {
-            ammount = 0.6f;
+            ammount = context.Settings.m_MaxPriorty;
             return ammount;
         }
-        ammount = 0.2f;
+        ammount = context.Settings.m_MinPriorty;
         return ammount;
     }
 
@@ -103,9 +100,12 @@ public class ObjectAvoidance : Behavor
     {
         base.OnDrawGizmos(behavorContext);
         Color color = Color.blue;
-        color.a = 50f;
-        Support.DrawLine(behavorContext.Position, behavorContext.Position + behavorContext.Velocity, Color.white);
         Support.DrawWiredSphere(behavorContext.Position, Radius, color);
-        Support.DrawWiredSphere(m_PositionTarget, 1f, Color.red);
+        if (Priorty != 0)
+        {
+            color.a = 50f;
+            Support.DrawLine(behavorContext.Position, behavorContext.Position + behavorContext.Velocity, Color.white);
+            Support.DrawWiredSphere(m_PositionTarget, 1f, Color.red);
+        }
     }
 }
