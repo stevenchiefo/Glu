@@ -33,4 +33,10 @@ public class Support
         Gizmos.color = color;
         Gizmos.DrawWireSphere(pos, radius);
     }
+
+    public static void DrawCircle(Vector3 pos, float radius, Color color)
+    {
+        UnityEditor.Handles.color = color;
+        UnityEditor.Handles.DrawWireDisc(pos, new Vector3(0,90,0), radius);
+    }
 }

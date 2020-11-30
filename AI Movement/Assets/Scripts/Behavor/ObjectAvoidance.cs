@@ -24,9 +24,10 @@ public class ObjectAvoidance : Behavor
         Vector3 dir = m_PositionTarget - behavorContext.Position;
 
         float angle = Vector3.Angle(m_VelocityDesired, behavorContext.Velocity);
-        if (angle > 179)
+        if (angle >= 0 && m_PositionTarget != Vector3.zero)
         {
-            m_VelocityDesired = Vector3.Cross(Vector3.up, behavorContext.Velocity);
+            dir += Vector3.Cross(Vector3.up, behavorContext.Velocity) * behavorContext.Settings.m_MaxVelocityDesired;
+
         }
 
         m_VelocityDesired = dir * behavorContext.Settings.m_MaxVelocityDesired;
@@ -65,13 +66,10 @@ public class ObjectAvoidance : Behavor
                 Vector3 directiontoCol = collider.transform.position - context.Position;
                 if (Physics.Raycast(context.Position, directiontoCol, out RaycastHit hit))
                 {
-                    Debug.DrawLine(context.Position, hit.point, Color.cyan);
-                    Debug.DrawLine(hit.point, hit.point + ((hit.point - collider.transform.position) / 2f), Color.green);
-                    Dir += (((hit.point - collider.transform.position)).normalized * GetMultiPlyer(Vector3.Distance(context.Position, hit.collider.ClosestPoint(hit.point)))) * Radius - context.Velocity;
+                    Dir += (((hit.point - collider.transform.position)) * GetMultiPlyer(Vector3.Distance(context.Position, hit.point))) * Radius - context.Velocity;
                 }
             }
         }
-        Debug.DrawLine(context.Position, context.Position + Dir, Color.red);
         return Dir;
     }
 
@@ -90,9 +88,9 @@ public class ObjectAvoidance : Behavor
     private float GetPriorty(float distance)
     {
         float ammount = 0;
-        if (distance <= Radius * 0.7f)
+        if (distance <= Radius * 0.95f)
         {
-            ammount = 0.6f;
+            ammount = 0.7f;
             return ammount;
         }
         ammount = 0.2f;
@@ -101,11 +99,15 @@ public class ObjectAvoidance : Behavor
 
     public override void OnDrawGizmos(BehavorContext behavorContext)
     {
+
         base.OnDrawGizmos(behavorContext);
         Color color = Color.blue;
-        color.a = 50f;
-        Support.DrawLine(behavorContext.Position, behavorContext.Position + behavorContext.Velocity, Color.white);
         Support.DrawWiredSphere(behavorContext.Position, Radius, color);
-        Support.DrawWiredSphere(m_PositionTarget, 1f, Color.red);
+        if (Priorty > 0)
+        {
+            color.a = 50f;
+            Support.DrawLine(behavorContext.Position, behavorContext.Position + behavorContext.Velocity, Color.white);
+            Support.DrawWiredSphere(m_PositionTarget, 1f, Color.red);
+        }
     }
 }

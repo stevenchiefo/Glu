@@ -22,5 +22,14 @@ namespace Steering
         [Header("Pathing")]
         public float m_PathDistance;
         public float m_PointArriveDistance;
+
+        [Header("Arrive")]
+        public float m_ArriveDistance = 1f;
+        public float m_SlowingDistance = 2f;
+
+        [Header("Wander")]
+        public float m_WanderCircleDistance = 5.0f;
+        public float m_WanderCircleRadius = 5.0f;
+        public float m_WanderNoiseAngle = 10f;
     }
 }
