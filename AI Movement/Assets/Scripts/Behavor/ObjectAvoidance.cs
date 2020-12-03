@@ -8,6 +8,11 @@ public class ObjectAvoidance : Behavor
     public float Radius;
     private LayerMask LayerMask;
 
+    //GizmosDraw
+    private Vector3 m_TargetPos;
+
+    private Vector3 m_LastHitpos;
+
     public ObjectAvoidance(float radius, LayerMask layerMask)
     {
         Radius = radius;
@@ -25,9 +30,9 @@ public class ObjectAvoidance : Behavor
         Debug.DrawLine(behavorContext.Position, behavorContext.Position + dir);
 
         float angle = Vector3.Angle(m_VelocityDesired, behavorContext.Velocity);
-        if (angle == 0 && m_PositionTarget != Vector3.zero)
+        if (angle > 50 && angle < 70 && m_PositionTarget != Vector3.zero)
         {
-            dir += Vector3.Cross(Vector3.up, behavorContext.Velocity) * behavorContext.Settings.m_MaxVelocityDesired;
+            dir += (Vector3.Cross(Vector3.up, behavorContext.Velocity) * behavorContext.Settings.m_MaxVelocityDesired) * 2;
         }
 
         m_PositionTarget = dir;
@@ -66,7 +71,19 @@ public class ObjectAvoidance : Behavor
             Vector3 directiontoCol = collider.transform.position - context.Position;
             if (Physics.Raycast(context.Position, directiontoCol, out RaycastHit hit))
             {
-                Dir += (((context.Position - collider.ClosestPoint(hit.point))) * GetMultiPlyer(Vector3.Distance(context.Position, collider.ClosestPoint(hit.point)))) * Radius;
+                if (context.Settings.m_AvoidanceType == SteeringSettings.AvoidanceType.Ricochet)
+                {
+                    Vector3 Closetpoint = hit.point;
+                    m_LastHitpos = Closetpoint;
+                    Dir += (((Closetpoint - collider.transform.position)) * GetMultiPlyer(Vector3.Distance(context.Position, Closetpoint))) * Radius;
+                }
+                else
+                {
+                    Vector3 Hitpos = hit.point;
+                    m_LastHitpos = Hitpos;
+                    Dir += (((context.Position - Hitpos)) * GetMultiPlyer(Vector3.Distance(context.Position, Hitpos))) * Radius;
+                }
+                m_TargetPos = Dir + context.Position;
             }
         }
         return Dir;
@@ -98,7 +115,6 @@ public class ObjectAvoidance : Behavor
 
     public override void OnDrawGizmos(BehavorContext behavorContext)
     {
-
         base.OnDrawGizmos(behavorContext);
         Color color = Color.blue;
         Support.DrawWiredSphere(behavorContext.Position, Radius, color);
@@ -107,6 +123,13 @@ public class ObjectAvoidance : Behavor
             color.a = 50f;
             Support.DrawLine(behavorContext.Position, behavorContext.Position + behavorContext.Velocity, Color.white);
             Support.DrawWiredSphere(m_PositionTarget, 1f, Color.red);
+            DrawAvoid(behavorContext);
         }
+    }
+
+    private void DrawAvoid(BehavorContext Context)
+    {
+        Support.DrawLine(Context.Position, m_LastHitpos, Color.blue);
+        Support.DrawLine(m_LastHitpos, m_TargetPos, Color.green);
     }
 }

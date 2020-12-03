@@ -89,12 +89,17 @@ namespace Steering
                 case BehaviorEnum.Pursue:
                     behavors.Add(new Persue(m_Target.transform));
                     break;
+
                 case BehaviorEnum.Evade:
                     behavors.Add(new Evade(m_Target.transform));
                     break;
 
                 case BehaviorEnum.Wander:
                     behavors.Add(new Wander());
+                    break;
+
+                case BehaviorEnum.Hide:
+                    behavors.Add(new Hide(m_Target.transform));
                     break;
 
                 default:
@@ -108,7 +113,6 @@ namespace Steering
                 objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
                 objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
                 behavors.Add(objectAvoidance);
-
             }
             if (m_ArriveActive)
             {

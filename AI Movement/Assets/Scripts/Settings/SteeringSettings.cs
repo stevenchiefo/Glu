@@ -7,6 +7,12 @@ namespace Steering
     [CreateAssetMenu(fileName = "Steering Settings", menuName = "Steering/Steering Settings", order = 1)]
     public class SteeringSettings : ScriptableObject
     {
+        public enum AvoidanceType
+        {
+            Avoid,
+            Ricochet,
+        };
+
         [Header("SteeringSettings")]
         public float m_Mass;
 
@@ -40,5 +46,13 @@ namespace Steering
         public float m_MaxPriorty = 1f;
 
         public float m_MinPriorty = 0.1f;
+
+        [Header("Hide")]
+        public LayerMask m_HideLayerMask;
+
+        public AvoidanceType m_AvoidanceType;
+        public float m_HideSearchRadius;
+        public float m_HideDistance;
+        public float m_HideOffset;
     }
 }
