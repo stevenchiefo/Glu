@@ -25,3 +25,5 @@ MonoBehaviour:
   m_WanderCircleDistance: 4
   m_WanderCircleRadius: 2
   m_WanderNoiseAngle: 5
+  m_MaxPriorty: 0.9
+  m_MinPriorty: 0.2
