@@ -1,0 +1,11 @@
+D:\Visual studio\Data sience\Data sience\bin\Debug\netcoreapp3.0\Data sience.exe
+D:\Visual studio\Data sience\Data sience\bin\Debug\netcoreapp3.0\Data sience.deps.json
+D:\Visual studio\Data sience\Data sience\bin\Debug\netcoreapp3.0\Data sience.runtimeconfig.json
+D:\Visual studio\Data sience\Data sience\bin\Debug\netcoreapp3.0\Data sience.runtimeconfig.dev.json
+D:\Visual studio\Data sience\Data sience\bin\Debug\netcoreapp3.0\Data sience.dll
+D:\Visual studio\Data sience\Data sience\bin\Debug\netcoreapp3.0\Data sience.pdb
+D:\Visual studio\Data sience\Data sience\obj\Debug\netcoreapp3.0\Data sience.csprojAssemblyReference.cache
+D:\Visual studio\Data sience\Data sience\obj\Debug\netcoreapp3.0\Data sience.AssemblyInfoInputs.cache
+D:\Visual studio\Data sience\Data sience\obj\Debug\netcoreapp3.0\Data sience.AssemblyInfo.cs
+D:\Visual studio\Data sience\Data sience\obj\Debug\netcoreapp3.0\Data sience.dll
+D:\Visual studio\Data sience\Data sience\obj\Debug\netcoreapp3.0\Data sience.pdb
