@@ -25,12 +25,12 @@ MonoBehaviour:
   m_WanderCircleDistance: 4
   m_WanderCircleRadius: 2
   m_WanderNoiseAngle: 5
-  m_MaxPriorty: 0.7
-  m_MinPriorty: 0.5
+  m_MaxPriorty: 1
+  m_MinPriorty: 1
   m_HideLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
-  m_AvoidanceType: 0
+    m_Bits: 1
+  m_AvoidanceType: 1
   m_HideSearchRadius: 1000
   m_HideDistance: 5
   m_HideOffset: 5

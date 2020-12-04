@@ -34,6 +34,15 @@ public class Hide : Behavor
         }
     }
 
+    public override void OnDrawGizmos(BehavorContext behavorContext)
+    {
+        base.OnDrawGizmos(behavorContext);
+        foreach (Vector3 hidespot in m_HideSpots)
+        {
+            Support.DrawWiredSphere(hidespot, 1, Color.blue);
+        }
+    }
+
     private Vector3 GetClosestPoint(BehavorContext context)
     {
         m_HideSpots = GetHideSpots(context);
