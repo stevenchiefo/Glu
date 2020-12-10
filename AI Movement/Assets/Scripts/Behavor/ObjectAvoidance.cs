@@ -26,18 +26,14 @@ public class ObjectAvoidance : Behavor
             return Vector3.zero;
         }
 
-
         Vector3 dir = GetAllDir(behavorContext);
         m_PositionTarget = dir + behavorContext.Position;
-        
+
         float angle = Vector3.Angle(m_VelocityDesired, behavorContext.Velocity);
         if (angle >= 0 && angle < 1 && m_PositionTarget != Vector3.zero)
         {
             m_PositionTarget += (Vector3.Cross(behavorContext.Position + Vector3.up, behavorContext.Velocity) * behavorContext.Settings.m_MaxVelocityDesired) * (Radius * 10);
         }
-        
-        
-        m_PositionTarget.y = 0;
         Debug.DrawLine(behavorContext.Position, behavorContext.Position + dir);
 
         m_VelocityDesired = (m_PositionTarget - behavorContext.Position) * behavorContext.Settings.m_MaxVelocityDesired;
@@ -67,7 +63,9 @@ public class ObjectAvoidance : Behavor
 
     private Vector3 GetAllDir(BehavorContext context)
     {
+        // We stoppen in een allen colliders in een array door een overlapsphere
         Collider[] Colliders = Physics.OverlapSphere(context.Position, Radius * 1.2f, LayerMask);
+        // We
         Vector3 Dir = Vector3.zero;
         foreach (Collider collider in Colliders)
         {

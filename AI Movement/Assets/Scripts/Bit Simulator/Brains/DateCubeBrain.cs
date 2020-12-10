@@ -4,53 +4,24 @@ using UnityEngine;
 
 namespace Steering
 {
-
-
     public class DataCubebrain : MonoBehaviour
     {
-        public enum DataCubeMode
-        {
-            Idle,
-            SearchForMemory,
-            SearchForProcessorTree,
-            RunFromEnemys,
-        }
-
-        public enum BehaviorEnum
-        {
-            Keyboard,
-            SeekClickPoint,
-            Seek,
-            Flee,
-            Pursue,
-            Evade,
-            Wander,
-            FollowPath,
-            Hide,
-            NotSet,
-            ObjectAvoid,
-        };
-
-        [Header("Manual")]
-        public BehaviorEnum m_IdleBehavoir;
-
-        public BehaviorEnum m_SearchForMemoryBehavoir;
-        public float SearchForMemoryDistance;
-
-        public BehaviorEnum m_SearchForProssecorTreeBehavoir;
-        public float SearchForProssecorTreeDistance;
-
-        public BehaviorEnum m_RunFromEnemyBehavoir;
-        public float RunFromEnemyDistance;
+        [SerializeField] private DataCubeSettings m_Settings;
 
         public GameObject m_Target;
 
         [Header("Private")]
-        private Steering m_Steering;
+        private Steering2D m_Steering;
 
-        Dictionary<DataCubeMode, BehaviorEnum> m_DataCubeBehavoirs;
+        private bool m_IsReadyForMating;
+
+        private delegate void DataCubeTask();
+
+        private Dictionary<DataCubeMode, BehaviorEnum> m_DataCubeBehavoirs;
+        private Dictionary<DataCubeMode, DataCubeTask> m_Tasks;
 
         private DataCubeMode m_DataCubeMode;
+
         public DataCubeMode DataCubeStatus
         {
             get
@@ -61,11 +32,11 @@ namespace Steering
             {
                 if (value != m_DataCubeMode)
                 {
+                    m_Target = null;
                     m_DataCubeMode = value;
-                    UpdateHunterBehavoir();
+                    UpdateDataCubeBehavoir();
                 }
             }
-
         }
 
         [Header("WaitPoints")]
@@ -80,20 +51,22 @@ namespace Steering
         [Header("Arrive")]
         public bool m_ArriveActive;
 
-
-
         private void Start()
         {
-            m_Steering = GetComponent<Steering>();
+            m_Steering = GetComponent<Steering2D>();
 
             m_DataCubeBehavoirs = new Dictionary<DataCubeMode, BehaviorEnum>();
 
-            m_DataCubeBehavoirs.Add(DataCubeMode.Idle, m_IdleBehavoir);
-            m_DataCubeBehavoirs.Add(DataCubeMode.SearchForMemory, m_SearchForMemoryBehavoir);
-            m_DataCubeBehavoirs.Add(DataCubeMode.SearchForProcessorTree, m_SearchForProssecorTreeBehavoir);
-            m_DataCubeBehavoirs.Add(DataCubeMode.RunFromEnemys, m_RunFromEnemyBehavoir);
+            m_DataCubeBehavoirs.Add(DataCubeMode.Idle, m_Settings.m_IdleBehavoir);
+            m_DataCubeBehavoirs.Add(DataCubeMode.SearchForMemory, m_Settings.m_SearchForMemoryBehavoir);
+            m_DataCubeBehavoirs.Add(DataCubeMode.SearchForProcessorTree, m_Settings.m_SearchForProssecorTreeBehavoir);
+            m_DataCubeBehavoirs.Add(DataCubeMode.RunFromEnemys, m_Settings.m_RunFromEnemyBehavoir);
 
-            UpdateHunterBehavoir();
+            m_Tasks.Add(DataCubeMode.Idle, CheckIdle);
+            m_Tasks.Add(DataCubeMode.SearchForMemory, CheckSearchForMemory);
+            m_Tasks.Add(DataCubeMode.SearchForProcessorTree, CheckForProssecor);
+
+            UpdateDataCubeBehavoir();
         }
 
         private void Update()
@@ -101,53 +74,128 @@ namespace Steering
             CheckBehavoirConditions();
         }
 
+        private void CheckIdle()
+        {
+        }
+
+        private void CheckSearchForMemory()
+        {
+            if (!m_Target)
+            {
+                float _distance = Vector3.Distance(transform.position, m_Target.GetComponent<MemorySlot>().GetClosestPoint(transform.position));
+                if (_distance < m_Steering.m_Settings.m_ArriveDistance)
+                {
+                    List<IBehavor> behavors = GetBehavoirs(BehaviorEnum.Seek);
+                    ObjectAvoidance objectAvoidance = null;
+                    Arrive arrive = null;
+                    if (m_ObjectAvoidanceActive)
+                    {
+                        objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
+                        objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
+                        behavors.Add(objectAvoidance);
+                    }
+                    if (m_ArriveActive)
+                    {
+                        arrive = new Arrive(m_Target.transform);
+                        arrive.Label = "Arrive";
+                        behavors.Add(arrive);
+                    }
+
+                    m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
+                }
+            }
+            else
+            {
+                MemorySlot[] memorySlots = Support.CheckForNearbyObjects<MemorySlot>(transform.position, m_Settings.SearchForMemoryDistance);
+                if (memorySlots.Length > 0)
+                {
+                    m_Target = memorySlots[0].gameObject;
+                }
+            }
+        }
+
+        private void CheckForProssecor()
+        {
+            if (!m_Target)
+            {
+                float _distance = Vector3.Distance(transform.position, m_Target.GetComponent<MemorySlot>().GetClosestPoint(transform.position));
+                if (_distance < m_Steering.m_Settings.m_ArriveDistance)
+                {
+                    List<IBehavor> behavors = GetBehavoirs(BehaviorEnum.Seek);
+                    ObjectAvoidance objectAvoidance = null;
+                    Arrive arrive = null;
+                    if (m_ObjectAvoidanceActive)
+                    {
+                        objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
+                        objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
+                        behavors.Add(objectAvoidance);
+                    }
+                    if (m_ArriveActive)
+                    {
+                        arrive = new Arrive(m_Target.transform);
+                        arrive.Label = "Arrive";
+                        behavors.Add(arrive);
+                    }
+
+                    m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
+                }
+            }
+            else
+            {
+                MemorySlot[] memorySlots = Support.CheckForNearbyObjects<MemorySlot>(transform.position, m_Settings.SearchForMemoryDistance);
+                if (memorySlots.Length > 0)
+                {
+                    m_Target = memorySlots[0].gameObject;
+                }
+            }
+        }
+
+        private void RunFormEnemy()
+        {
+        }
+
         private void CheckBehavoirConditions()
         {
-            switch (DataCubeStatus)
+            if (!CheckForEnemys())
             {
-                case DataCubeMode.Idle:
-                    break;
-                case DataCubeMode.SearchForMemory:
-                    break;
-                case DataCubeMode.SearchForProcessorTree:
-                    break;
-                case DataCubeMode.RunFromEnemys:
-                    break;
+                m_Tasks[m_DataCubeMode].BeginInvoke(null, null);
             }
+            else
+            {
+            }
+            UpdateDataCubeBehavoir();
         }
 
         private bool CheckForEnemys()
         {
             bool _virius = false;
             bool _CC = false;
-            ViriusBrain[] viriusBrains = Support.CheckForNearbyObjects<ViriusBrain>(transform.position, RunFromEnemyDistance);
-            GarbargeCollectorBrain[] garbargeCollectorBrains = Support.CheckForNearbyObjects<GarbargeCollectorBrain>(transform.position, RunFromEnemyDistance);
-            if(viriusBrains != null)
+            ViriusBrain[] viriusBrains = Support.CheckForNearbyObjects<ViriusBrain>(transform.position, m_Settings.RunFromEnemyDistance);
+            GarbargeCollectorBrain[] garbargeCollectorBrains = Support.CheckForNearbyObjects<GarbargeCollectorBrain>(transform.position, m_Settings.RunFromEnemyDistance);
+            if (viriusBrains != null)
             {
-                if(viriusBrains.Length > 0)
+                if (viriusBrains.Length > 0)
                 {
-                    _virius = true; 
+                    _virius = true;
                 }
             }
-            if(garbargeCollectorBrains != null) 
+            if (garbargeCollectorBrains != null)
             {
-                if(garbargeCollectorBrains.Length > 0)
+                if (garbargeCollectorBrains.Length > 0)
                 {
                     _CC = true;
                 }
             }
             return _virius || _CC;
-
         }
-
-        
 
         private bool InRange(float Range)
         {
             float distance = Vector3.Distance(transform.position, m_Target.transform.position);
             return distance <= Range;
         }
-        private void UpdateHunterBehavoir()
+
+        private void UpdateDataCubeBehavoir()
         {
             List<IBehavor> behavors = GetBehavoirs(m_DataCubeBehavoirs[DataCubeStatus]);
             ObjectAvoidance objectAvoidance = null;
@@ -157,7 +205,6 @@ namespace Steering
                 objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
                 objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
                 behavors.Add(objectAvoidance);
-
             }
             if (m_ArriveActive)
             {
@@ -198,12 +245,17 @@ namespace Steering
                 case BehaviorEnum.Pursue:
                     behavors.Add(new Persue(m_Target.transform));
                     break;
+
                 case BehaviorEnum.Evade:
                     behavors.Add(new Evade(m_Target.transform));
                     break;
 
                 case BehaviorEnum.Wander:
                     behavors.Add(new Wander());
+                    break;
+
+                case BehaviorEnum.Ilde:
+                    behavors.Add(new Idle());
                     break;
 
                 default:
@@ -213,7 +265,5 @@ namespace Steering
             behavors[0].Label = label;
             return behavors;
         }
-
     }
 }
-
