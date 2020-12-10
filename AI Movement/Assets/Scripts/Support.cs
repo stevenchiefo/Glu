@@ -39,4 +39,34 @@ public class Support
         UnityEditor.Handles.color = color;
         UnityEditor.Handles.DrawWireDisc(pos, new Vector3(0,90,0), radius);
     }
+
+    public static T[] CheckForNearbyObjects<T>(Vector3 _vector3,float _range, LayerMask _layerMask)
+    {
+        Collider[] _Colls = Physics.OverlapSphere(_vector3, _range, _layerMask);
+        T[] _Tarray = new T[_Colls.Length];
+        for (int i = 0; i < _Tarray.Length; i++)
+        {
+            T _t = _Colls[i].GetComponent<T>();
+            if(_t != null)
+            {
+                _Tarray[i] = _t;
+            }
+        }
+        return _Tarray;
+    }
+
+    public static T[] CheckForNearbyObjects<T>(Vector3 _vector3, float _range)
+    {
+        Collider[] _Colls = Physics.OverlapSphere(_vector3, _range);
+        T[] _Tarray = new T[_Colls.Length];
+        for (int i = 0; i < _Tarray.Length; i++)
+        {
+            T _t = _Colls[i].GetComponent<T>();
+            if (_t != null)
+            {
+                _Tarray[i] = _t;
+            }
+        }
+        return _Tarray;
+    }
 }
