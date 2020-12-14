@@ -6,9 +6,16 @@ using Steering;
 public class Flee : Behavor
 {
     public Transform m_Target;
+    private float m_Distance;
     public Flee(Transform Target)
     {
         m_Target = Target;
+    }
+
+    public Flee(Transform Target,float distance)
+    {
+        m_Target = Target;
+        m_Distance = distance;
     }
 
     public override Vector3 CaculateSteeringForce(float dt, BehavorContext behavorContext)
@@ -18,7 +25,13 @@ public class Flee : Behavor
         float _distance = Vector3.Distance(behavorContext.Position, m_Target.position);
         Vector3 dir = Vector3.zero;
 
-        if (_distance <= behavorContext.Settings.m_FleeDistance)
+        float neededDistance = m_Distance;
+        if(neededDistance == 0)
+        {
+            m_Distance = behavorContext.Settings.m_FleeDistance;
+        }
+
+        if (_distance <= neededDistance)
         {
 
             dir = m_PositionTarget - behavorContext.Position;                       //Making a local vector3 to Make it more readable;
@@ -36,7 +49,5 @@ public class Flee : Behavor
     public override void OnDrawGizmos(BehavorContext behavorContext)
     {
         base.OnDrawGizmos(behavorContext);
-        Support.DrawLine(behavorContext.Position, behavorContext.Position + behavorContext.Velocity, Color.blue);
-        Support.DrawLine(behavorContext.Position, m_VelocityDesired, Color.red);
     }
 }

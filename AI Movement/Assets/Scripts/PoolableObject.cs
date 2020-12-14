@@ -8,7 +8,8 @@ public class PoolableObject : MonoBehaviour
 {
     private bool m_CanUse;
 
-    protected UnityEvent OnPool = new UnityEvent();
+    public UnityEvent OnPool = new UnityEvent();
+    public UnityEvent OnSpawn = new UnityEvent();
     
 
     public virtual void Load()
@@ -28,6 +29,7 @@ public class PoolableObject : MonoBehaviour
         transform.position = position;
         gameObject.SetActive(true);
         m_CanUse = false;
+        OnSpawn.Invoke();
     }
 
     public virtual void SpawnObject(Vector3 position, Quaternion rotation)
@@ -37,6 +39,7 @@ public class PoolableObject : MonoBehaviour
         transform.rotation = rotation;
         gameObject.SetActive(true);
         m_CanUse = false;
+        OnSpawn.Invoke();
     }
 
     public IEnumerator LifeTimeTimer(int lifetime)

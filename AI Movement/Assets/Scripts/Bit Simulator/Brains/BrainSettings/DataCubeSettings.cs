@@ -16,7 +16,37 @@ public class DataCubeSettings : ScriptableObject
 
     public BehaviorEnum m_RunFromEnemyBehavoir;
     public float RunFromEnemyDistance;
+
+    public float MatingDistanceNeeded;
+
+    [Header("Stats")]
+    public float MaxSpeed;
+    public float MaxDefense;
+    public float m_MaxMb;
+    public float m_MaxProcess;
+
+    [Header("Cooldowns")]
+    public float MBtimer;
+    public float ProcessTimer;
+    public float LifeTimeNeeded;
+
+    [Header("LayerMasks")]
+    public LayerMask MemoryLayerMask;
+    public LayerMask MatingLayerMask;
+    public LayerMask ProcessTreeLayerMask;
+    public LayerMask RunFromEnemyLayerMask;
 }
+
+public enum DataCubeType
+{
+    Bit = 0,
+    Byte,
+    Int,
+    Float,
+    String,
+}
+
+
 
 public enum DataCubeMode
 {

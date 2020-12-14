@@ -21,6 +21,8 @@ namespace Steering
         private ObjectAvoidance m_ObjectAvoidance;
         private Arrive m_Arrive;
 
+        private float m_Speed;
+        private bool m_UseSpeed;
         // Start is called before the first frame update
         private void Start()
         {
@@ -33,6 +35,18 @@ namespace Steering
             m_Steering = Vector3.zero;
             CheckPriortys();
             CheckForArrive();
+            MoveObject();
+            
+        }
+
+        public void SetSpeed(float _speed)
+        {
+            m_UseSpeed = true;
+            m_Speed = _speed;
+        }
+
+        private void MoveObject()
+        {
             foreach (Behavor behavor in m_BehavorList)
             {
                 m_Steering += behavor.CaculateSteeringForce(Time.deltaTime, new BehavorContext(m_Position, m_Velocity, m_Settings)) * behavor.Priorty;
@@ -42,7 +56,14 @@ namespace Steering
             m_Steering = Vector3.ClampMagnitude(m_Steering, m_Settings.m_MaxSteeringForce);
             m_Steering /= m_Settings.m_Mass;
 
-            m_Velocity = Vector3.ClampMagnitude(m_Velocity + m_Steering, m_Settings.m_MaxSpeed);
+            if (!m_UseSpeed)
+            {
+                m_Velocity = Vector3.ClampMagnitude(m_Velocity + m_Steering, m_Settings.m_MaxSpeed);
+            }
+            else
+            {
+                m_Velocity = Vector3.ClampMagnitude(m_Velocity + m_Steering, m_Speed);
+            }
 
             m_Rb.MovePosition(transform.position + m_Velocity * Time.fixedDeltaTime);
             m_Position = m_Rb.position;

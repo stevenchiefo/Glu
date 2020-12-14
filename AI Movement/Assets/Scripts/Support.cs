@@ -37,7 +37,7 @@ public class Support
     public static void DrawCircle(Vector3 pos, float radius, Color color)
     {
         UnityEditor.Handles.color = color;
-        UnityEditor.Handles.DrawWireDisc(pos, new Vector3(0,90,0), radius);
+        UnityEditor.Handles.DrawWireDisc(pos, new Vector3(0,0,0), radius);
     }
 
     public static T[] CheckForNearbyObjects<T>(Vector3 _vector3,float _range, LayerMask _layerMask)
@@ -57,7 +57,9 @@ public class Support
 
     public static T[] CheckForNearbyObjects<T>(Vector3 _vector3, float _range)
     {
-        Collider[] _Colls = Physics.OverlapSphere(_vector3, _range);
+        Collider2D[] _Colls = Physics2D.OverlapCircleAll(_vector3, _range);
+        List<int> indexes = new List<int>();
+        int index = 0;
         T[] _Tarray = new T[_Colls.Length];
         for (int i = 0; i < _Tarray.Length; i++)
         {
@@ -65,7 +67,14 @@ public class Support
             if (_t != null)
             {
                 _Tarray[i] = _t;
+                index++;
+                indexes.Add(i);
             }
+        }
+        _Tarray = new T[indexes.Count];
+        for (int i = 0; i < _Tarray.Length; i++)
+        {
+            _Tarray[i] = _Colls[indexes[i]].GetComponent<T>();
         }
         return _Tarray;
     }

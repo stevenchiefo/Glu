@@ -17,10 +17,10 @@ TagManager:
   - Player
   - Ground
   - Target
-  - 
-  - 
-  - 
-  - 
+  - MemorySlot
+  - ProcessorTree
+  - DataCube
+  - Virus
   - 
   - 
   - 
