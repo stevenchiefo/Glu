@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8da5fa48a8080c74db26ac0472504dcc, type: 3}
   m_Name: MbCpuSettings
   m_EditorClassIdentifier: 
-  MBTakeOff: 2
-  ProcessTakeOff: 2
+  MBTakeOff: 10
+  ProcessTakeOff: 10

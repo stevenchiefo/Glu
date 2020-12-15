@@ -70,7 +70,7 @@ public class ObjectAvoidance : Behavor
         foreach (Collider collider in Colliders)
         {
             Vector3 directiontoCol = collider.transform.position - context.Position;
-            if (Physics.Raycast(context.Position, directiontoCol, out RaycastHit hit))
+            if (Physics.Raycast(context.Position, directiontoCol, out RaycastHit hit, LayerMask))
             {
                 if (context.Settings.m_AvoidanceType == SteeringSettings.AvoidanceType.Ricochet)
                 {

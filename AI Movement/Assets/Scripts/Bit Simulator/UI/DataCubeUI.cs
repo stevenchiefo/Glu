@@ -19,11 +19,11 @@ public class DataCubeUI : MonoBehaviour
 
     public void UpdateUi()
     {
-        float mbFill = m_DataCubeBrain.m_CurrentMB / EnitiyManager.instance.DataCubeSettings.m_MaxMb;
+        float mbFill = (float)m_DataCubeBrain.m_CurrentMB / (float)EnitiyManager.instance.DataCubeSettings.m_MaxMb;
         m_MbBar.fillAmount = mbFill;
-        float CpuProcess = m_DataCubeBrain.m_CurrentProcess / EnitiyManager.instance.DataCubeSettings.m_MaxProcess;
+        float CpuProcess = (float)m_DataCubeBrain.m_CurrentProcess / (float)EnitiyManager.instance.DataCubeSettings.m_MaxProcess;
         m_ProcessBar.fillAmount = CpuProcess;
-        float ammount = m_DataCubeBrain.m_LifeTime / EnitiyManager.instance.DataCubeSettings.LifeTimeNeeded;
+        float ammount = (float)m_DataCubeBrain.m_LifeTime / (float)EnitiyManager.instance.DataCubeSettings.LifeTimeNeeded;
         m_MatingBar.fillAmount = ammount;
     }
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ProcessorTree : PoolableObject
 {
-    [SerializeField] ProcessorOrb[] m_GrowPoints;
+    [SerializeField] private ProcessorOrb[] m_GrowPoints;
     [SerializeField] private int m_GrowSpeed;
 
     public override void Load()
@@ -24,7 +24,7 @@ public class ProcessorTree : PoolableObject
         for (int i = 1; i < m_GrowPoints.Length; i++)
         {
             float distance = Vector3.Distance(vector3, m_GrowPoints[i].transform.position);
-            if(lastDistance < distance)
+            if (lastDistance > distance)
             {
                 index = i;
                 lastDistance = distance;

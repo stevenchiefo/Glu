@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IdleBehavoir: 6
   m_HuntForMemoryBehavoir: 6
-  HuntForMemoryDistance: 8
+  HuntForMemoryDistance: 10
   m_SearchForProssecorTreeBehavoir: 6
-  SearchForProssecorTreeDistance: 6
+  SearchForProssecorTreeDistance: 10
   m_RunFromEnemyBehavoir: 3
-  RunFromEnemyDistance: 10
-  MatingDistanceNeeded: 10
+  RunFromEnemyDistance: 4
+  MatingDistanceNeeded: 8
   MaxSpeed: 10
   m_MaxMb: 20
   m_MaxProcess: 20
@@ -28,7 +28,7 @@ MonoBehaviour:
   LifeTimeNeeded: 20
   MemoryLayerMask:
     serializedVersion: 2
-    m_Bits: 2048
+    m_Bits: 8192
   MatingLayerMask:
     serializedVersion: 2
     m_Bits: 16384
@@ -37,4 +37,4 @@ MonoBehaviour:
     m_Bits: 4096
   RunFromEnemyLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 32768

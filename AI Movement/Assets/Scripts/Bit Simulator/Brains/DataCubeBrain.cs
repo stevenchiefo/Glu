@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Steering;
 
-
 public class DataCubeBrain : PoolableObject, IDataBrains
 {
+    public bool Dead;
     public GameObject m_Target;
 
     [Header("Private")]
@@ -27,9 +27,6 @@ public class DataCubeBrain : PoolableObject, IDataBrains
 
     private DataCubeMatingData m_MatingData;
     private DataCubeUI m_DataCubeUI;
-
-
-
 
     public DataCubeMode DataCubeStatus
     {
@@ -56,9 +53,13 @@ public class DataCubeBrain : PoolableObject, IDataBrains
 
     public bool m_ObjectAvoidanceActive;
     public float m_Radius;
+
     [Header("Arrive")]
     public bool m_ArriveActive;
 
+    /// <summary>
+    /// Called when instatiated
+    /// </summary>
     public override void Load()
     {
         m_Steering = GetComponent<Steering2D>();
@@ -77,6 +78,7 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         m_Tasks.Add(DataCubeMode.RunFromEnemys, RunFormEnemy);
 
         OnSpawn.AddListener(StartAllCoroutines);
+        OnPool.AddListener(SetDead);
         OnPool.AddListener(Stop);
 
         m_DataCubeUI = GetComponentInChildren<DataCubeUI>();
@@ -85,6 +87,10 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         UpdateDataCubeBehavoir();
     }
 
+    /// <summary>
+    /// Change the stats based of parents
+    /// </summary>
+    /// <param name="Parents"></param>
     public void Born(DataCubeBrain[] Parents)
     {
         int _Speedindex = Mathf.RoundToInt(Random.Range(0, Parents.Length));
@@ -115,17 +121,16 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         m_Steering.SetSpeed(Speed);
     }
 
-
-
-
-
     private void Update()
     {
         CheckIdle();
         CheckBehavoirConditions();
-
     }
 
+    /// <summary>
+    /// Time for LifeTime
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator UpdateLifeTime()
     {
         while (true)
@@ -141,6 +146,9 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         }
     }
 
+    /// <summary>
+    /// Checks the idle mode
+    /// </summary>
     private void CheckIdle()
     {
         if (CheckForEnemys())
@@ -149,18 +157,17 @@ public class DataCubeBrain : PoolableObject, IDataBrains
             return;
         }
 
-        if (m_CurrentProcess < EnitiyManager.instance.DataCubeSettings.m_MaxProcess * 0.50f)
+        if (m_CurrentProcess < EnitiyManager.instance.DataCubeSettings.m_MaxProcess * 0.70f)
         {
             DataCubeStatus = DataCubeMode.SearchForProcessorTree;
             return;
         }
 
-        if (m_CurrentMB < EnitiyManager.instance.DataCubeSettings.m_MaxMb * 0.50f)
+        if (m_CurrentMB < EnitiyManager.instance.DataCubeSettings.m_MaxMb * 0.70f)
         {
             DataCubeStatus = DataCubeMode.SearchForMemory;
             return;
         }
-
 
         if (m_IsReadyForMating)
         {
@@ -168,18 +175,20 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         }
     }
 
+    /// <summary>
+    /// Checks the mating mode
+    /// </summary>
     private void CheckForMating()
     {
         if (m_Target != null)
         {
+            SetQuickBehavoir(BehaviorEnum.Seek);
             float _distance = Vector3.Distance(transform.position, m_Target.transform.position);
             if (_distance < EnitiyManager.instance.DataCubeSettings.MatingDistanceNeeded)
             {
                 DataCubeBrain dataCubebrain = m_Target.GetComponent<DataCubeBrain>();
                 if (dataCubebrain != null)
                 {
-
-
                     if (dataCubebrain.ReqeustMating(this))
                     {
                         DataCubeBrain[] parents = new DataCubeBrain[]
@@ -192,6 +201,12 @@ public class DataCubeBrain : PoolableObject, IDataBrains
                         m_Target = null;
                         m_IsReadyForMating = false;
                         m_LifeTime = 0;
+                        m_DataCubeUI.UpdateUi();
+                    }
+                    else
+                    {
+                        m_Target = null;
+                        DataCubeStatus = DataCubeMode.Idle;
                     }
                 }
             }
@@ -201,52 +216,46 @@ public class DataCubeBrain : PoolableObject, IDataBrains
             Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.DataCubeSettings.MatingDistanceNeeded, EnitiyManager.instance.DataCubeSettings.MatingLayerMask);
             if (colliders.Length > 0)
             {
-                m_Target = colliders[0].gameObject;
+                if (colliders[0].isActiveAndEnabled)
+                {
+                    m_Target = colliders[0].gameObject;
+                }
             }
-
         }
     }
 
+    /// <summary>
+    /// Checks SearchingForMemoryMode
+    /// </summary>
     private void CheckSearchForMemory()
     {
         if (m_Target != null)
         {
+            SetQuickBehavoir(BehaviorEnum.Seek);
             float _distance = Vector3.Distance(transform.position, m_Target.transform.position);
             if (_distance < EnitiyManager.instance.DataCubeSettings.SearchForMemoryDistance * 0.5f)
             {
-                List<IBehavor> behavors = GetBehavoirs(BehaviorEnum.Seek);
-                ObjectAvoidance objectAvoidance = null;
-                Arrive arrive = null;
-                if (m_ObjectAvoidanceActive)
-                {
-                    objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
-                    objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
-                    behavors.Add(objectAvoidance);
-                }
-                if (m_ArriveActive)
-                {
-                    arrive = new Arrive(m_Target.transform);
-                    arrive.Label = "Arrive";
-                    behavors.Add(arrive);
-                }
-                m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
-
                 MemorySlot _memorySlot = m_Target.GetComponent<MemorySlot>();
-                if (_memorySlot.CanFarm)
+                if (_memorySlot != null)
                 {
-
-                    float _futureMb = m_CurrentMB + _memorySlot.FarmMB(1);
-                    if (_futureMb >= EnitiyManager.instance.DataCubeSettings.m_MaxMb)
+                    if (_memorySlot.CanFarm)
                     {
-                        m_CurrentMB = EnitiyManager.instance.DataCubeSettings.m_MaxMb;
-                        DataCubeStatus = DataCubeMode.Idle;
-                        m_Target = null;
+                        float _futureMb = m_CurrentMB + _memorySlot.FarmMB(3);
+                        if (_futureMb >= EnitiyManager.instance.DataCubeSettings.m_MaxMb)
+                        {
+                            m_CurrentMB = EnitiyManager.instance.DataCubeSettings.m_MaxMb;
+                            DataCubeStatus = DataCubeMode.Idle;
+                        }
+                        else
+                        {
+                            m_CurrentMB = _futureMb;
+                        }
+                        m_DataCubeUI.UpdateUi();
                     }
                     else
                     {
-                        m_CurrentMB = _futureMb;
+                        DataCubeStatus = DataCubeMode.Idle;
                     }
-                    m_DataCubeUI.UpdateUi();
                 }
                 else
                 {
@@ -257,47 +266,36 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         }
         else
         {
-
             Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.DataCubeSettings.SearchForMemoryDistance, EnitiyManager.instance.DataCubeSettings.MemoryLayerMask);
             if (collider2Ds.Length > 0)
             {
-                m_Target = collider2Ds[0].gameObject;
+                if (collider2Ds[0].isActiveAndEnabled)
+                {
+                    m_Target = collider2Ds[0].gameObject;
+                }
             }
         }
     }
 
+    /// <summary>
+    /// Checks SearchingForProssecorTreeMode
+    /// </summary>
     private void CheckForProssecor()
     {
         if (m_Target != null)
         {
+            SetQuickBehavoir(BehaviorEnum.Seek);
             float distance = Vector3.Distance(transform.position, m_Target.transform.position);
-            if (distance < EnitiyManager.instance.DataCubeSettings.SearchForProssecorTreeDistance)
+            if (distance < EnitiyManager.instance.DataCubeSettings.SearchForProssecorTreeDistance * 0.4f)
             {
-                List<IBehavor> behavors = GetBehavoirs(BehaviorEnum.Seek);
-                ObjectAvoidance objectAvoidance = null;
-                Arrive arrive = null;
-                if (m_ObjectAvoidanceActive)
-                {
-                    objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
-                    objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
-                    behavors.Add(objectAvoidance);
-                }
-                if (m_ArriveActive)
-                {
-                    arrive = new Arrive(m_Target.transform);
-                    arrive.Label = "Arrive";
-                    behavors.Add(arrive);
-                }
-                m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
                 ProcessorOrb processorOrb = m_Target.GetComponent<ProcessorOrb>();
                 if (processorOrb != null)
                 {
-                    float _futureProcess = m_CurrentProcess + processorOrb.FarmOrb(1);
+                    float _futureProcess = m_CurrentProcess + processorOrb.FarmOrb(3);
                     if (_futureProcess > EnitiyManager.instance.DataCubeSettings.m_MaxProcess)
                     {
-
                         m_CurrentProcess = EnitiyManager.instance.DataCubeSettings.m_MaxProcess;
-                        m_Target = null;
+                        DataCubeStatus = DataCubeMode.Idle;
                     }
                     else
                     {
@@ -305,10 +303,10 @@ public class DataCubeBrain : PoolableObject, IDataBrains
                     }
                     m_DataCubeUI.UpdateUi();
                 }
-            }
-            else
-            {
-                DataCubeStatus = DataCubeMode.Idle;
+                else
+                {
+                    m_Target = null;
+                }
             }
         }
         else
@@ -316,28 +314,32 @@ public class DataCubeBrain : PoolableObject, IDataBrains
             Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.DataCubeSettings.SearchForProssecorTreeDistance, EnitiyManager.instance.DataCubeSettings.ProcessTreeLayerMask);
             if (collider2Ds.Length > 0)
             {
-                m_Target = collider2Ds[0].GetComponent<ProcessorTree>().GetClosestOrb(transform.position).gameObject;
+                if (collider2Ds[0].isActiveAndEnabled)
+                {
+                    m_Target = collider2Ds[0].GetComponent<ProcessorTree>().GetClosestOrb(transform.position).gameObject;
+                }
             }
         }
     }
 
+    /// <summary>
+    /// Checks Run from enemy
+    /// </summary>
     private void RunFormEnemy()
     {
         if (m_Target != null)
         {
             float _distance = Vector3.Distance(transform.position, m_Target.transform.position);
-            if (_distance * 2> EnitiyManager.instance.DataCubeSettings.RunFromEnemyDistance)
+            if (_distance * 2 > EnitiyManager.instance.DataCubeSettings.RunFromEnemyDistance)
             {
                 DataCubeStatus = DataCubeMode.Idle;
             }
-            UpdateDataCubeBehavoir();
         }
         else
         {
             ViriusBrain[] viriusBrains = Support.CheckForNearbyObjects<ViriusBrain>(transform.position, EnitiyManager.instance.DataCubeSettings.RunFromEnemyDistance);
             if (viriusBrains != null)
             {
-
                 if (viriusBrains.Length > 0)
                 {
                     m_Target = viriusBrains[0].gameObject;
@@ -347,18 +349,23 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         }
     }
 
+    /// <summary>
+    /// Calls the function on the current mode
+    /// </summary>
     private void CheckBehavoirConditions()
     {
         if (m_Tasks.ContainsKey(DataCubeStatus))
         {
             m_Tasks[DataCubeStatus]();
         }
-
     }
 
+    /// <summary>
+    /// Checks if there are any enemies close
+    /// </summary>
+    /// <returns></returns>
     private bool CheckForEnemys()
     {
-
         Collider2D[] _colsV = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.DataCubeSettings.RunFromEnemyDistance, EnitiyManager.instance.DataCubeSettings.RunFromEnemyLayerMask);
 
         if (_colsV != null)
@@ -368,14 +375,20 @@ public class DataCubeBrain : PoolableObject, IDataBrains
                 return true;
             }
         }
-        DataCubeStatus = DataCubeMode.Idle;
         return false;
     }
+
+    /// <summary>
+    /// Stops all the coroutines
+    /// </summary>
     private void Stop()
     {
         StopAllCoroutines();
     }
 
+    /// <summary>
+    /// Starts all the coroutines
+    /// </summary>
     private void StartAllCoroutines()
     {
         StartCoroutine(TakeOfMb());
@@ -383,12 +396,16 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         StartCoroutine(UpdateLifeTime());
     }
 
+    /// <summary>
+    /// Timer to take off the process
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator TakeOfProcess()
     {
         while (true)
         {
             yield return new WaitForSeconds(EnitiyManager.instance.DataCubeSettings.ProcessTimer);
-            float futureproces = m_CurrentProcess - EnitiyManager.instance.MbCpuSettings.ProcessTakeOff;
+            float futureproces = m_CurrentProcess - EnitiyManager.instance.MbCpuSettings.ProcessTakeOff * PlayerInput.instance.CpuMultiPlyer;
             if (futureproces <= 0)
             {
                 m_CurrentProcess = 0;
@@ -397,30 +414,36 @@ public class DataCubeBrain : PoolableObject, IDataBrains
             else
             {
                 m_CurrentProcess = futureproces;
-
             }
             m_DataCubeUI.UpdateUi();
         }
     }
 
+    /// <summary>
+    /// Time to take off the Memory
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator TakeOfMb()
     {
         while (true)
         {
             yield return new WaitForSeconds(EnitiyManager.instance.DataCubeSettings.MBtimer);
-            float futureMB = m_CurrentMB - EnitiyManager.instance.MbCpuSettings.MBTakeOff;
+            float futureMB = m_CurrentMB - EnitiyManager.instance.MbCpuSettings.MBTakeOff * PlayerInput.instance.MbMultiPlyer;
             if (futureMB <= 0)
             {
                 m_CurrentMB = 0;
             }
             else
             {
-                m_CurrentProcess = futureMB;
+                m_CurrentMB = futureMB;
             }
             m_DataCubeUI.UpdateUi();
         }
     }
 
+    /// <summary>
+    /// Update behavoir on current mode
+    /// </summary>
     private void UpdateDataCubeBehavoir()
     {
         List<IBehavor> behavors = GetBehavoirs(m_DataCubeBehavoirs[DataCubeStatus]);
@@ -436,8 +459,6 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         {
             if (m_Target != null)
             {
-
-
                 arrive = new Arrive(m_Target.transform);
                 arrive.Label = "Arrive";
                 behavors.Add(arrive);
@@ -445,16 +466,43 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         }
         if (behavors.Count > 0)
         {
-
             m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
         }
         else
         {
-
             m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, "No Behavoir");
         }
     }
 
+    /// <summary>
+    /// Change the behavoir manual
+    /// </summary>
+    /// <param name="behaviorEnum"></param>
+    private void SetQuickBehavoir(BehaviorEnum behaviorEnum)
+    {
+        List<IBehavor> behavors = GetBehavoirs(behaviorEnum);
+        ObjectAvoidance objectAvoidance = null;
+        Arrive arrive = null;
+        if (m_ObjectAvoidanceActive)
+        {
+            objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
+            objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
+            behavors.Add(objectAvoidance);
+        }
+        if (m_ArriveActive)
+        {
+            arrive = new Arrive(m_Target.transform);
+            arrive.Label = "Arrive";
+            behavors.Add(arrive);
+        }
+        m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
+    }
+
+    /// <summary>
+    /// Get behavoir list
+    /// </summary>
+    /// <param name="behaviorEnum"></param>
+    /// <returns></returns>
     private List<IBehavor> GetBehavoirs(BehaviorEnum behaviorEnum)
     {
         List<IBehavor> behavors = new List<IBehavor>();
@@ -500,7 +548,6 @@ public class DataCubeBrain : PoolableObject, IDataBrains
                 behavors.Add(new Idle());
                 break;
 
-
             default:
                 Debug.LogError($"Behavior of Type{behaviorEnum} not implemented yet!");
                 break;
@@ -511,31 +558,83 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         }
         return behavors;
     }
+
+    /// <summary>
+    /// If want the mate
+    /// </summary>
+    /// <param name="dataCubebrain"></param>
+    /// <returns></returns>
     public bool ReqeustMating(DataCubeBrain dataCubebrain)
     {
-        if (m_IsReadyForMating)
+        if (gameObject.activeSelf)
         {
-            bool Type = dataCubebrain.DataCube == DataCube;
-            bool _mb = dataCubebrain.m_CurrentMB >= m_MatingData.NeededCurrentMB;
-            bool _Process = dataCubebrain.m_CurrentProcess >= m_MatingData.NeededProcess;
-            return _mb == _Process == Type;
+            if (m_IsReadyForMating)
+            {
+                bool Type = dataCubebrain.DataCube == DataCube;
+                bool _mb = dataCubebrain.m_CurrentMB >= m_MatingData.NeededCurrentMB;
+                bool _Process = dataCubebrain.m_CurrentProcess >= m_MatingData.NeededProcess;
+                if (_mb == _Process == Type)
+                {
+                    m_IsReadyForMating = false;
+                    m_LifeTime = 0;
+                    m_DataCubeUI.UpdateUi();
+                    return true;
+                }
+            }
         }
         return false;
     }
 
+    /// <summary>
+    /// Sets Random DataCube Stats
+    /// </summary>
     public void SetRandomStats()
     {
         Speed = Random.Range(0.1f, EnitiyManager.instance.DataCubeSettings.MaxSpeed);
         Defense = Random.Range(0.1f, EnitiyManager.instance.DataCubeSettings.MaxDefense);
         m_CurrentMB = Mathf.RoundToInt(Random.Range(EnitiyManager.instance.DataCubeSettings.m_MaxMb * 0.5f, EnitiyManager.instance.DataCubeSettings.m_MaxMb));
-        m_CurrentProcess = Mathf.RoundToInt(Random.Range(EnitiyManager.instance.DataCubeSettings.m_MaxMb * 0.5f, EnitiyManager.instance.DataCubeSettings.m_MaxProcess));
+        m_CurrentProcess = Mathf.RoundToInt(Random.Range(EnitiyManager.instance.DataCubeSettings.m_MaxProcess * 0.5f, EnitiyManager.instance.DataCubeSettings.m_MaxProcess));
         m_MatingData = new DataCubeMatingData
         {
             NeededCurrentMB = Mathf.RoundToInt(Random.Range(EnitiyManager.instance.DataCubeSettings.m_MaxMb * 0.5f, EnitiyManager.instance.DataCubeSettings.m_MaxMb)),
             NeededProcess = Mathf.RoundToInt(Random.Range(EnitiyManager.instance.DataCubeSettings.m_MaxMb * 0.5f, EnitiyManager.instance.DataCubeSettings.m_MaxProcess)),
         };
+
+        DataCube = GetRandomType();
     }
 
+    /// <summary>
+    /// Get random DataCubeType back
+    /// </summary>
+    /// <returns></returns>
+    private DataCubeType GetRandomType()
+    {
+        int index = Random.Range(0, 4);
+        switch (index)
+        {
+            case 0:
+                return DataCubeType.Bit;
+
+            case 1:
+                return DataCubeType.Byte;
+
+            case 2:
+                return DataCubeType.Int;
+
+            case 3:
+                return DataCubeType.Float;
+
+            case 4:
+                return DataCubeType.String;
+        }
+        return DataCubeType.Bit;
+    }
+
+    /// <summary>
+    /// Get MB form dataCube based of their defense
+    /// </summary>
+    /// <param name="ammount"></param>
+    /// <returns></returns>
     public int StealMB(int ammount)
     {
         float multiplyer = 1 - (Defense / 10);
@@ -550,6 +649,31 @@ public class DataCubeBrain : PoolableObject, IDataBrains
         m_CurrentMB = futureMB;
         return Mathf.RoundToInt(stealed);
     }
+
+    /// <summary>
+    /// Pools the object
+    /// </summary>
+    public void Collect()
+    {
+        PoolObject();
+    }
+
+    /// <summary>
+    /// Set the virius on Dead
+    /// </summary>
+    public void SetDead()
+    {
+        Dead = true;
+    }
+
+    /// <summary>
+    /// Reset the object when spawned
+    /// </summary>
+    protected override void ResetObject()
+    {
+        base.ResetObject();
+        Dead = false;
+    }
 }
 
 public struct DataCubeMatingData
@@ -557,4 +681,3 @@ public struct DataCubeMatingData
     public float NeededCurrentMB;
     public float NeededProcess;
 }
-

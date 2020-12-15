@@ -16,16 +16,16 @@ MonoBehaviour:
   m_SearchForMemoryBehavoir: 6
   SearchForMemoryDistance: 10
   m_SearchForProssecorTreeBehavoir: 6
-  SearchForProssecorTreeDistance: 6
+  SearchForProssecorTreeDistance: 10
   m_RunFromEnemyBehavoir: 3
-  RunFromEnemyDistance: 12
+  RunFromEnemyDistance: 5
   MatingDistanceNeeded: 2
   MaxSpeed: 10
   MaxDefense: 10
   m_MaxMb: 10
   m_MaxProcess: 10
   MBtimer: 15
-  ProcessTimer: 15
+  ProcessTimer: 7
   LifeTimeNeeded: 20
   MemoryLayerMask:
     serializedVersion: 2
@@ -38,4 +38,4 @@ MonoBehaviour:
     m_Bits: 4096
   RunFromEnemyLayerMask:
     serializedVersion: 2
-    m_Bits: 16384
+    m_Bits: 49152

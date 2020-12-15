@@ -3,9 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using Steering;
 
-public class ViriusBrain : PoolableObject
+public class ViriusBrain : PoolableObject, IDataBrains
 {
+    public bool Dead;
     public GameObject m_Target;
+
+    [Header("WaitPoints")]
+    public List<Transform> m_WaitPoints;
+
+    [Header("Object Avoidance")]
+    public LayerMask LayerMask;
+
+    public bool m_ObjectAvoidanceActive;
+    public float m_Radius;
+
+    [Header("Arrive")]
+    public bool m_ArriveActive;
 
     [Header("Private")]
     private Steering2D m_Steering;
@@ -26,9 +39,6 @@ public class ViriusBrain : PoolableObject
     private DataCubeMatingData m_MatingData;
     private VirusUI m_VirusUI;
 
-
-
-
     public ViriusMode ViriusStatus
     {
         get
@@ -46,17 +56,9 @@ public class ViriusBrain : PoolableObject
         }
     }
 
-    [Header("WaitPoints")]
-    public List<Transform> m_WaitPoints;
-
-    [Header("Object Avoidance")]
-    public LayerMask LayerMask;
-
-    public bool m_ObjectAvoidanceActive;
-    public float m_Radius;
-    [Header("Arrive")]
-    public bool m_ArriveActive;
-
+    /// <summary>
+    /// Called when instatiated
+    /// </summary>
     public override void Load()
     {
         m_Steering = GetComponent<Steering2D>();
@@ -75,6 +77,7 @@ public class ViriusBrain : PoolableObject
         m_Tasks.Add(ViriusMode.RunFromEnemys, RunFormEnemy);
 
         OnSpawn.AddListener(StartAllCoroutines);
+        OnPool.AddListener(SetDead);
         OnPool.AddListener(Stop);
 
         m_VirusUI = GetComponentInChildren<VirusUI>();
@@ -83,6 +86,10 @@ public class ViriusBrain : PoolableObject
         UpdateDataCubeBehavoir();
     }
 
+    /// <summary>
+    /// Change the stats based of parents
+    /// </summary>
+    /// <param name="Parents"></param>
     public void Born(ViriusBrain[] Parents)
     {
         int _Speedindex = Mathf.RoundToInt(Random.Range(0, Parents.Length));
@@ -113,17 +120,16 @@ public class ViriusBrain : PoolableObject
         m_VirusUI.UpdateUi();
     }
 
-
-
-
-
     private void Update()
     {
         CheckIdle();
         CheckBehavoirConditions();
-
     }
 
+    /// <summary>
+    /// Time for LifeTime
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator UpdateLifeTime()
     {
         while (true)
@@ -139,6 +145,9 @@ public class ViriusBrain : PoolableObject
         }
     }
 
+    /// <summary>
+    /// Checks the idle mode
+    /// </summary>
     private void CheckIdle()
     {
         if (CheckForEnemys())
@@ -159,25 +168,26 @@ public class ViriusBrain : PoolableObject
             return;
         }
 
-
         if (m_IsReadyForMating)
         {
             CheckForMating();
         }
     }
 
+    /// <summary>
+    /// Checks the mating mode
+    /// </summary>
     private void CheckForMating()
     {
         if (m_Target != null)
         {
+            SetQuickBehavoir(BehaviorEnum.Seek);
             float _distance = Vector3.Distance(transform.position, m_Target.transform.position);
-            if (_distance < EnitiyManager.instance.DataCubeSettings.MatingDistanceNeeded)
+            if (_distance < EnitiyManager.instance.ViriusSettings.MatingDistanceNeeded)
             {
                 ViriusBrain _virusBrain = m_Target.GetComponent<ViriusBrain>();
                 if (_virusBrain != null)
                 {
-
-
                     if (_virusBrain.ReqeustMating(this))
                     {
                         ViriusBrain[] parents = new ViriusBrain[]
@@ -185,90 +195,100 @@ public class ViriusBrain : PoolableObject
                             this,
                             _virusBrain,
                         };
-                        EnitiyManager.instance.MakeaDataCube(parents);
+                        EnitiyManager.instance.MakeVirius(parents);
                         ViriusStatus = ViriusMode.Idle;
                         m_Target = null;
                         m_IsReadyForMating = false;
                         m_LifeTime = 0;
                         m_VirusUI.UpdateUi();
                     }
+                    else
+                    {
+                        ViriusStatus = ViriusMode.Idle;
+                        m_Target = null;
+                    }
+                }
+                else
+                {
+                    m_Target = null;
                 }
             }
         }
         else
         {
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.DataCubeSettings.MatingDistanceNeeded, EnitiyManager.instance.DataCubeSettings.MatingLayerMask);
+            Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.ViriusSettings.MatingDistanceNeeded, EnitiyManager.instance.ViriusSettings.MatingLayerMask);
             if (colliders.Length > 0)
             {
-                m_Target = colliders[0].gameObject;
+                if (colliders[0].isActiveAndEnabled)
+                {
+                    m_Target = colliders[0].gameObject;
+                }
             }
-
         }
     }
 
+    /// <summary>
+    /// Checks SearchingForMemoryMode
+    /// </summary>
     private void CheckSearchForMemory()
     {
-        if(m_Target != null)
+        if (m_Target != null)
         {
+            SetQuickBehavoir(BehaviorEnum.Seek);
             float distance = Vector3.Distance(transform.position, m_Target.transform.position);
-            if(distance < EnitiyManager.instance.ViriusSettings.HuntForMemoryDistance * 0.7f)
+            if (distance < EnitiyManager.instance.ViriusSettings.HuntForMemoryDistance * 0.1f)
             {
                 DataCubeBrain dataCubeBrain = m_Target.GetComponent<DataCubeBrain>();
-                if(dataCubeBrain != null)
+                if (dataCubeBrain != null)
                 {
-                    float futuremb = m_CurrentMB + dataCubeBrain.StealMB(2);
-                    if(futuremb <= 0)
+                    float futuremb = m_CurrentMB + dataCubeBrain.StealMB(3);
+                    if (futuremb > EnitiyManager.instance.ViriusSettings.m_MaxMb)
                     {
-                        m_CurrentMB = 0;
+                        m_CurrentMB = EnitiyManager.instance.ViriusSettings.m_MaxMb;
                         ViriusStatus = ViriusMode.Idle;
                         m_Target = null;
+                        m_VirusUI.UpdateUi();
                         return;
                     }
                     m_CurrentMB = futuremb;
                     m_VirusUI.UpdateUi();
+                }
+                else
+                {
+                    m_Target = null;
                 }
             }
         }
         else
         {
             Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.ViriusSettings.HuntForMemoryDistance, EnitiyManager.instance.ViriusSettings.MemoryLayerMask);
-            if(collider2Ds.Length > 0)
+            if (collider2Ds.Length > 0)
             {
-                m_Target = collider2Ds[0].gameObject;
+                if (collider2Ds[0].gameObject.activeSelf)
+                {
+                    m_Target = collider2Ds[0].gameObject;
+                }
             }
         }
     }
 
+    /// <summary>
+    /// Checks SearchingForProssecorTreeMode
+    /// </summary>
     private void CheckForProssecor()
     {
         if (m_Target != null)
         {
+            SetQuickBehavoir(BehaviorEnum.Seek);
             float distance = Vector3.Distance(transform.position, m_Target.transform.position);
-            if (distance < EnitiyManager.instance.DataCubeSettings.SearchForProssecorTreeDistance)
+            if (distance < EnitiyManager.instance.DataCubeSettings.SearchForProssecorTreeDistance * 0.2f)
             {
-                List<IBehavor> behavors = GetBehavoirs(BehaviorEnum.Seek);
-                ObjectAvoidance objectAvoidance = null;
-                Arrive arrive = null;
-                if (m_ObjectAvoidanceActive)
-                {
-                    objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
-                    objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
-                    behavors.Add(objectAvoidance);
-                }
-                if (m_ArriveActive)
-                {
-                    arrive = new Arrive(m_Target.transform);
-                    arrive.Label = "Arrive";
-                    behavors.Add(arrive);
-                }
-                m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
                 ProcessorOrb processorOrb = m_Target.GetComponent<ProcessorOrb>();
                 if (processorOrb != null)
                 {
-                    float _futureProcess = m_CurrentProcess + processorOrb.FarmOrb(1);
+                    float _futureProcess = m_CurrentProcess + processorOrb.FarmOrb(6);
                     if (_futureProcess > EnitiyManager.instance.DataCubeSettings.m_MaxProcess)
                     {
-
                         m_CurrentProcess = EnitiyManager.instance.DataCubeSettings.m_MaxProcess;
                         ViriusStatus = ViriusMode.Idle;
                         m_Target = null;
@@ -278,7 +298,6 @@ public class ViriusBrain : PoolableObject
                         m_CurrentProcess = _futureProcess;
                     }
                     m_VirusUI.UpdateUi();
-
                 }
             }
             else
@@ -291,11 +310,17 @@ public class ViriusBrain : PoolableObject
             Collider2D[] collider2Ds = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.DataCubeSettings.SearchForProssecorTreeDistance, EnitiyManager.instance.DataCubeSettings.ProcessTreeLayerMask);
             if (collider2Ds.Length > 0)
             {
-                m_Target = collider2Ds[0].GetComponent<ProcessorTree>().GetClosestOrb(transform.position).gameObject;
+                if (collider2Ds[0].isActiveAndEnabled)
+                {
+                    m_Target = collider2Ds[0].GetComponent<ProcessorTree>().GetClosestOrb(transform.position).gameObject;
+                }
             }
         }
     }
 
+    /// <summary>
+    /// Checks Run from enemy
+    /// </summary>
     private void RunFormEnemy()
     {
         if (m_Target != null)
@@ -318,13 +343,18 @@ public class ViriusBrain : PoolableObject
         }
     }
 
+    /// <summary>
+    /// Calls the function on the current mode
+    /// </summary>
     private void CheckBehavoirConditions()
     {
-
         m_Tasks[m_ViriusMode]();
-
     }
 
+    /// <summary>
+    /// Checks if there are any enemies close
+    /// </summary>
+    /// <returns></returns>
     private bool CheckForEnemys()
     {
         Collider2D[] _colsV = Physics2D.OverlapCircleAll(transform.position, EnitiyManager.instance.ViriusSettings.RunFromEnemyDistance, EnitiyManager.instance.ViriusSettings.RunFromEnemyLayerMask);
@@ -338,11 +368,18 @@ public class ViriusBrain : PoolableObject
         }
         return false;
     }
+
+    /// <summary>
+    /// Stops all the coroutines
+    /// </summary>
     private void Stop()
     {
         StopAllCoroutines();
     }
 
+    /// <summary>
+    /// Starts all the coroutines
+    /// </summary>
     private void StartAllCoroutines()
     {
         StartCoroutine(TakeOfMb());
@@ -350,12 +387,16 @@ public class ViriusBrain : PoolableObject
         StartCoroutine(UpdateLifeTime());
     }
 
+    /// <summary>
+    /// Timer to take off the process
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator TakeOfProcess()
     {
         while (true)
         {
             yield return new WaitForSeconds(EnitiyManager.instance.DataCubeSettings.ProcessTimer);
-            float futureprocces = m_CurrentProcess - EnitiyManager.instance.MbCpuSettings.ProcessTakeOff;
+            float futureprocces = m_CurrentProcess - EnitiyManager.instance.MbCpuSettings.ProcessTakeOff * PlayerInput.instance.CpuMultiPlyer;
             if (futureprocces <= 0)
             {
                 m_CurrentProcess = 0;
@@ -369,12 +410,16 @@ public class ViriusBrain : PoolableObject
         }
     }
 
+    /// <summary>
+    /// Time to take off the Memory
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator TakeOfMb()
     {
         while (true)
         {
             yield return new WaitForSeconds(EnitiyManager.instance.DataCubeSettings.MBtimer);
-            float futureMB = m_CurrentMB - EnitiyManager.instance.MbCpuSettings.MBTakeOff;
+            float futureMB = m_CurrentMB - EnitiyManager.instance.MbCpuSettings.MBTakeOff * PlayerInput.instance.MbMultiPlyer;
             if (futureMB <= 0)
             {
                 m_CurrentMB = 0;
@@ -387,6 +432,9 @@ public class ViriusBrain : PoolableObject
         }
     }
 
+    /// <summary>
+    /// Update behavoir on current mode
+    /// </summary>
     private void UpdateDataCubeBehavoir()
     {
         List<IBehavor> behavors = GetBehavoirs(m_ViriusBehavoirs[ViriusStatus]);
@@ -402,8 +450,6 @@ public class ViriusBrain : PoolableObject
         {
             if (m_Target != null)
             {
-
-
                 arrive = new Arrive(m_Target.transform);
                 arrive.Label = "Arrive";
                 behavors.Add(arrive);
@@ -411,16 +457,43 @@ public class ViriusBrain : PoolableObject
         }
         if (behavors.Count > 0)
         {
-
             m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
         }
         else
         {
-
             m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, "No Behavoir");
         }
     }
 
+    /// <summary>
+    /// Change the behavoir manual
+    /// </summary>
+    /// <param name="behaviorEnum"></param>
+    private void SetQuickBehavoir(BehaviorEnum behaviorEnum)
+    {
+        List<IBehavor> behavors = GetBehavoirs(behaviorEnum);
+        ObjectAvoidance objectAvoidance = null;
+        Arrive arrive = null;
+        if (m_ObjectAvoidanceActive)
+        {
+            objectAvoidance = new ObjectAvoidance(m_Radius, LayerMask);
+            objectAvoidance.Label = BehaviorEnum.ObjectAvoid.ToString();
+            behavors.Add(objectAvoidance);
+        }
+        if (m_ArriveActive)
+        {
+            arrive = new Arrive(m_Target.transform);
+            arrive.Label = "Arrive";
+            behavors.Add(arrive);
+        }
+        m_Steering.SetBehaviors(objectAvoidance, arrive, behavors, behavors[0].Label);
+    }
+
+    /// <summary>
+    /// Get behavoir list
+    /// </summary>
+    /// <param name="behaviorEnum"></param>
+    /// <returns></returns>
     private List<IBehavor> GetBehavoirs(BehaviorEnum behaviorEnum)
     {
         List<IBehavor> behavors = new List<IBehavor>();
@@ -442,7 +515,6 @@ public class ViriusBrain : PoolableObject
             case BehaviorEnum.Flee:
                 if (m_Target != null)
                 {
-
                     behavors.Add(new Flee(m_Target.transform));
                 }
                 break;
@@ -467,7 +539,6 @@ public class ViriusBrain : PoolableObject
                 behavors.Add(new Idle());
                 break;
 
-
             default:
                 Debug.LogError($"Behavior of Type{behaviorEnum} not implemented yet!");
                 break;
@@ -478,6 +549,12 @@ public class ViriusBrain : PoolableObject
         }
         return behavors;
     }
+
+    /// <summary>
+    /// If want the mate
+    /// </summary>
+    /// <param name="viriusBrain"></param>
+    /// <returns></returns>
     public bool ReqeustMating(ViriusBrain viriusBrain)
     {
         if (m_IsReadyForMating)
@@ -485,11 +562,41 @@ public class ViriusBrain : PoolableObject
             bool Type = viriusBrain.viriusT == viriusT;
             bool _mb = viriusBrain.m_CurrentMB >= m_MatingData.NeededCurrentMB;
             bool _Process = viriusBrain.m_CurrentProcess >= m_MatingData.NeededProcess;
-            return _mb == _Process == Type;
+            if (_mb == _Process == Type)
+            {
+                m_IsReadyForMating = false;
+                m_LifeTime = 0;
+                m_VirusUI.UpdateUi();
+                return true;
+            }
         }
         return false;
     }
 
+    /// <summary>
+    /// Get random viriusType back
+    /// </summary>
+    /// <returns></returns>
+    private ViriusType GetRandomType()
+    {
+        int index = Random.Range(0, 4);
+        switch (index)
+        {
+            case 0:
+                return ViriusType.DataStealer;
+
+            case 1:
+                return ViriusType.Reaper;
+
+            case 2:
+                return ViriusType.Core;
+        }
+        return ViriusType.DataStealer;
+    }
+
+    /// <summary>
+    /// Sets Random virius Stats
+    /// </summary>
     public void SetRandomStats()
     {
         Speed = Random.Range(0.1f, EnitiyManager.instance.DataCubeSettings.MaxSpeed);
@@ -500,6 +607,32 @@ public class ViriusBrain : PoolableObject
             NeededCurrentMB = Mathf.RoundToInt(Random.Range(EnitiyManager.instance.DataCubeSettings.m_MaxMb * 0.5f, EnitiyManager.instance.DataCubeSettings.m_MaxMb)),
             NeededProcess = Mathf.RoundToInt(Random.Range(EnitiyManager.instance.DataCubeSettings.m_MaxMb * 0.5f, EnitiyManager.instance.DataCubeSettings.m_MaxProcess)),
         };
+        viriusT = GetRandomType();
+    }
+
+    /// <summary>
+    /// Pools the object
+    /// </summary>
+    public void Collect()
+    {
+        PoolObject();
+    }
+
+    /// <summary>
+    /// Set the virius on Dead
+    /// </summary>
+    private void SetDead()
+    {
+        Dead = true;
+    }
+
+    /// <summary>
+    /// Reset the object when spawned
+    /// </summary>
+    protected override void ResetObject()
+    {
+        base.ResetObject();
+        Dead = false;
     }
 }
 

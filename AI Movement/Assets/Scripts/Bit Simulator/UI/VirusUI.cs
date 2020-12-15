@@ -19,11 +19,11 @@ public class VirusUI : MonoBehaviour
 
     public void UpdateUi()
     {
-        float mbFill = m_Virus.m_CurrentMB / EnitiyManager.instance.ViriusSettings.m_MaxMb;
+        float mbFill = (float)m_Virus.m_CurrentMB / (float)EnitiyManager.instance.ViriusSettings.m_MaxMb;
         m_MbBar.fillAmount = mbFill;
-        float CpuProcess = m_Virus.m_CurrentProcess / EnitiyManager.instance.ViriusSettings.m_MaxProcess;
+        float CpuProcess = (float)m_Virus.m_CurrentProcess / (float)EnitiyManager.instance.ViriusSettings.m_MaxProcess;
         m_ProcessBar.fillAmount = CpuProcess;
-        float ammount = m_Virus.m_LifeTime / EnitiyManager.instance.ViriusSettings.LifeTimeNeeded;
+        float ammount = (float)m_Virus.m_LifeTime / (float)EnitiyManager.instance.ViriusSettings.LifeTimeNeeded;
         m_MatingBar.fillAmount = ammount;
     }
 }
