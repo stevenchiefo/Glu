@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     private Rigidbody m_Rb;
 
     private PowerUps m_PowerUpState;
+    [SerializeField] private GameObject m_BouncePowerUpObj;
+    [SerializeField] private Vector3 m_PowerUpOffset;
 
     private void Awake()
     {
@@ -36,6 +38,12 @@ public class Player : MonoBehaviour
     {
         CheckInput();
         LimitSpeed();
+        SetIndactors();
+    }
+
+    private void SetIndactors()
+    {
+        m_BouncePowerUpObj.transform.position = transform.position + m_PowerUpOffset;
     }
 
     private void CheckInput()
@@ -88,13 +96,29 @@ public class Player : MonoBehaviour
     public void SetPowerUp(PowerUps powerUps, float duration)
     {
         m_PowerUpState = powerUps;
-        RemovePowerUp(duration);
+        CheckPowerUp(true);
+        StartCoroutine(RemovePowerUp(duration));
+    }
+
+    private void CheckPowerUp(bool boolean)
+    {
+        switch (m_PowerUpState)
+        {
+            case PowerUps.None:
+                break;
+            case PowerUps.Bounce:
+                m_BouncePowerUpObj.SetActive(boolean);
+                break;
+            
+        }
     }
 
     private IEnumerator RemovePowerUp(float duration)
     {
         yield return new WaitForSeconds(duration);
+        CheckPowerUp(false);
         m_PowerUpState = PowerUps.None;
+
     }
 
     private bool CheckForEnemy(Collision collision)

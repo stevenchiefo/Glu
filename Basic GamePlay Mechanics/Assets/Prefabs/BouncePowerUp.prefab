@@ -101,7 +101,7 @@ MonoBehaviour:
   OnSpawn:
     m_PersistentCalls:
       m_Calls: []
-  Duration: 2
+  Duration: 5
   PickedUp: 0
 --- !u!65 &3514670338557262570
 BoxCollider:
