@@ -6,6 +6,8 @@ using UnityEngine;
 public class ChessObjectSettings : ScriptableObject
 {
     public int Value;
+    public bool CanMoveThrough;
+    public int TileDistance;
     public Vector2[] PossibleMoves;
     public Vector2[] AttackOnlyMoves;
     
