@@ -15,7 +15,9 @@ MonoBehaviour:
   KingLabels: []
   QueenLabels: []
   PriestLabels: []
-  KnightLabels: []
+  KnightLabels:
+  - B1
+  - G1
   TowerLabels:
   - A1
   - H1
