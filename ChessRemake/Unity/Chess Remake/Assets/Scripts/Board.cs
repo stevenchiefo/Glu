@@ -12,11 +12,11 @@ public class Board : MonoBehaviour
 
     [Header("Colors")]
     [SerializeField] private Material m_FirstMat;
+
     [SerializeField] private Material m_SecondMat;
     private Tile[,] m_Grid;
 
-
-    void Start()
+    private void Start()
     {
         LoadGrid();
         GetComponent<SpawnManager>().StartSpawning(this);
@@ -24,12 +24,11 @@ public class Board : MonoBehaviour
 
     public bool CanPlaceChessPiece(Tile _CurrentTile, Tile _targetTile)
     {
-        Vector2[] _pointers =  _CurrentTile.CurrentChessPiece.Settings.PossibleMoves;
-        if(_CurrentTile.CurrentChessPiece.TeamColor == TeamColor.Black)
+        Vector2[] _pointers = _CurrentTile.CurrentChessPiece.Settings.PossibleMoves;
+        if (_CurrentTile.CurrentChessPiece.TeamColor == TeamColor.Black)
         {
             for (int i = 0; i < _pointers.Length; i++)
             {
-
                 if (_CurrentTile.XPointer + -_pointers[i].x == _targetTile.XPointer && _CurrentTile.YPointer + -_pointers[i].y == _targetTile.YPointer)
                 {
                     return true;
@@ -38,15 +37,23 @@ public class Board : MonoBehaviour
         }
         for (int i = 0; i < _pointers.Length; i++)
         {
-            
-            if(_CurrentTile.XPointer + _pointers[i].x == _targetTile.XPointer && _CurrentTile.YPointer + _pointers[i].y == _targetTile.YPointer)
+            if (_CurrentTile.XPointer + _pointers[i].x == _targetTile.XPointer && _CurrentTile.YPointer + _pointers[i].y == _targetTile.YPointer)
             {
                 return true;
             }
         }
-        
+
         return false;
     }
+
+    public bool CheckIfCanMoveThrough(bool _canmove, Tile _currentTile, Tile _TargetTile)
+    {
+        if (_canmove == false)
+            return false;
+
+        return false;
+    }
+
     public bool CanPlaceChessPieceAttack(Tile _CurrentTile, Tile _targetTile)
     {
         Vector2[] _pointers = _CurrentTile.CurrentChessPiece.Settings.AttackOnlyMoves;
@@ -54,7 +61,6 @@ public class Board : MonoBehaviour
         {
             for (int i = 0; i < _pointers.Length; i++)
             {
-
                 if (_CurrentTile.XPointer + -_pointers[i].x == _targetTile.XPointer && _CurrentTile.YPointer + -_pointers[i].y == _targetTile.YPointer)
                 {
                     return true;
@@ -63,7 +69,6 @@ public class Board : MonoBehaviour
         }
         for (int i = 0; i < _pointers.Length; i++)
         {
-
             if (_CurrentTile.XPointer + _pointers[i].x == _targetTile.XPointer && _CurrentTile.YPointer + _pointers[i].y == _targetTile.YPointer)
             {
                 return true;
@@ -78,18 +83,15 @@ public class Board : MonoBehaviour
         {
             for (int y = 0; y < m_Grid.GetLength(1); y++)
             {
-                if(m_Grid[x,y].Label == _Label)
+                if (m_Grid[x, y].Label == _Label)
                 {
                     return m_Grid[x, y];
-
                 }
-             
             }
         }
         Debug.Log($"Failed to find Tile:{_Label}");
         return null;
     }
-
 
     private void LoadGrid()
     {
@@ -107,12 +109,12 @@ public class Board : MonoBehaviour
             for (int y = 0; y < SizeX; y++)
             {
                 Vector3 pos = new Vector3(x * offset.x, 0f, y * offset.z);
-                GameObject _obj = Instantiate(m_TilePrefab,transform);
+                GameObject _obj = Instantiate(m_TilePrefab, transform);
                 Tile _tile = _obj.GetComponent<Tile>();
                 string _label = m_xLabels[x] + m_yLabels[y];
                 _tile.AssignTile(_label, pos, _mats[_matIndex]);
                 _tile.XPointer = x;
-                _tile.YPointer = y; 
+                _tile.YPointer = y;
 
                 m_Grid[x, y] = _tile;
 

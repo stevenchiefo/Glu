@@ -28,6 +28,8 @@ public class SpawnManager : MonoBehaviour
         SpawnPieces(m_PionPrefab, m_TeamBlackSettings.PionLabels, TeamColor.Black);
         SpawnPieces(m_TowerPrefab, m_TeamWhiteSettings.TowerLabels, TeamColor.White);
         SpawnPieces(m_TowerPrefab, m_TeamBlackSettings.TowerLabels, TeamColor.Black);
+        SpawnPieces(m_KnightPrefab, m_TeamWhiteSettings.KnightLabels, TeamColor.White);
+        SpawnPieces(m_KnightPrefab, m_TeamBlackSettings.KnightLabels, TeamColor.Black);
     }
 
     private void SpawnPieces(GameObject prefab, string[] _tileLabes,TeamColor team)
