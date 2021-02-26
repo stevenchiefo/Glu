@@ -1,14 +1,11 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-
 public class Perceptron
 {
-    
     public float[] Weights;
 
     public Perceptron(int n)
@@ -19,11 +16,11 @@ public class Perceptron
             int weight = Random.Range(0, 101);
             if (weight > 50)
             {
-                Weights[i] = normalized((float)Random.Range(0f, 1f),1f);
+                Weights[i] = normalized((float)Random.Range(0f, 1f), 1f);
             }
             else
             {
-                Weights[i] = -normalized((float)Random.Range(0f, 1f),1f);
+                Weights[i] = -normalized((float)Random.Range(0f, 1f), 1f);
             }
         }
     }
@@ -39,12 +36,18 @@ public class Perceptron
         return outpust;
     }
 
+    public void Adjust(float maxRange)
+    {
+        for (int i = 0; i < Weights.Length; i++)
+        {
+            Weights[i] += Random.Range(-maxRange, maxRange);
+        }
+    }
+
     public float Sign(float n)
     {
         return n * 100f;
     }
-
-
 
     private float normalized(float value, float max) => (-1f / max) * value;
 }

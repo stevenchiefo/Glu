@@ -238,7 +238,7 @@ MonoBehaviour:
   m_LeftDetectionPos: {fileID: 4825185110848705378}
   m_RightDetectionPos: {fileID: 4825185111448420408}
   m_FrontDetectionPos: {fileID: 4825185111977600768}
-  m_Range: 5
+  m_Range: 1.5
   m_DetectionMask:
     serializedVersion: 2
     m_Bits: 1

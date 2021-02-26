@@ -9,7 +9,9 @@ public class Machine : MonoBehaviour
     private Movement m_Movement;
 
     public bool Failed { get; private set; }
-    public float Distance { get; private set; }
+    public bool Finished { get; private set; }
+
+    public Brain Brain { get { return m_Brain; } }
 
     private void Start()
     {
@@ -20,8 +22,10 @@ public class Machine : MonoBehaviour
 
     private void Update()
     {
-        m_Movement.MoveTo(m_Brain.Perceptron.Geuss(new float[] { m_Detection.LeftDetectionRayOutput, m_Detection.RightDetectionRayOutput, m_Detection.FrontDetectionRayOutput, 1 }));
-        Distance += Time.deltaTime;
+        float amount = m_Brain.FrontPerceptron.Geuss(new float[] { m_Detection.FrontDetectionRayOutput, 1 });
+        amount += m_Brain.LeftPerceptron.Geuss(new float[] { m_Detection.LeftDetectionRayOutput, 1 });
+        amount += m_Brain.RightPerceptron.Geuss(new float[] { m_Detection.RightDetectionRayOutput, 1 });
+        m_Movement.MoveTo(amount);
     }
 
     public void ReStart()
@@ -29,12 +33,19 @@ public class Machine : MonoBehaviour
         LoadBrain();
     }
 
-
+    public void SetBrain(Brain brain)
+    {
+        m_Brain.FrontPerceptron = brain.CopyFrontPerceptron();
+        m_Brain.LeftPerceptron = brain.CopyLeftPerceptron();
+        m_Brain.RightPerceptron = brain.CopyRightPerceptron();
+    }
 
     private void LoadBrain()
     {
         m_Brain = new Brain();
-        m_Brain.Perceptron = new Perceptron(3);
+        m_Brain.FrontPerceptron = new Perceptron(2);
+        m_Brain.LeftPerceptron = new Perceptron(2);
+        m_Brain.RightPerceptron = new Perceptron(2);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -43,10 +54,19 @@ public class Machine : MonoBehaviour
         {
             Failed = true;
         }
+        else if (CheckForFinish(collision))
+        {
+            Finished = true;
+        }
     }
 
     private bool CheckForWall(Collision collision)
     {
         return collision.gameObject.tag.ToLower() == "wall";
+    }
+
+    private bool CheckForFinish(Collision collision)
+    {
+        return collision.gameObject.tag.ToLower() == "finish";
     }
 }

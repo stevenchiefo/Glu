@@ -22,10 +22,12 @@ public class Detection : MonoBehaviour
     private void Detect()
     {
         RaycastHit hit;
-        Debug.DrawRay(transform.position,(m_FrontDetectionPos.position - transform.position);
-        if(Physics.Raycast(transform.position, m_LeftDetectionPos.position - transform.position, out hit,m_Range, m_DetectionMask))
+        Debug.DrawRay(transform.position, (m_FrontDetectionPos.position - transform.position) * m_Range, Color.red);
+        Debug.DrawRay(transform.position, (m_LeftDetectionPos.position - transform.position) * m_Range, Color.red);
+        Debug.DrawRay(transform.position, (m_RightDetectionPos.position - transform.position) * m_Range, Color.red);
+        if (Physics.Raycast(transform.position, m_LeftDetectionPos.position - transform.position, out hit, m_Range, m_DetectionMask))
         {
-            if(hit.collider != null)
+            if (hit.collider != null)
             {
                 LeftDetectionRayOutput = 1;
             }
