@@ -22,9 +22,16 @@ public class Machine : MonoBehaviour
 
     private void Update()
     {
-        float amount = m_Brain.FrontPerceptron.Geuss(new float[] { m_Detection.FrontDetectionRayOutput, 1 });
-        amount += m_Brain.LeftPerceptron.Geuss(new float[] { m_Detection.LeftDetectionRayOutput, 1 });
-        amount += m_Brain.RightPerceptron.Geuss(new float[] { m_Detection.RightDetectionRayOutput, 1 });
+        float[] input = new float[]
+        {
+            m_Detection.FrontDetectionRayOutput,
+            m_Detection.LeftDetectionRayOutput,
+            m_Detection.RightDetectionRayOutput,
+            1f,
+        };
+        float amount = m_Brain.FrontPerceptron.Geuss(input);
+        amount += m_Brain.LeftPerceptron.Geuss(input);
+        amount += m_Brain.RightPerceptron.Geuss(input);
         m_Movement.MoveTo(amount);
     }
 
@@ -43,9 +50,9 @@ public class Machine : MonoBehaviour
     private void LoadBrain()
     {
         m_Brain = new Brain();
-        m_Brain.FrontPerceptron = new Perceptron(2);
-        m_Brain.LeftPerceptron = new Perceptron(2);
-        m_Brain.RightPerceptron = new Perceptron(2);
+        m_Brain.FrontPerceptron = new Perceptron(4);
+        m_Brain.LeftPerceptron = new Perceptron(4);
+        m_Brain.RightPerceptron = new Perceptron(4);
     }
 
     private void OnCollisionEnter(Collision collision)

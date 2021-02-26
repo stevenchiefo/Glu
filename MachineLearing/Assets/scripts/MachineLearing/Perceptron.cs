@@ -40,7 +40,8 @@ public class Perceptron
     {
         for (int i = 0; i < Weights.Length; i++)
         {
-            Weights[i] += Random.Range(-maxRange, maxRange);
+            float amount = Random.Range(-maxRange, maxRange);
+            Weights[i] += amount;
         }
     }
 
