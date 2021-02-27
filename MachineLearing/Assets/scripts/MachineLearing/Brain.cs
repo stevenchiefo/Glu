@@ -20,7 +20,7 @@ public struct Brain
         Perceptron[] newbrain = new Perceptron[Perceptrons.Length];
         for (int i = 0; i < newbrain.Length; i++)
         {
-            newbrain[i] = new Perceptron(6);
+            newbrain[i] = new Perceptron(Perceptrons[0].Weights.Length);
         }
         for (int i = 0; i < Perceptrons.Length; i++)
         {

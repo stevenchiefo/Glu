@@ -42,7 +42,7 @@ public class Machine : MonoBehaviour
     {
         while (Failed == false && Finished == false)
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(3f);
             if (CheckIfStuck())
             {
                 Failed = true;
@@ -74,7 +74,7 @@ public class Machine : MonoBehaviour
     private void LoadBrain()
     {
         m_Brain = new Brain();
-        m_Brain.CreatePerceptrons(5, 6);
+        m_Brain.CreatePerceptrons(11, 12);
     }
 
     private void OnCollisionEnter(Collision collision)
