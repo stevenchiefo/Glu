@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class Detection : MonoBehaviour
 {
-    [SerializeField] private Transform m_LeftDetectionPos;
-    [SerializeField] private Transform m_RightDetectionPos;
-    [SerializeField] private Transform m_FrontDetectionPos;
+    [SerializeField] private Transform[] m_Points;
     [SerializeField] private float m_Range;
     [SerializeField] private LayerMask m_DetectionMask;
 
-    public int LeftDetectionRayOutput { get; private set; }
-    public int RightDetectionRayOutput { get; private set; }
-    public int FrontDetectionRayOutput { get; private set; }
+    public float[] Outputs { get; private set; }
 
     private void Update()
     {
@@ -21,44 +17,27 @@ public class Detection : MonoBehaviour
 
     private void Detect()
     {
-        RaycastHit hit;
-        Debug.DrawLine(transform.position, transform.position + (m_FrontDetectionPos.position - transform.position).normalized * (m_Range * 2f), Color.red);
-        Debug.DrawLine(transform.position, transform.position + (m_LeftDetectionPos.position - transform.position).normalized * m_Range, Color.red);
-        Debug.DrawLine(transform.position, transform.position + (m_RightDetectionPos.position - transform.position).normalized * m_Range, Color.red);
-        if (Physics.Raycast(transform.position, (m_LeftDetectionPos.position - transform.position).normalized, out hit, m_Range, m_DetectionMask))
+        Outputs = new float[m_Points.Length];
+        for (int i = 0; i < m_Points.Length; i++)
         {
-            if (hit.collider != null)
+            Vector3 _DirToPoint = m_Points[i].position - transform.position;
+            _DirToPoint.Normalize();
+
+            RaycastHit hit = default;
+
+            if (Physics.Raycast(transform.position, _DirToPoint, out hit, m_Range, m_DetectionMask))
             {
-                LeftDetectionRayOutput = 1;
-                Debug.DrawLine(transform.position, hit.point, Color.blue);
+                Debug.DrawLine(transform.position, transform.position + (_DirToPoint * m_Range), Color.blue);
+                if (hit.collider != null)
+                {
+                    float _dis = Vector3.Distance(transform.position, hit.point);
+                    float value = Mathf.Clamp(_dis, 0f, 1f);
+                    Outputs[i] = value;
+                }
             }
             else
             {
-                LeftDetectionRayOutput = 0;
-            }
-        }
-        if (Physics.Raycast(transform.position, (m_RightDetectionPos.position - transform.position).normalized, out hit, m_Range, m_DetectionMask))
-        {
-            if (hit.collider != null)
-            {
-                RightDetectionRayOutput = 1;
-                Debug.DrawLine(transform.position, hit.point, Color.blue);
-            }
-            else
-            {
-                RightDetectionRayOutput = 0;
-            }
-        }
-        if (Physics.Raycast(transform.position, (m_FrontDetectionPos.position - transform.position).normalized, out hit, m_Range * 1.5f, m_DetectionMask))
-        {
-            if (hit.collider != null)
-            {
-                FrontDetectionRayOutput = 1;
-                Debug.DrawLine(transform.position, hit.point, Color.blue);
-            }
-            else
-            {
-                FrontDetectionRayOutput = 0;
+                Debug.DrawLine(transform.position, transform.position + (_DirToPoint * m_Range), Color.red);
             }
         }
     }

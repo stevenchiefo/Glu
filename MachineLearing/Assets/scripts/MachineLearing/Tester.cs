@@ -8,10 +8,12 @@ public class Tester : MonoBehaviour
 {
     [Header("UI FeedBack")]
     [SerializeField] private Slider m_TrainingAmountSlider;
+
     [SerializeField] private Slider m_SimulationSpeedSlider;
     [SerializeField] private Slider m_TrainingRateSlider;
 
     [SerializeField] private Toggle m_BestMachineToggle;
+    [SerializeField] private Toggle m_LoopSimulation;
 
     [SerializeField] private InputField m_SliderAmount;
     [SerializeField] private Text m_TestCounter;
@@ -21,6 +23,7 @@ public class Tester : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private Transform m_StartPostionForTest;
+
     [SerializeField] private Transform m_FinishPosition;
     [SerializeField] private GameObject m_Prefab;
     private MachineData m_Data;
@@ -43,6 +46,7 @@ public class Tester : MonoBehaviour
     {
         m_KillSimulation = true;
     }
+
     private void Start()
     {
         m_TrainingAmountSlider.onValueChanged.AddListener(UpdateSliderAmount);
@@ -88,20 +92,19 @@ public class Tester : MonoBehaviour
         m_SliderAmount.text = amount.ToString();
     }
 
-
     public IEnumerator Test(int amountTests)
     {
         MachineData[] _Datas = new MachineData[amountTests];
+        List<MachineData> _finishedData = new List<MachineData>();
         for (int i = 0; i < amountTests; i++)
         {
             m_TestCounter.text = "Current Test: " + (i + 1).ToString();
 
             GameObject obj = Instantiate(m_Prefab, m_StartPostionForTest.position, Quaternion.identity);
             Machine machine = obj.GetComponent<Machine>();
-            if (m_BestMachineToggle.isOn && m_Data.m_Brain.FrontPerceptron != null)
+            if (m_BestMachineToggle.isOn && m_Data.m_Brain.Perceptrons != null)
             {
                 machine.SetBrain(m_Data.m_Brain);
-                machine.Brain.Train(m_TrainingRateSlider.value);
             }
             yield return new WaitUntil(() => machine.Failed || machine.Finished || m_killCurrentTest || m_KillSimulation);
             if (m_KillSimulation)
@@ -127,35 +130,54 @@ public class Tester : MonoBehaviour
             float _dis = -(Vector3.Distance(m_FinishPosition.position, machine.transform.position) - 100);
             int addamount = -20;
             if (machine.Finished)
+            {
                 addamount = 20;
+            }
+            else
+            {
+                if (m_Data.m_Brain.Perceptrons != null)
+                    m_Data.m_Brain.Train(m_TrainingRateSlider.value);
+            }
             _Datas[i] = new MachineData
             {
                 Score = _dis + addamount,
                 m_Brain = machine.Brain,
                 Finished = machine.Finished,
             };
+            if (_Datas[i].Finished)
+                _finishedData.Add(_Datas[i]);
             Destroy(machine.gameObject);
         }
-        if (m_KillSimulation || m_killCurrentTest)
+        if (m_KillSimulation)
         {
             m_killCurrentTest = false;
             m_KillSimulation = false;
+            m_LoopSimulation.isOn = false;
         }
         else
         {
+            MachineData _newbestData = default;
+            if (_finishedData.Count > 0)
+            {
+                _newbestData = GetBestData(_finishedData.ToArray());
+            }
+            else
+                _newbestData = GetBestData(_Datas);
 
-            MachineData _newbestData = GetBestData(_Datas);
-            if (m_Data.Score < _newbestData.Score)
+            bool newbetter = m_Data.Finished == false && _newbestData.Finished == true;
+            if (m_Data.Score < _newbestData.Score || newbetter)
             {
                 m_FeedBackText.text += $"Best Bot has been replaced, Previous score: {m_Data.Score}, new score: {_newbestData.Score}\n";
                 m_Data = _newbestData;
-
             }
             SetFeedBack(_Datas);
         }
+
+        if (m_LoopSimulation.isOn)
+        {
+            StartCoroutine(Test((int)m_TrainingAmountSlider.value));
+        }
     }
-
-
 
     private void OnApplicationQuit()
     {
@@ -164,24 +186,14 @@ public class Tester : MonoBehaviour
 
     private void SaveBrain()
     {
-        SavePreceptron[] _weights = new SavePreceptron[]
+        SavePreceptron[] _weights = new SavePreceptron[m_Data.m_Brain.Perceptrons.Length];
+        for (int i = 0; i < _weights.Length; i++)
         {
-            new SavePreceptron
+            _weights[i] = new SavePreceptron
             {
-                Weights = m_Data.m_Brain.FrontPerceptron.Weights,
-            },
-            new SavePreceptron
-            {
-                Weights = m_Data.m_Brain.LeftPerceptron.Weights,
-            },
-            new SavePreceptron
-            {
-                Weights = m_Data.m_Brain.RightPerceptron.Weights,
-            },
-
-
-        };
-
+                Weights = m_Data.m_Brain.Perceptrons[i].Weights,
+            };
+        }
 
         MachineSaveData _data = new MachineSaveData
         {
@@ -194,16 +206,15 @@ public class Tester : MonoBehaviour
     public void LoadSavedBrain()
     {
         MachineSaveData _data = m_FileManager.readFile<MachineSaveData>();
-        Brain brain = new Brain
-        {
-            FrontPerceptron = new Perceptron(1),
-            LeftPerceptron = new Perceptron(1),
-            RightPerceptron = new Perceptron(1),
 
-        };
-        brain.FrontPerceptron.Weights = _data.Perceptrons[0].Weights;
-        brain.LeftPerceptron.Weights = _data.Perceptrons[1].Weights;
-        brain.RightPerceptron.Weights = _data.Perceptrons[2].Weights;
+        Brain brain = new Brain();
+        brain.CreatePerceptrons(5, 6);
+
+        for (int i = 0; i < brain.Perceptrons.Length; i++)
+        {
+            brain.Perceptrons[i].Weights = _data.Perceptrons[i].Weights;
+        }
+
         m_Data = new MachineData
         {
             m_Brain = brain,
@@ -232,8 +243,6 @@ public class Tester : MonoBehaviour
         }
         return machineData;
     }
-
-
 }
 
 public class TestFeedBack
@@ -293,6 +302,7 @@ public struct MachineSaveData
     public SavePreceptron[] Perceptrons;
     public float Score;
 }
+
 [Serializable]
 public struct SavePreceptron
 {

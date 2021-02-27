@@ -4,35 +4,36 @@ using UnityEngine;
 
 public struct Brain
 {
-    public Perceptron FrontPerceptron;
-    public Perceptron LeftPerceptron;
-    public Perceptron RightPerceptron;
+    public Perceptron[] Perceptrons;
 
-    public Perceptron CopyFrontPerceptron()
+    public void CreatePerceptrons(int amount, int weights)
     {
-        Perceptron perceptron = new Perceptron(3);
-        perceptron.Weights = FrontPerceptron.Weights;
-        return perceptron;
+        Perceptrons = new Perceptron[amount];
+        for (int i = 0; i < Perceptrons.Length; i++)
+        {
+            Perceptrons[i] = new Perceptron(weights);
+        }
     }
 
-    public Perceptron CopyLeftPerceptron()
+    public Perceptron[] Copy()
     {
-        Perceptron perceptron = new Perceptron(3);
-        perceptron.Weights = LeftPerceptron.Weights;
-        return perceptron;
-    }
-
-    public Perceptron CopyRightPerceptron()
-    {
-        Perceptron perceptron = new Perceptron(3);
-        perceptron.Weights = RightPerceptron.Weights;
-        return perceptron;
+        Perceptron[] newbrain = new Perceptron[Perceptrons.Length];
+        for (int i = 0; i < newbrain.Length; i++)
+        {
+            newbrain[i] = new Perceptron(6);
+        }
+        for (int i = 0; i < Perceptrons.Length; i++)
+        {
+            newbrain[i].Weights = Perceptrons[i].Weights;
+        }
+        return newbrain;
     }
 
     public void Train(float TrainRate)
     {
-        FrontPerceptron.Adjust(TrainRate);
-        LeftPerceptron.Adjust(TrainRate);
-        RightPerceptron.Adjust(TrainRate);
+        foreach (Perceptron perceptron in Perceptrons)
+        {
+            perceptron.Adjust(TrainRate);
+        }
     }
 }

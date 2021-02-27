@@ -7,6 +7,7 @@ public class Machine : MonoBehaviour
     private Brain m_Brain;
     private Detection m_Detection;
     private Movement m_Movement;
+    private Vector3 m_LastPos;
 
     public bool Failed { get; private set; }
     public bool Finished { get; private set; }
@@ -18,21 +19,46 @@ public class Machine : MonoBehaviour
         LoadBrain();
         m_Detection = GetComponent<Detection>();
         m_Movement = GetComponent<Movement>();
+        StartCoroutine(Timer());
     }
 
     private void Update()
     {
-        float[] input = new float[]
+        float[] input = new float[m_Detection.Outputs.Length + 1];
+        for (int i = 0; i < m_Detection.Outputs.Length; i++)
         {
-            m_Detection.FrontDetectionRayOutput,
-            m_Detection.LeftDetectionRayOutput,
-            m_Detection.RightDetectionRayOutput,
-            1f,
-        };
-        float amount = m_Brain.FrontPerceptron.Geuss(input);
-        amount += m_Brain.LeftPerceptron.Geuss(input);
-        amount += m_Brain.RightPerceptron.Geuss(input);
+            input[i] = m_Detection.Outputs[i];
+        }
+        input[input.Length - 1] = 1f;
+        float amount = 0f;
+        foreach (Perceptron i in m_Brain.Perceptrons)
+        {
+            amount += i.Geuss(input);
+        }
         m_Movement.MoveTo(amount);
+    }
+
+    private IEnumerator Timer()
+    {
+        while (Failed == false && Finished == false)
+        {
+            yield return new WaitForSeconds(1f);
+            if (CheckIfStuck())
+            {
+                Failed = true;
+            }
+        }
+    }
+
+    private bool CheckIfStuck()
+    {
+        float distance = Vector3.Distance(transform.position, m_LastPos);
+        m_LastPos = transform.position;
+        if (distance <= 3f)
+        {
+            return true;
+        }
+        return false;
     }
 
     public void ReStart()
@@ -42,17 +68,13 @@ public class Machine : MonoBehaviour
 
     public void SetBrain(Brain brain)
     {
-        m_Brain.FrontPerceptron = brain.CopyFrontPerceptron();
-        m_Brain.LeftPerceptron = brain.CopyLeftPerceptron();
-        m_Brain.RightPerceptron = brain.CopyRightPerceptron();
+        m_Brain.Perceptrons = brain.Copy();
     }
 
     private void LoadBrain()
     {
         m_Brain = new Brain();
-        m_Brain.FrontPerceptron = new Perceptron(4);
-        m_Brain.LeftPerceptron = new Perceptron(4);
-        m_Brain.RightPerceptron = new Perceptron(4);
+        m_Brain.CreatePerceptrons(5, 6);
     }
 
     private void OnCollisionEnter(Collision collision)
