@@ -24,9 +24,9 @@ public class CityGenerator : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ClearGrid();
             ClearBuildings();
-            GenerateCity();
+            ClearGrid();
+            GenerateCityV2();
             PlacePrefabsOnGrid();
         }
     }
@@ -71,7 +71,15 @@ public class CityGenerator : MonoBehaviour
                 if (m_GridNodes[_neighbour.x, _neighbour.y].Type != CityTileType.none)
                     continue;
 
-                CityTileType _type = CaculateTile(m_GridNodes[OpenList[i].x, OpenList[i].y].FollewedStreets);
+                Vector2Int _previousDirection = OpenList[i] - m_GridNodes[OpenList[i].x, OpenList[i].y].PreviousTile;
+                Vector2Int _newDirection = _neighbour - OpenList[i];
+
+                float _streetPob = 20;
+                if (_newDirection == _previousDirection)
+                {
+                    _streetPob = 0;
+                }
+                CityTileType _type = CaculateTile(m_GridNodes[OpenList[i].x, OpenList[i].y].FollewedStreets, _streetPob);
                 if (_type == CityTileType.Street)
                 {
                     m_GridNodes[_neighbour.x, _neighbour.y].FollewedStreets = m_GridNodes[OpenList[i].x, OpenList[i].y].FollewedStreets + 1;
@@ -88,11 +96,81 @@ public class CityGenerator : MonoBehaviour
                         ClosedList.Add(_neighbour);
                     }
                 }
+                m_GridNodes[_neighbour.x, _neighbour.y].PreviousTile = OpenList[i];
+
             }
             ClosedList.Add(OpenList[i]);
             OpenList.Remove(OpenList[i]);
             looped++;
         }
+    }
+
+    private void GenerateCityV2()
+    {
+        Vector2Int[] BeginStreetPoints = new Vector2Int[40];
+        for (int i = 0; i < BeginStreetPoints.Length; i++)
+        {
+            if (BeginStreetPoints[i] == Vector2Int.zero)
+            {
+                Vector2Int _currentpos = GetRandomPoint();
+                int loops = 0;
+                while (!CheckIfCanPlace(BeginStreetPoints, _currentpos, 10))
+                {
+                    _currentpos = GetRandomPoint();
+                    loops++;
+                    if (loops >= 100)
+                        break;
+                }
+                BeginStreetPoints[i] = _currentpos;
+            }
+        }
+        foreach (Vector2Int pointer in BeginStreetPoints)
+        {
+            Vector2Int[] _Neighbours = GetNeighBourPointers(pointer, Random.Range(0, 50));
+            m_GridNodes[pointer.x, pointer.y].Type = CityTileType.Street;
+            foreach (Vector2Int n in _Neighbours)
+            {
+                if (m_GridNodes[n.x, n.y].Type != CityTileType.none)
+                    continue;
+
+                m_GridNodes[n.x, n.y].Type = CityTileType.Street;
+            }
+        }
+        CaculateHousesV2();
+    }
+
+    private void CaculateHousesV2()
+    {
+        for (int x = 0; x < SizeX; x++)
+        {
+            for (int y = 0; y < SizeY; y++)
+            {
+                if(m_GridNodes[x,y].Type == CityTileType.Street)
+                {
+                    Vector2Int[] _neighbours = GetNeighBourPointers(new Vector2Int(x, y));
+                    foreach (Vector2Int i in _neighbours)
+                    {
+                        if (m_GridNodes[i.x,i.y].Type == CityTileType.Street)
+                            continue;
+                        m_GridNodes[i.x, i.y].Type = CityTileType.House;
+                    }
+                }
+            }
+        }
+    }
+
+    private bool CheckIfCanPlace(Vector2Int[] Points, Vector2Int currentPoints, float _mindistance)
+    {
+        for (int i = 0; i < Points.Length; i++)
+        {
+
+            float _currentdistance = Vector2Int.Distance(currentPoints, Points[i]);
+            if (_currentdistance <= _mindistance)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void PlacePrefabsOnGrid()
@@ -132,17 +210,7 @@ public class CityGenerator : MonoBehaviour
 
     private void ClearBuildings()
     {
-        if (Buildings != null)
-        {
-            if (Buildings.Count > 0)
-            {
-                for (int i = 0; i < Buildings.Count; i++)
-                {
-                    Destroy(Buildings[i]);
-                }
-                Buildings.Clear();
-            }
-        }
+        DestroyBuildingsSystem.Instance.DestroyAllTags();
     }
 
     private Vector2Int[] GetNeighBourPointers(Vector2Int Pointer)
@@ -173,12 +241,41 @@ public class CityGenerator : MonoBehaviour
 
         return _Neighbours.ToArray();
     }
-
-    private CityTileType CaculateTile(int followedStreets)
+    private Vector2Int[] GetNeighBourPointers(Vector2Int Pointer, int _Length)
     {
-        float followStreetPercent = (2f * followedStreets);
-        float StreetThreshHold = 20f + followStreetPercent;
-        float HouseTreshHold = 10f - followStreetPercent;
+        List<Vector2Int> _Neighbours = new List<Vector2Int>();
+        List<Vector2Int> Pointers = new List<Vector2Int>();
+        for (int i = 0; i < _Length; i++)
+        {
+            Pointers.Add(new Vector2Int(1, 0) * i);
+            Pointers.Add(new Vector2Int(-1, 0) * i);
+            Pointers.Add(new Vector2Int(0, 1) * i);
+            Pointers.Add(new Vector2Int(0, -1) * i);
+        }
+
+        foreach (Vector2Int i in Pointers)
+        {
+            int Xpointer = i.x + Pointer.x;
+            int Ypointer = i.y + Pointer.y;
+
+            if (Xpointer >= 0 && Ypointer >= 0)
+            {
+                if (Xpointer < m_GridNodes.GetLength(0) && Ypointer < m_GridNodes.GetLength(1))
+                {
+                    Vector2Int _PointersFormNeigBour = new Vector2Int(Xpointer, Ypointer);
+                    _Neighbours.Add(_PointersFormNeigBour);
+                }
+            }
+        }
+
+        return _Neighbours.ToArray();
+    }
+
+    private CityTileType CaculateTile(int followedStreets, float StreetProb)
+    {
+        float followStreetPercent = (0.1f * followedStreets);
+        float StreetThreshHold = 20f + followStreetPercent + StreetProb;
+        float HouseTreshHold = 10f - followStreetPercent + StreetProb;
         float _index = Random.Range(0f, 100f);
         if (_index >= StreetThreshHold)
         {
@@ -205,6 +302,30 @@ public class CityGenerator : MonoBehaviour
             int Y = MinOrMax(0, SizeY - 1);
             return new Vector2Int(X, Y);
         }
+    }
+
+    private Vector2Int GetRandomPoint()
+    {
+        int X = Random.Range(0, SizeX - 1);
+        int Y = Random.Range(0, SizeY - 1);
+        return new Vector2Int(X, Y);
+    }
+
+    private bool CaculateIfWantToSplit(CityNode _node)
+    {
+        if (!_node.MaySplit)
+            return false;
+        float threshHold = 10;
+        if (_node.AlreadySplitted <= threshHold)
+        {
+            float _index = Random.Range(0f, 100f);
+            return _index > 70f;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     private int MinOrMax(int min, int max)
@@ -290,6 +411,7 @@ public struct CityNode
     public int IndexY;
 
     public int FollewedStreets;
-    public bool CanGenerateStreet;
+    public bool MaySplit;
+    public int AlreadySplitted;
     public Vector2Int PreviousTile;
 }

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2330986916964103476}
   - component: {fileID: 1476939473854768481}
   - component: {fileID: -8701179380772390355}
+  - component: {fileID: 7141716242955611697}
   m_Layer: 0
   m_Name: Hotel
   m_TagString: Untagged
@@ -109,3 +110,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
+--- !u!114 &7141716242955611697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578258823753471497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b984d3775fe680d4290868bfdd037b9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
