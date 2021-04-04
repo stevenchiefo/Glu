@@ -312,7 +312,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88e7b10525540ff45b82575c94d11c0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Tree: {fileID: 1732305767}
+  Size: 100
+  QuadCapicity: 20
+  AmountOfPoints: 500
   Range: 10
 --- !u!1 &1732305766
 GameObject:
@@ -323,7 +325,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1732305768}
-  - component: {fileID: 1732305767}
   m_Layer: 0
   m_Name: QuadTree
   m_TagString: Untagged
@@ -331,20 +332,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1732305767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732305766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 150eb5638026eed4c9d475ec16f17b44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  GridSize: 100
-  m_MaxQuadCapicity: 10
 --- !u!4 &1732305768
 Transform:
   m_ObjectHideFlags: 0
@@ -399,7 +386,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012531889}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

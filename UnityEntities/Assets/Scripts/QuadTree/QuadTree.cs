@@ -2,50 +2,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuadTree : MonoBehaviour
+public class QuadTree
 {
-    [SerializeField] private int GridSize;              //Total grid Size
-    [SerializeField] private int m_MaxQuadCapicity;     //Capicity per quad
-    private float Size;                                 //Size for main quad
+    public float Size { get; private set; }             //Size for main quad
+    public Vector3 position { get; private set; }       //World Position Of QuadTree
+
+    public int GridSize { get; private set; }           //Total grid Size
+    public int MaxQuadCapicity { get; private set; }    //Capicity per quad
     private Quad MainQuad;                              //Main/Start Quad
     private List<Point> Points;                         //All Points in world
 
-    private void Start()
+
+
+    public QuadTree(int TotalSize, int MaxCapicity,Vector3 _pos)
     {
+        GridSize = TotalSize;
+        MaxQuadCapicity = MaxCapicity;
+        position = _pos;
+
         Size = GridSize / 2f;                           //caculate the correct size for the mainQuad
     }
+    
 
-    private void Update()
+
+
+
+
+    public void SpawnPoints(List<Point> _Points)
     {
-        SpawnPoints();
-    }
 
-    private bool CheckInput()
-    {
-        return Input.GetKeyDown(KeyCode.Space);
-    }
+        MainQuad = new Quad(position, Size, 10);          //Create MainQuad
+        Points = _Points;
+        CheckPoints();
 
-    private void SpawnPoints()
-    {
-        if (CheckInput())
-        {
-            MainQuad = new Quad(transform.position, Size, 10);          //Create MainQuad
-            Points = new List<Point>();                                 //Create Points
-            int _amount = Random.Range(0, 1000);                        //Caculate a random Amount
-            for (int i = 0; i < _amount; i++)
-            {
-                float _x = Random.Range(-(float)Size, (float)Size);     //Caculate a random X
-                float _y = Random.Range(-(float)Size, (float)Size);     //Caculate a random Y
-
-                Point point = new Point
-                {
-                    WorldPosition = new Vector3(_x, 0, _y),             //Set that worldPosition
-                };
-                Points.Add(point);                                      //Add it to the total Points
-            }
-            CheckPoints();
-            Debug.Log($"SpawnPoints by system: {Points.Count}, Points by quads: {MainQuad.GetListPoints().Count}");
-        }
     }
 
     private void CheckPoints()
@@ -66,7 +55,7 @@ public class QuadTree : MonoBehaviour
         return MainQuad.GetPoints(pos, _range);
     }
 
-    private void OnDrawGizmos()
+    public void OnDrawGizmos()
     {
         List<Quad> quads = new List<Quad>();
         quads.Add(MainQuad);
@@ -163,6 +152,11 @@ public struct Quad
 
     public List<Point> GetPoints(Vector3 _pos, float _Range)
     {
+        if (ChildQuads == null)
+        {
+            return Points;
+        }
+
         if (OverLap(_pos, _Range))
             ExpandSearch = true;
 
@@ -181,23 +175,28 @@ public struct Quad
         }
         else
         {
-            bool expand = ExpandSearch;
-            foreach (Quad _quad in ChildQuads)
+            if (ChildQuads != null)
             {
-                if (_quad.IsWithinBounds(_pos) || expand)
+
+
+                bool expand = ExpandSearch;
+                foreach (Quad _quad in ChildQuads)
                 {
-                    List<Point> _localPoints = _quad.GetPoints(_pos, _Range);
-                    foreach (Point LocalP in _localPoints)
+                    if (_quad.IsWithinBounds(_pos) || expand)
                     {
-                        _points.Add(LocalP);
+                        List<Point> _localPoints = _quad.GetPoints(_pos, _Range);
+                        foreach (Point LocalP in _localPoints)
+                        {
+                            _points.Add(LocalP);
+                        }
                     }
-                }
 
-                if (_quad.ExpandSearch)
-                {
-                    expand = true;
+                    if (_quad.ExpandSearch)
+                    {
+                        expand = true;
 
-                    ExpandSearch = true;
+                        ExpandSearch = true;
+                    }
                 }
             }
             return _points;
@@ -240,18 +239,16 @@ public struct Quad
         }
         else
         {
-            bool didntFindPoint = true;
+
             for (int i = 0; i < ChildQuads.Count; i++)
             {
                 if (ChildQuads[i].IsWithinBounds(_point.WorldPosition))
                 {
                     ChildQuads[i].AddPoint(_point);
-                    didntFindPoint = false;
                     break;
                 }
             }
-            if (didntFindPoint)
-                Debug.Log("Didn't find");
+
         }
     }
 
@@ -262,9 +259,9 @@ public struct Quad
 
     public bool IsWithinBounds(Vector3 _point)
     {
-        if (BoundsMax.x > _point.x && BoundsMin.x < _point.x)
+        if (BoundsMax.x >= _point.x && BoundsMin.x <= _point.x)
         {
-            if (BoundsMax.z > _point.z && BoundsMin.z < _point.z)
+            if (BoundsMax.z >= _point.z && BoundsMin.z <= _point.z)
                 return true;
         }
         return false;
@@ -301,10 +298,7 @@ public struct Quad
         }
         Points.Clear();
 
-        if (Points.Count > 0)
-        {
-            Debug.Log($"Could't divide Points");
-        }
+
         foreach (Quad item in newquads)
         {
             ChildQuads.Add(item);
@@ -344,4 +338,5 @@ public struct Quad
 public struct Point
 {
     public Vector3 WorldPosition;
+    public float Speed;
 }
