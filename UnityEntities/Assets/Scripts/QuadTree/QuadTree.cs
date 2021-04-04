@@ -17,7 +17,7 @@ public class QuadTree : MonoBehaviour
 
     private void Update()
     {
-        SpawnPoints();                                  
+        SpawnPoints();
     }
 
     private bool CheckInput()
@@ -30,10 +30,8 @@ public class QuadTree : MonoBehaviour
         if (CheckInput())
         {
             MainQuad = new Quad(transform.position, Size, 10);          //Create MainQuad
-
-
             Points = new List<Point>();                                 //Create Points
-            int _amount = Random.Range(0, 1000);                        //Caculate a random Amount 
+            int _amount = Random.Range(0, 1000);                        //Caculate a random Amount
             for (int i = 0; i < _amount; i++)
             {
                 float _x = Random.Range(-(float)Size, (float)Size);     //Caculate a random X
@@ -46,6 +44,7 @@ public class QuadTree : MonoBehaviour
                 Points.Add(point);                                      //Add it to the total Points
             }
             CheckPoints();
+            Debug.Log($"SpawnPoints by system: {Points.Count}, Points by quads: {MainQuad.GetListPoints().Count}");
         }
     }
 
@@ -56,9 +55,15 @@ public class QuadTree : MonoBehaviour
             CheckWhereIn(i);
         }
     }
+
     public void CheckWhereIn(Point point)
     {
         MainQuad.AddPoint(point);
+    }
+
+    public List<Point> GetPoints(Vector3 pos, float _range)
+    {
+        return MainQuad.GetPoints(pos, _range);
     }
 
     private void OnDrawGizmos()
@@ -76,7 +81,6 @@ public class QuadTree : MonoBehaviour
                 }
             }
         }
-
 
         foreach (Quad quad in quads)
         {
@@ -103,13 +107,22 @@ public class QuadTree : MonoBehaviour
                     pos_2 = _points[i + 1] + quad.CenterPosition;
                 }
 
-
                 Gizmos.DrawLine(pos_1, pos_2);
             }
             Vector3 _size = new Vector3(0.1f, 0.1f, 0.1f);
 
             Gizmos.DrawCube(quad.CenterPosition, _size);
+        }
 
+        List<Point> _LocalDrawingQuadPoints = MainQuad.GetListPoints();
+
+        if (_LocalDrawingQuadPoints != null)
+        {
+            foreach (Point point in _LocalDrawingQuadPoints)
+            {
+                Gizmos.color = Color.black;
+                Gizmos.DrawSphere(point.WorldPosition, 2f);
+            }
         }
 
         if (Points != null)
@@ -134,6 +147,8 @@ public struct Quad
     public Vector3 BoundsMin;
     public Vector3 BoundsMax;
 
+    public bool ExpandSearch;
+
     public Quad(Vector3 _pos, float _size, int _cap)
     {
         CenterPosition = _pos;
@@ -143,18 +158,21 @@ public struct Quad
         Capicity = _cap;
         BoundsMin = new Vector3(-Size, 0, -Size) + CenterPosition;
         BoundsMax = new Vector3(Size, 0, Size) + CenterPosition;
+        ExpandSearch = false;
     }
 
     public List<Point> GetPoints(Vector3 _pos, float _Range)
     {
+        if (OverLap(_pos, _Range))
+            ExpandSearch = true;
+
         List<Point> _points = new List<Point>();
-        if(ChildQuads.Count == 0)
+        if (ChildQuads.Count == 0)
         {
-            
             foreach (Point item in Points)
             {
                 float _distance = Vector3.Distance(_pos, item.WorldPosition);
-                if(_distance <= _Range)
+                if (_distance <= _Range)
                 {
                     _points.Add(item);
                 }
@@ -163,17 +181,52 @@ public struct Quad
         }
         else
         {
+            bool expand = ExpandSearch;
             foreach (Quad _quad in ChildQuads)
             {
-                if (_quad.IsWithinBounds(_pos))
+                if (_quad.IsWithinBounds(_pos) || expand)
                 {
-                    _points = _quad.GetPoints(_pos, _Range);
+                    List<Point> _localPoints = _quad.GetPoints(_pos, _Range);
+                    foreach (Point LocalP in _localPoints)
+                    {
+                        _points.Add(LocalP);
+                    }
+                }
+
+                if (_quad.ExpandSearch)
+                {
+                    expand = true;
+
+                    ExpandSearch = true;
                 }
             }
             return _points;
         }
     }
 
+    private bool OverLap(Vector3 _pos, float _Range)
+    {
+        Vector3[] _Position = new Vector3[]
+        {
+            new Vector3(_Range,0,0),
+            new Vector3(_Range,0,_Range),
+            new Vector3(0,0,_Range),
+            new Vector3(-_Range,0,_Range),
+            new Vector3(-_Range,0,0),
+            new Vector3(-_Range,0,-_Range),
+            new Vector3(0,0,-_Range),
+            new Vector3(_Range,0,-_Range),
+        };
+
+        foreach (Vector3 _offset in _Position)
+        {
+            if (IsWithinBounds(_pos + _offset) == false)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void AddPoint(Point _point)
     {
@@ -187,14 +240,18 @@ public struct Quad
         }
         else
         {
+            bool didntFindPoint = true;
             for (int i = 0; i < ChildQuads.Count; i++)
             {
                 if (ChildQuads[i].IsWithinBounds(_point.WorldPosition))
                 {
                     ChildQuads[i].AddPoint(_point);
+                    didntFindPoint = false;
                     break;
                 }
             }
+            if (didntFindPoint)
+                Debug.Log("Didn't find");
         }
     }
 
@@ -207,8 +264,8 @@ public struct Quad
     {
         if (BoundsMax.x > _point.x && BoundsMin.x < _point.x)
         {
-            if(BoundsMax.z > _point.z && BoundsMin.z < _point.z)
-            return true;
+            if (BoundsMax.z > _point.z && BoundsMin.z < _point.z)
+                return true;
         }
         return false;
     }
@@ -229,15 +286,24 @@ public struct Quad
         for (int i = 0; i < newquads.Length; i++)
         {
             Quad _currentQuad = new Quad(CenterPosition + _Offsets[i], _size, Capicity);
+            List<Point> _HaveTOBeRemoved = new List<Point>();
+
             for (int p = 0; p < Points.Count; p++)
             {
                 if (_currentQuad.IsWithinBounds(Points[p].WorldPosition))
                 {
                     _currentQuad.AddPoint(Points[p]);
-                    RemovePoint(Points[p]);
+                    _HaveTOBeRemoved.Add(Points[p]);
                 }
             }
+
             newquads[i] = _currentQuad;
+        }
+        Points.Clear();
+
+        if (Points.Count > 0)
+        {
+            Debug.Log($"Could't divide Points");
         }
         foreach (Quad item in newquads)
         {
@@ -250,7 +316,29 @@ public struct Quad
         return ChildQuads;
     }
 
+    public List<Point> GetListPoints()
+    {
+        if (ChildQuads == null)
+            return Points;
 
+        if (ChildQuads.Count == 0)
+        {
+            return Points;
+        }
+        else
+        {
+            List<Point> _Points = new List<Point>();
+            foreach (Quad child in ChildQuads)
+            {
+                List<Point> _localPoints = child.GetListPoints();
+                foreach (Point _p in _localPoints)
+                {
+                    _Points.Add(_p);
+                }
+            }
+            return _Points;
+        }
+    }
 }
 
 public struct Point
