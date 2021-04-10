@@ -12,9 +12,7 @@ public class QuadTree
     private Quad MainQuad;                              //Main/Start Quad
     private List<Point> Points;                         //All Points in world
 
-
-
-    public QuadTree(int TotalSize, int MaxCapicity,Vector3 _pos)
+    public QuadTree(int TotalSize, int MaxCapicity, Vector3 _pos)
     {
         GridSize = TotalSize;
         MaxQuadCapicity = MaxCapicity;
@@ -22,19 +20,12 @@ public class QuadTree
 
         Size = GridSize / 2f;                           //caculate the correct size for the mainQuad
     }
-    
-
-
-
-
 
     public void SpawnPoints(List<Point> _Points)
     {
-
         MainQuad = new Quad(position, Size, 10);          //Create MainQuad
         Points = _Points;
         CheckPoints();
-
     }
 
     private void CheckPoints()
@@ -103,25 +94,25 @@ public class QuadTree
             Gizmos.DrawCube(quad.CenterPosition, _size);
         }
 
-        List<Point> _LocalDrawingQuadPoints = MainQuad.GetListPoints();
+        //List<Point> _LocalDrawingQuadPoints = MainQuad.GetListPoints();
 
-        if (_LocalDrawingQuadPoints != null)
-        {
-            foreach (Point point in _LocalDrawingQuadPoints)
-            {
-                Gizmos.color = Color.black;
-                Gizmos.DrawSphere(point.WorldPosition, 2f);
-            }
-        }
+        //if (_LocalDrawingQuadPoints != null)
+        //{
+        //    foreach (Point point in _LocalDrawingQuadPoints)
+        //    {
+        //        Gizmos.color = Color.black;
+        //        Gizmos.DrawSphere(point.WorldPosition, 2f);
+        //    }
+        //}
 
-        if (Points != null)
-        {
-            foreach (Point point in Points)
-            {
-                Gizmos.color = Color.green;
-                Gizmos.DrawSphere(point.WorldPosition, 1f);
-            }
-        }
+        //if (Points != null)
+        //{
+        //    foreach (Point point in Points)
+        //    {
+        //        Gizmos.color = Color.green;
+        //        Gizmos.DrawSphere(point.WorldPosition, 1f);
+        //    }
+        //}
     }
 }
 
@@ -177,8 +168,6 @@ public struct Quad
         {
             if (ChildQuads != null)
             {
-
-
                 bool expand = ExpandSearch;
                 foreach (Quad _quad in ChildQuads)
                 {
@@ -239,7 +228,6 @@ public struct Quad
         }
         else
         {
-
             for (int i = 0; i < ChildQuads.Count; i++)
             {
                 if (ChildQuads[i].IsWithinBounds(_point.WorldPosition))
@@ -248,7 +236,6 @@ public struct Quad
                     break;
                 }
             }
-
         }
     }
 
@@ -297,7 +284,6 @@ public struct Quad
             newquads[i] = _currentQuad;
         }
         Points.Clear();
-
 
         foreach (Quad item in newquads)
         {

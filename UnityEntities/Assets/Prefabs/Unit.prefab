@@ -564,6 +564,7 @@ GameObject:
   - component: {fileID: 6382466122265410806}
   - component: {fileID: 1965778268714572124}
   - component: {fileID: 3684802448363636640}
+  - component: {fileID: 5010596489590857728}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -602,6 +603,10 @@ MonoBehaviour:
     x: 0
     y: 0
     z: 0
+  FinalTargetPosition:
+    x: 0
+    y: 0
+    z: 0
   TargetPosition:
     x: 0
     y: 0
@@ -622,3 +627,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
+--- !u!114 &5010596489590857728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8475336045869901099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d32bf668bc54b0e47aa17eabc3abeaa3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Index: 0

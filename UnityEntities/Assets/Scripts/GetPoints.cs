@@ -99,19 +99,19 @@ public class GetPoints : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (m_Tree != null)
-            m_Tree.OnDrawGizmos();
-        Gizmos.color = Color.red;
+        //if (m_Tree != null)
+        //    m_Tree.OnDrawGizmos();
+        //Gizmos.color = Color.red;
 
-        Gizmos.DrawWireSphere(m_Mousepos, Range);
+        //Gizmos.DrawWireSphere(m_Mousepos, Range);
 
-        if (m_Points != null)
-        {
-            foreach (Point point in m_Points)
-            {
-                Gizmos.color = Color.red;
-                Gizmos.DrawSphere(point.WorldPosition, 2f);
-            }
-        }
+        //if (m_Points != null)
+        //{
+        //    foreach (Point point in m_Points)
+        //    {
+        //        Gizmos.color = Color.red;
+        //        Gizmos.DrawSphere(point.WorldPosition, 2f);
+        //    }
+        //}
     }
 }

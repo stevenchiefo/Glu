@@ -8,6 +8,7 @@ using Unity.Mathematics;
 public struct UnitData : IComponentData
 {
     public float3 MovementDirection;
+    public float3 FinalTargetPosition;
     public float3 TargetPosition;
     public bool HasTarget;
     public float Speed;

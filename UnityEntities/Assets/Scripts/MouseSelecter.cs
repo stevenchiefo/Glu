@@ -11,6 +11,8 @@ public class MouseSelecter : MonoBehaviour
     private Vector3 SelectionPosition_2;
     private bool HasSelection;
 
+    private QuadTree m_Tree;
+
     private void Awake()
     {
         if (Instance == null)
@@ -21,6 +23,11 @@ public class MouseSelecter : MonoBehaviour
         {
             Destroy(this);
         }
+    }
+
+    public void SetTree(QuadTree _tree)
+    {
+        m_Tree = _tree;
     }
 
     private void Start()
@@ -149,5 +156,8 @@ public class MouseSelecter : MonoBehaviour
     {
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(SelectionPosition_1, SelectionPosition_2);
+
+        if (m_Tree != null)
+            m_Tree.OnDrawGizmos();
     }
 }

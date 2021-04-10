@@ -10,12 +10,39 @@ using Unity.Jobs;
 public class UnitHandler : ComponentSystem
 {
     private float StopDistance = 0f;
+    private QuadTree m_Tree;
+
+    protected override void OnCreate()
+    {
+        m_Tree = new QuadTree(200, 10, new Vector3(20, 0, -20));
+    }
 
     protected override void OnUpdate()
     {
         CheckSelection();
         CheckTarget();
-        CheckMovement();
+        //CheckMovement();
+        PutInQuadTree();
+    }
+
+    private void PutInQuadTree()
+    {
+        NativeArray<Entity> entities = GetEntityQuery(typeof(UnitData)).ToEntityArray(Allocator.Temp);
+        List<Point> _points = new List<Point>();
+        for (int i = 0; i < entities.Length; i++)
+        {
+            Translation _trans = EntityManager.GetComponentData<Translation>(entities[i]);
+            Point point = new Point
+            {
+                WorldPosition = new Vector3(_trans.Value.x, 0, _trans.Value.z),
+                Speed = 0,
+            };
+            _points.Add(point);
+        }
+        m_Tree.SpawnPoints(_points);
+        entities.Dispose();
+
+        MouseSelecter.Instance.SetTree(m_Tree);
     }
 
     private void CheckSelection()
@@ -53,7 +80,7 @@ public class UnitHandler : ComponentSystem
                 if (_data.Selected)
                 {
                     _data.HasTarget = true;
-                    _data.TargetPosition = _ConvertedPos;
+                    _data.FinalTargetPosition = _ConvertedPos;
                     amount++;
                 }
             });
@@ -80,8 +107,13 @@ public class UnitHandler : ComponentSystem
                     offsetFloat += new float3(0, 0, 1.5f);
                 }
                 UnitData _Data = EntityManager.GetComponentData<UnitData>(_localEntites[i]);
-                _Data.TargetPosition = _ConvertedPos + new float3(1.5f * offsetCounter, 0, 0) + offsetFloat + Offset;
+                _Data.FinalTargetPosition = _ConvertedPos + new float3(1.5f * offsetCounter, 0, 0) + offsetFloat + Offset;
                 EntityManager.SetComponentData(_localEntites[i], _Data);
+                EntityManager.AddComponentData(_localEntites[i], new PathFindingParams
+                {
+                    StartPos = EntityManager.GetComponentData<Translation>(_localEntites[i]).Value,
+                    EndPos = _Data.FinalTargetPosition,
+                });
 
                 offsetCounter++;
             }
@@ -98,31 +130,5 @@ public class UnitHandler : ComponentSystem
             }
         }
         return false;
-    }
-
-    private void CheckMovement()
-    {
-        Entities.WithAll<UnitData>().ForEach((ref UnitData _Data, ref Translation _Trans) =>
-        {
-            if (_Data.HasTarget)
-            {
-                _Data.MovementDirection = math.normalize(_Data.TargetPosition - _Trans.Value);
-                _Data.MovementDirection.y = 0f;
-            }
-        });
-
-        Entities.WithAll<UnitData>().ForEach((ref UnitData _Data, ref Translation _Trans, ref Rotation _rot) =>
-        {
-            float _distance = math.distance(_Trans.Value, _Data.TargetPosition);
-            if (_distance > StopDistance)
-            {
-                float3 _futurepos = _Trans.Value + (_Data.MovementDirection * _Data.Speed) * Time.DeltaTime;
-                _Trans.Value = _futurepos;
-            }
-            quaternion quaternion = _rot.Value;
-            quaternion.value.x = 0;
-            quaternion.value.z = 0;
-            _rot.Value = quaternion;
-        });
     }
 }
