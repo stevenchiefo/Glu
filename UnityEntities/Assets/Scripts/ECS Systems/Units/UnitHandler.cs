@@ -27,6 +27,8 @@ public class UnitHandler : ComponentSystem
 
     private void PutInQuadTree()
     {
+        if (MouseSelecter.Instance == null)
+            return;
         NativeArray<Entity> entities = GetEntityQuery(typeof(UnitData)).ToEntityArray(Allocator.Temp);
         List<Point> _points = new List<Point>();
         for (int i = 0; i < entities.Length; i++)
@@ -42,11 +44,14 @@ public class UnitHandler : ComponentSystem
         m_Tree.SpawnPoints(_points);
         entities.Dispose();
 
+
         MouseSelecter.Instance.SetTree(m_Tree);
     }
 
     private void CheckSelection()
     {
+        if (MouseSelecter.Instance == null)
+            return;
         if (MouseSelecter.Instance.HasASelection())
         {
             Vector3[] positions = MouseSelecter.Instance.CheckForSelection();
@@ -70,6 +75,8 @@ public class UnitHandler : ComponentSystem
 
     private void CheckTarget()
     {
+        if (MouseSelecter.Instance == null)
+            return;
         if (MouseSelecter.Instance.DidSelectTarget())
         {
             Vector3 _pos = MouseSelecter.Instance.GetTargetPosition();
