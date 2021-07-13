@@ -11,7 +11,7 @@ public class MouseSelecter : MonoBehaviour
     private Vector3 SelectionPosition_2;
     private bool HasSelection;
 
-    private QuadTree m_Tree;
+    private QuadTree<Point> m_Tree;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public class MouseSelecter : MonoBehaviour
         }
     }
 
-    public void SetTree(QuadTree _tree)
+    public void SetTree(QuadTree<Point> _tree)
     {
         m_Tree = _tree;
     }

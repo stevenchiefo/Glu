@@ -1,16 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class QuadTree
+public class QuadTree<T>
 {
     public float Size { get; private set; }             //Size for main quad
     public Vector3 position { get; private set; }       //World Position Of QuadTree
 
     public int GridSize { get; private set; }           //Total grid Size
     public int MaxQuadCapicity { get; private set; }    //Capicity per quad
-    private Quad MainQuad;                              //Main/Start Quad
-    private List<Point> Points;                         //All Points in world
+    private Quad<T> MainQuad;                              //Main/Start Quad
+    private List<IQuadTreeObject<T>> Points;               //All Points in world
 
     public QuadTree(int TotalSize, int MaxCapicity, Vector3 _pos)
     {
@@ -21,48 +20,68 @@ public class QuadTree
         Size = GridSize / 2f;                           //caculate the correct size for the mainQuad
     }
 
-    public void SpawnPoints(List<Point> _Points)
+    public void SpawnPoints(List<T> _Points)
     {
-        MainQuad = new Quad(position, Size, 10);          //Create MainQuad
-        Points = _Points;
+        MainQuad = new Quad<T>(position, Size, 10);          //Create MainQuad
+        Points = new List<IQuadTreeObject<T>>();
+        foreach (T item in _Points)
+        {
+            IQuadTreeObject<T> _object = (IQuadTreeObject<T>)item;
+            if (_object != null)
+            {
+                Points.Add(_object);
+            }
+        }
+
         CheckPoints();
     }
 
     private void CheckPoints()
     {
-        foreach (Point i in Points)
+        foreach (IQuadTreeObject<T> i in Points)
         {
             CheckWhereIn(i);
         }
     }
 
-    public void CheckWhereIn(Point point)
+    public void CheckWhereIn(IQuadTreeObject<T> point)
     {
         MainQuad.AddPoint(point);
     }
 
-    public List<Point> GetPoints(Vector3 pos, float _range)
+    public List<T> GetPoints(Vector3 pos, float _range)
     {
-        return MainQuad.GetPoints(pos, _range);
+        List<IQuadTreeObject<T>> _List = MainQuad.GetPoints(pos, _range);
+
+        List<T> _newlist = new List<T>();
+        if (_List != null)
+        {
+            foreach (IQuadTreeObject<T> item in _List)
+            {
+                _newlist.Add((T)item);
+            }
+        }
+        return _newlist;
     }
 
     public void OnDrawGizmos()
     {
-        List<Quad> quads = new List<Quad>();
+#if UNITY_EDITOR
+        List<Quad<T>> quads = new List<Quad<T>>();
         quads.Add(MainQuad);
         for (int i = 0; i < quads.Count; i++)
         {
-            List<Quad> ChildQuads = quads[i].GetChilderen();
+            List<Quad<T>> ChildQuads = quads[i].GetChilderen();
             if (ChildQuads != null)
             {
-                foreach (Quad item in ChildQuads)
+                foreach (Quad<T> item in ChildQuads)
                 {
                     quads.Add(item);
                 }
             }
         }
 
-        foreach (Quad quad in quads)
+        foreach (Quad<T> quad in quads)
         {
             Vector3[] _points = new Vector3[]
             {
@@ -94,34 +113,35 @@ public class QuadTree
             Gizmos.DrawCube(quad.CenterPosition, _size);
         }
 
-        //List<Point> _LocalDrawingQuadPoints = MainQuad.GetListPoints();
+        List<IQuadTreeObject<T>> _LocalDrawingQuadPoints = MainQuad.GetListPoints();
 
-        //if (_LocalDrawingQuadPoints != null)
-        //{
-        //    foreach (Point point in _LocalDrawingQuadPoints)
-        //    {
-        //        Gizmos.color = Color.black;
-        //        Gizmos.DrawSphere(point.WorldPosition, 2f);
-        //    }
-        //}
+        if (_LocalDrawingQuadPoints != null)
+        {
+            foreach (IQuadTreeObject<T> point in _LocalDrawingQuadPoints)
+            {
+                Gizmos.color = Color.black;
+                Gizmos.DrawSphere(point.Position, 0.5f);
+            }
+        }
 
-        //if (Points != null)
-        //{
-        //    foreach (Point point in Points)
-        //    {
-        //        Gizmos.color = Color.green;
-        //        Gizmos.DrawSphere(point.WorldPosition, 1f);
-        //    }
-        //}
+        if (Points != null)
+        {
+            foreach (IQuadTreeObject<T> point in Points)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(point.Position, 0.4f);
+            }
+        }
+#endif
     }
 }
 
-public struct Quad
+public struct Quad<T>
 {
     public Vector3 CenterPosition;
     public float Size;
-    public List<Point> Points;
-    public List<Quad> ChildQuads;
+    public List<IQuadTreeObject<T>> Points;
+    public List<Quad<T>> ChildQuads;
     public int Capicity;
 
     public Vector3 BoundsMin;
@@ -133,15 +153,15 @@ public struct Quad
     {
         CenterPosition = _pos;
         Size = _size;
-        Points = new List<Point>();
-        ChildQuads = new List<Quad>();
+        Points = new List<IQuadTreeObject<T>>();
+        ChildQuads = new List<Quad<T>>();
         Capicity = _cap;
         BoundsMin = new Vector3(-Size, 0, -Size) + CenterPosition;
         BoundsMax = new Vector3(Size, 0, Size) + CenterPosition;
         ExpandSearch = false;
     }
 
-    public List<Point> GetPoints(Vector3 _pos, float _Range)
+    public List<IQuadTreeObject<T>> GetPoints(Vector3 _pos, float _Range)
     {
         if (ChildQuads == null)
         {
@@ -151,12 +171,12 @@ public struct Quad
         if (OverLap(_pos, _Range))
             ExpandSearch = true;
 
-        List<Point> _points = new List<Point>();
+        List<IQuadTreeObject<T>> _points = new List<IQuadTreeObject<T>>();
         if (ChildQuads.Count == 0)
         {
-            foreach (Point item in Points)
+            foreach (IQuadTreeObject<T> item in Points)
             {
-                float _distance = Vector3.Distance(_pos, item.WorldPosition);
+                float _distance = Vector3.Distance(_pos, item.Position);
                 if (_distance <= _Range)
                 {
                     _points.Add(item);
@@ -166,15 +186,18 @@ public struct Quad
         }
         else
         {
+            bool expand = ExpandSearch;
+            if (_pos.x == CenterPosition.x || _pos.y == CenterPosition.y || _pos == CenterPosition)
+                expand = true;
+
             if (ChildQuads != null)
             {
-                bool expand = ExpandSearch;
-                foreach (Quad _quad in ChildQuads)
+                foreach (Quad<T> _quad in ChildQuads)
                 {
                     if (_quad.IsWithinBounds(_pos) || expand)
                     {
-                        List<Point> _localPoints = _quad.GetPoints(_pos, _Range);
-                        foreach (Point LocalP in _localPoints)
+                        List<IQuadTreeObject<T>> _localPoints = _quad.GetPoints(_pos, _Range);
+                        foreach (IQuadTreeObject<T> LocalP in _localPoints)
                         {
                             _points.Add(LocalP);
                         }
@@ -183,7 +206,6 @@ public struct Quad
                     if (_quad.ExpandSearch)
                     {
                         expand = true;
-
                         ExpandSearch = true;
                     }
                 }
@@ -194,6 +216,11 @@ public struct Quad
 
     private bool OverLap(Vector3 _pos, float _Range)
     {
+        if (Vector3.Distance(_pos, CenterPosition) <= _Range)
+        {
+            return true;
+        }
+
         Vector3[] _Position = new Vector3[]
         {
             new Vector3(_Range,0,0),
@@ -206,17 +233,23 @@ public struct Quad
             new Vector3(_Range,0,-_Range),
         };
 
-        foreach (Vector3 _offset in _Position)
+        for (int i = 1; i < 4; i++)
         {
-            if (IsWithinBounds(_pos + _offset) == false)
+            foreach (Vector3 _offset in _Position)
             {
-                return true;
+                Vector3 _currentOffest = Vector3.ClampMagnitude(_offset, _Range / i);
+                Debug.DrawLine(_pos, _pos + _currentOffest, Color.red);
+                if (IsWithinBounds(_pos + _currentOffest) == false)
+                {
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
-    public void AddPoint(Point _point)
+    public void AddPoint(IQuadTreeObject<T> _point)
     {
         if (ChildQuads.Count == 0)
         {
@@ -230,7 +263,7 @@ public struct Quad
         {
             for (int i = 0; i < ChildQuads.Count; i++)
             {
-                if (ChildQuads[i].IsWithinBounds(_point.WorldPosition))
+                if (ChildQuads[i].IsWithinBounds(_point.Position))
                 {
                     ChildQuads[i].AddPoint(_point);
                     break;
@@ -239,9 +272,9 @@ public struct Quad
         }
     }
 
-    public void RemovePoint(Point _point)
+    public void RemovePoint(IQuadTreeObject<T> _object)
     {
-        Points.Remove(_point);
+        Points.Remove(_object);
     }
 
     public bool IsWithinBounds(Vector3 _point)
@@ -256,7 +289,7 @@ public struct Quad
 
     private void DevidePoints()
     {
-        Quad[] newquads = new Quad[4];
+        Quad<T>[] newquads = new Quad<T>[4];
         float _size = Size / 2f;
 
         Vector3[] _Offsets = new Vector3[]
@@ -269,12 +302,12 @@ public struct Quad
 
         for (int i = 0; i < newquads.Length; i++)
         {
-            Quad _currentQuad = new Quad(CenterPosition + _Offsets[i], _size, Capicity);
-            List<Point> _HaveTOBeRemoved = new List<Point>();
+            Quad<T> _currentQuad = new Quad<T>(CenterPosition + _Offsets[i], _size, Capicity);
+            List<IQuadTreeObject<T>> _HaveTOBeRemoved = new List<IQuadTreeObject<T>>();
 
             for (int p = 0; p < Points.Count; p++)
             {
-                if (_currentQuad.IsWithinBounds(Points[p].WorldPosition))
+                if (_currentQuad.IsWithinBounds(Points[p].Position))
                 {
                     _currentQuad.AddPoint(Points[p]);
                     _HaveTOBeRemoved.Add(Points[p]);
@@ -285,18 +318,18 @@ public struct Quad
         }
         Points.Clear();
 
-        foreach (Quad item in newquads)
+        foreach (Quad<T> item in newquads)
         {
             ChildQuads.Add(item);
         }
     }
 
-    public List<Quad> GetChilderen()
+    public List<Quad<T>> GetChilderen()
     {
         return ChildQuads;
     }
 
-    public List<Point> GetListPoints()
+    public List<IQuadTreeObject<T>> GetListPoints()
     {
         if (ChildQuads == null)
             return Points;
@@ -307,11 +340,11 @@ public struct Quad
         }
         else
         {
-            List<Point> _Points = new List<Point>();
-            foreach (Quad child in ChildQuads)
+            List<IQuadTreeObject<T>> _Points = new List<IQuadTreeObject<T>>();
+            foreach (Quad<T> child in ChildQuads)
             {
-                List<Point> _localPoints = child.GetListPoints();
-                foreach (Point _p in _localPoints)
+                List<IQuadTreeObject<T>> _localPoints = child.GetListPoints();
+                foreach (IQuadTreeObject<T> _p in _localPoints)
                 {
                     _Points.Add(_p);
                 }
@@ -321,8 +354,8 @@ public struct Quad
     }
 }
 
-public struct Point
+public struct Point : IQuadTreeObject<Point>
 {
-    public Vector3 WorldPosition;
+    public Vector3 Position { get; set; }
     public float Speed;
 }

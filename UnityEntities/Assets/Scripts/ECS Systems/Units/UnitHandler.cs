@@ -10,11 +10,11 @@ using Unity.Jobs;
 public class UnitHandler : ComponentSystem
 {
     private float StopDistance = 0f;
-    private QuadTree m_Tree;
+    private QuadTree<Point> m_Tree;
 
     protected override void OnCreate()
     {
-        m_Tree = new QuadTree(200, 10, new Vector3(20, 0, -20));
+        m_Tree = new QuadTree<Point>(200, 10, new Vector3(20, 0, -20));
     }
 
     protected override void OnUpdate()
@@ -27,25 +27,24 @@ public class UnitHandler : ComponentSystem
 
     private void PutInQuadTree()
     {
-        if (MouseSelecter.Instance == null)
-            return;
-        NativeArray<Entity> entities = GetEntityQuery(typeof(UnitData)).ToEntityArray(Allocator.Temp);
-        List<Point> _points = new List<Point>();
-        for (int i = 0; i < entities.Length; i++)
-        {
-            Translation _trans = EntityManager.GetComponentData<Translation>(entities[i]);
-            Point point = new Point
-            {
-                WorldPosition = new Vector3(_trans.Value.x, 0, _trans.Value.z),
-                Speed = 0,
-            };
-            _points.Add(point);
-        }
-        m_Tree.SpawnPoints(_points);
-        entities.Dispose();
+        //if (MouseSelecter.Instance == null)
+        //    return;
+        //NativeArray<Entity> entities = GetEntityQuery(typeof(UnitData)).ToEntityArray(Allocator.Temp);
+        //List<Point> _points = new List<Point>();
+        //for (int i = 0; i < entities.Length; i++)
+        //{
+        //    Translation _trans = EntityManager.GetComponentData<Translation>(entities[i]);
+        //    Point point = new Point
+        //    {
+        //        WorldPosition = new Vector3(_trans.Value.x, 0, _trans.Value.z),
+        //        Speed = 0,
+        //    };
+        //    _points.Add(point);
+        //}
+        //m_Tree.SpawnPoints(_points);
+        //entities.Dispose();
 
-
-        MouseSelecter.Instance.SetTree(m_Tree);
+        //MouseSelecter.Instance.SetTree(m_Tree);
     }
 
     private void CheckSelection()

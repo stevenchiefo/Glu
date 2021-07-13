@@ -6,11 +6,13 @@ public class GetPoints : MonoBehaviour
 {
     [Header("QuadTree Settings")]
     [SerializeField] private int Size;
-    [SerializeField] private int QuadCapicity;
 
-    [SerializeField] private int AmountOfPoints;
-    [SerializeField] private QuadTree m_Tree;
-    [SerializeField] private float Range;
+    [SerializeField] private int m_QuadCapicity;
+
+    [SerializeField] private int m_AmountOfPoints;
+    [SerializeField] private int m_MinSpeed, m_MaxSpeed;
+    [SerializeField] private QuadTree<Point> m_Tree;
+    [SerializeField] private float m_Range;
     private Camera m_Cam;
     private List<Point> m_Points;
     private Vector3 m_Mousepos;
@@ -20,7 +22,7 @@ public class GetPoints : MonoBehaviour
     private void Start()
     {
         m_Cam = Camera.main;
-        m_Tree = new QuadTree(Size, QuadCapicity, Vector3.zero);
+        m_Tree = new QuadTree<Point>(Size, m_QuadCapicity, Vector3.zero);
         SpawnPoints();
     }
 
@@ -33,7 +35,7 @@ public class GetPoints : MonoBehaviour
     private void SpawnPoints()
     {
         Points = new List<Point>();                                 //Create Points
-        int _amount = AmountOfPoints;                               //Caculate a random Amount
+        int _amount = m_AmountOfPoints;                               //Caculate a random Amount
         for (int i = 0; i < _amount; i++)
         {
             float _x = Random.Range(-(float)m_Tree.Size, (float)m_Tree.Size);     //Caculate a random X
@@ -41,8 +43,8 @@ public class GetPoints : MonoBehaviour
 
             Point point = new Point
             {
-                WorldPosition = new Vector3(_x, 0, _y),             //Set that worldPosition
-                Speed = Random.Range(5, 10),
+                Position = new Vector3(_x, 0, _y),             //Set that worldPosition
+                Speed = Random.Range(m_MinSpeed, m_MaxSpeed),
             };
             Points.Add(point);                                      //Add it to the total Points
         }
@@ -60,29 +62,33 @@ public class GetPoints : MonoBehaviour
             float X = Random.Range(-1, 1) * _CurrentPoint.Speed * Time.deltaTime;
             float Y = Random.Range(-1, 1) * _CurrentPoint.Speed * Time.deltaTime;
 
-
-            _CurrentPoint.WorldPosition = _CurrentPoint.WorldPosition + new Vector3(X, 0f, Y);
-
-            if (_CurrentPoint.WorldPosition.x < m_Tree.position.x + -m_Tree.Size)
+            _CurrentPoint.Position = _CurrentPoint.Position + new Vector3(X, 0f, Y);
+            Vector3 _newpos = _CurrentPoint.Position;
+            if (_CurrentPoint.Position.x < m_Tree.position.x + -m_Tree.Size)
             {
-                _CurrentPoint.WorldPosition.x = m_Tree.position.x + m_Tree.Size;
+                _newpos.x = m_Tree.position.x + m_Tree.Size;
+                _CurrentPoint.Position = _newpos;
             }
-            else if (_CurrentPoint.WorldPosition.x > m_Tree.position.x + m_Tree.Size)
+            else if (_CurrentPoint.Position.x > m_Tree.position.x + m_Tree.Size)
             {
-                _CurrentPoint.WorldPosition.x = m_Tree.position.x + -m_Tree.Size;
+                _newpos.x = m_Tree.position.x + -m_Tree.Size;
+                _CurrentPoint.Position = _newpos;
             }
 
-            if (_CurrentPoint.WorldPosition.z < m_Tree.position.z + -m_Tree.Size)
+            if (_CurrentPoint.Position.z < m_Tree.position.z + -m_Tree.Size)
             {
-                _CurrentPoint.WorldPosition.z = m_Tree.position.z + m_Tree.Size;
+                _newpos.z = m_Tree.position.z + m_Tree.Size;
+                _CurrentPoint.Position = _newpos;
             }
-            else if (_CurrentPoint.WorldPosition.z > m_Tree.position.z + m_Tree.Size)
+            else if (_CurrentPoint.Position.z > m_Tree.position.z + m_Tree.Size)
             {
-                _CurrentPoint.WorldPosition.z = m_Tree.position.z + -m_Tree.Size;
+                _newpos.z = m_Tree.position.z + -m_Tree.Size;
+                _CurrentPoint.Position = _newpos;
             }
 
             Points[i] = _CurrentPoint;
         }
+
         m_Tree.SpawnPoints(Points);
     }
 
@@ -93,25 +99,26 @@ public class GetPoints : MonoBehaviour
         {
             m_Mousepos = _hit.point;
             m_Mousepos.y = 0;
-            m_Points = m_Tree.GetPoints(_hit.point, Range);
+            m_Points = m_Tree.GetPoints(_hit.point, m_Range);
         }
     }
 
     private void OnDrawGizmos()
     {
-        //if (m_Tree != null)
-        //    m_Tree.OnDrawGizmos();
-        //Gizmos.color = Color.red;
+        if (m_Tree != null)
+            m_Tree.OnDrawGizmos();
+        Gizmos.color = Color.red;
 
-        //Gizmos.DrawWireSphere(m_Mousepos, Range);
+        Gizmos.DrawWireSphere(m_Mousepos, m_Range);
+        Gizmos.DrawSphere(m_Mousepos, 1f);
 
-        //if (m_Points != null)
-        //{
-        //    foreach (Point point in m_Points)
-        //    {
-        //        Gizmos.color = Color.red;
-        //        Gizmos.DrawSphere(point.WorldPosition, 2f);
-        //    }
-        //}
+        if (m_Points != null)
+        {
+            foreach (Point point in m_Points)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(point.Position, 0.7f);
+            }
+        }
     }
 }

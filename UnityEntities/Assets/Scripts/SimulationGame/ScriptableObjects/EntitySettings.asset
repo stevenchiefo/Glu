@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a598956f2559a4c47bd2ef0485b2034a, type: 3}
+  m_Name: EntitySettings
+  m_EditorClassIdentifier: 
+  MinMaxHealth: 10
+  MaxMaxHealth: 30
+  MinDetectionRange: 5
+  MaxDetectionRange: 15
+  MinHungerTreshHold: 1
+  MaxHungerTreshHold: 9
+  MinSpeed: 1
+  MaxSpeed: 10
+  MinApeal: 1
+  MaxApeal: 10
+  MinApealTreshHold: 1
+  MaxApealTreshHold: 10
+  MinSexualTreshHold: 1
+  MaxSexualTreshHold: 1.5
+  MinLoyalty: 0
+  MaxLoyalty: 50
+  MinConfidence: 0
+  MaxConfidence: 20
+  MinAproachable: 0
+  MaxAproachable: 10
+  MinSparkTreshHold: 10
+  MaxSprakTreshHold: 50
